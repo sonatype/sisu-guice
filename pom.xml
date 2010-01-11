@@ -4,7 +4,7 @@
   <parent>
     <artifactId>spice-inject</artifactId>
     <groupId>org.sonatype.spice</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1-SNAPSHOT</version>
   </parent>
 
   <packaging>pom</packaging>
@@ -22,15 +22,14 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <id>build-guice</id>
-            <phase>package</phase>
+            <id>compile</id>
+            <phase>compile</phase>
             <configuration>
               <tasks>
                 <property name="build.compiler" value="extJavac"/>
                 <property name="version" value="${project.version}"/>
                 <ant antfile="${basedir}/build.xml">
                   <target name="jar"/>
-                  <target name="source.jar"/>
                 </ant>
               </tasks>
             </configuration>
@@ -45,7 +44,7 @@
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>attach-artifacts</id>
+            <id>attach-jar</id>
             <phase>package</phase>
             <goals>
               <goal>attach-artifact</goal>
@@ -56,11 +55,6 @@
                   <file>${project.build.directory}/dist/guice-${project.version}.jar</file>
                   <type>jar</type>
                 </artifact>
-                <artifact>
-                  <file>${project.build.directory}/guice-${project.version}-src.jar</file>
-                  <type>jar</type>
-                  <classifier>sources</classifier>
-                </artifact>
               </artifacts>
             </configuration>
           </execution>
@@ -69,14 +63,76 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sources</id>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+                    <property name="build.compiler" value="extJavac"/>
+                    <property name="version" value="${project.version}"/>
+                    <ant antfile="${basedir}/build.xml">
+                      <target name="source.jar"/>
+                      <target name="javadoc"/>
+                    </ant>
+                    <zip destfile="${project.build.directory}/guice-${project.version}-doc.jar">
+                      <zipfileset dir="${project.build.directory}/javadoc"/>
+                    </zip>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${project.build.directory}/guice-${project.version}-src.jar</file>
+                      <type>jar</type>
+                      <classifier>sources</classifier>
+                    </artifact>
+                    <artifact>
+                      <file>${project.build.directory}/guice-${project.version}-doc.jar</file>
+                      <type>jar</type>
+                      <classifier>javadoc</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <dependencies>
-    <dependency>
-      <groupId>aopalliance</groupId>
-      <artifactId>aopalliance</artifactId>
-    </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
     </dependency>
   </dependencies>
 

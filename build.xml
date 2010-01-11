@@ -109,6 +109,7 @@
          windowtitle="Guice ${version} API">
       <sourcepath>
         <pathelement location="${src.dir}"/>
+<!--
         <pathelement location="${servlet.src.dir}"/>
         <pathelement location="${spring.src.dir}"/>
         <pathelement location="${assistedinject.src.dir}"/>
@@ -117,14 +118,20 @@
         <pathelement location="${throwingproviders.src.dir}"/>
         <pathelement location="${multibindings.src.dir}"/>
         <pathelement location="${lifecycle.src.dir}"/>
+-->
       </sourcepath>
       <classpath refid="compile.classpath"/>
+<!--
       <classpath>
         <fileset dir="servlet/lib/build" includes="*.jar"/>
       </classpath>
+-->
+      <link href="http://atinject.googlecode.com/svn/tags/1/javadoc"/>
       <link href="http://aopalliance.sourceforge.net/doc"/>
       <link href="http://java.sun.com/javase/6/docs/api"/>
+<!--
       <link href="http://www.springframework.org/docs/api/"/>
+-->
     </javadoc>
     <!-- generate core javadocs, used only for its left-side nav -->
     <mkdir dir="${build.dir}/javadoc-core"/>
@@ -135,6 +142,7 @@
          windowtitle="Guice ${version} Core API"
          sourcepath="${src.dir}">
       <classpath refid="compile.classpath"/>
+      <link href="http://atinject.googlecode.com/svn/tags/1/javadoc"/>
       <link href="http://aopalliance.sourceforge.net/doc"/>
       <link href="http://java.sun.com/javase/6/docs/api"/>
     </javadoc>
