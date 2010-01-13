@@ -2,9 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
+    <relativePath>../pom</relativePath>
     <groupId>org.sonatype.spice</groupId>
     <artifactId>spice-inject</artifactId>
-    <version>4</version>
+    <version>5-SNAPSHOT</version>
   </parent>
 
   <packaging>pom</packaging>
