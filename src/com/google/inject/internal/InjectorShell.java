@@ -26,6 +26,8 @@ import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import static com.google.inject.internal.Preconditions.checkNotNull;
 import static com.google.inject.internal.Preconditions.checkState;
+
+import com.google.inject.internal.InternalInjectorCreator.InjectorOptions;
 import com.google.inject.spi.Dependency;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
@@ -69,7 +71,7 @@ final class InjectorShell {
     private State state;
 
     private InjectorImpl parent;
-    private Stage stage;
+    private InjectorOptions options;
 
     /** null unless this exists in a {@link Binder#newPrivateBinder private environment} */
     private PrivateElementsImpl privateElements;
@@ -77,11 +79,12 @@ final class InjectorShell {
     Builder parent(InjectorImpl parent) {
       this.parent = parent;
       this.state = new InheritingState(parent.state);
+      this.options = parent.options;
       return this;
     }
-
-    Builder stage(Stage stage) {
-      this.stage = stage;
+    
+    Builder setInjectorOptions(InjectorOptions options) {
+      this.options = options;
       return this;
     }
 
@@ -96,6 +99,10 @@ final class InjectorShell {
         this.modules.add(module);
       }
     }
+    
+    InjectorOptions getInjectorOptions() {
+      return options;
+    }
 
     /** Synchronize on this before calling {@link #build}. */
     Object lock() {
@@ -107,24 +114,25 @@ final class InjectorShell {
      * returned if any modules contain {@link Binder#newPrivateBinder private environments}. The
      * primary injector will be first in the returned list.
      */
-    List<InjectorShell> build(Initializer initializer, BindingProcessor bindingProcessor,
+    List<InjectorShell> build(BindingProcessor bindingProcessor,
         Stopwatch stopwatch, Errors errors) {
-      checkState(stage != null, "Stage not initialized");
+      checkState(options != null, "Options not initialized");
+      checkState(options.stage != null, "Stage not initialized");
       checkState(privateElements == null || parent != null, "PrivateElements with no parent");
       checkState(state != null, "no state. Did you remember to lock() ?");
 
-      InjectorImpl injector = new InjectorImpl(parent, state, initializer);
+      InjectorImpl injector = new InjectorImpl(parent, state, options);
       if (privateElements != null) {
         privateElements.initInjector(injector);
       }
 
       // bind Stage and Singleton if this is a top-level injector
       if (parent == null) {
-        modules.add(0, new RootModule(stage));
+        modules.add(0, new RootModule(options.stage));
         new TypeConverterBindingProcessor(errors).prepareBuiltInConverters(injector);
       }
 
-      elements.addAll(Elements.getElements(stage, modules));
+      elements.addAll(Elements.getElements(options.stage, modules));
       stopwatch.resetAndLog("Module execution");
 
       new MessageProcessor(errors).process(injector, elements);
@@ -155,10 +163,10 @@ final class InjectorShell {
       injectorShells.add(new InjectorShell(this, elements, injector));
 
       // recursively build child shells
-      PrivateElementProcessor processor = new PrivateElementProcessor(errors, stage);
+      PrivateElementProcessor processor = new PrivateElementProcessor(errors, options);
       processor.process(injector, elements);
       for (Builder builder : processor.getInjectorShellBuilders()) {
-        injectorShells.addAll(builder.build(initializer, bindingProcessor, stopwatch, errors));
+        injectorShells.addAll(builder.build(bindingProcessor, stopwatch, errors));
       }
       stopwatch.resetAndLog("Private environment creation");
 
@@ -193,7 +201,7 @@ final class InjectorShell {
       this.injector = injector;
     }
 
-    public Injector get(Errors errors, InternalContext context, Dependency<?> dependency)
+    public Injector get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked)
         throws ErrorsException {
       return injector;
     }
@@ -221,7 +229,7 @@ final class InjectorShell {
   }
 
   private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
-    public Logger get(Errors errors, InternalContext context, Dependency<?> dependency) {
+    public Logger get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked) {
       InjectionPoint injectionPoint = dependency.getInjectionPoint();
       return injectionPoint == null
           ? Logger.getAnonymousLogger()

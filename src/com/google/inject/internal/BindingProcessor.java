@@ -79,8 +79,7 @@ final class BindingProcessor extends AbstractProcessor {
       return true;
     }
 
-// MCCULLS: Nexus uses Scope annotations in non-standard places
-// MCCULLS: validateKey(command.getSource(), command.getKey());
+    validateKey(command.getSource(), command.getKey());
 
     final Scoping scoping = Scoping.makeInjectable(
         ((BindingImpl<?>) command).getScoping(), injector, errors);
@@ -89,7 +88,7 @@ final class BindingProcessor extends AbstractProcessor {
       public Void visit(ConstructorBinding<? extends T> binding) {
         try {
           ConstructorBindingImpl<T> onInjector = ConstructorBindingImpl.create(injector, key, 
-              binding.getConstructor(), source, scoping, errors);
+              binding.getConstructor(), source, scoping, errors, false);
           scheduleInitialization(onInjector);
           putBinding(onInjector);
         } catch (ErrorsException e) {
@@ -166,7 +165,7 @@ final class BindingProcessor extends AbstractProcessor {
         // This cast is safe after the preceeding check.
         try {
           BindingImpl<T> binding = injector.createUninitializedBinding(
-              key, scoping, source, errors);
+              key, scoping, source, errors, false);
           scheduleInitialization(binding);
           putBinding(binding);
         } catch (ErrorsException e) {
@@ -220,8 +219,12 @@ final class BindingProcessor extends AbstractProcessor {
   }
 
   private <T> void validateKey(Object source, Key<T> key) {
-    Annotations.checkForMisplacedScopeAnnotations(
-        key.getTypeLiteral().getRawType(), source, errors);
+// ------------------------------------------------------------------
+// MCCULLS: disable check, Nexus uses Scope annotations on interfaces
+// ------------------------------------------------------------------
+//  Annotations.checkForMisplacedScopeAnnotations(
+//      key.getTypeLiteral().getRawType(), source, errors);
+// ------------------------------------------------------------------
   }
 
   <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {

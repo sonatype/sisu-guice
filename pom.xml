@@ -5,7 +5,7 @@
     <relativePath>../pom</relativePath>
     <groupId>org.sonatype.spice</groupId>
     <artifactId>spice-inject</artifactId>
-    <version>5</version>
+    <version>6-SNAPSHOT</version>
   </parent>
 
   <packaging>pom</packaging>

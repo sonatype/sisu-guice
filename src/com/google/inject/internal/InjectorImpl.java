@@ -21,6 +21,7 @@ import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Injector;
+import com.google.inject.InjectorBuilder;
 import com.google.inject.Key;
 import com.google.inject.MembersInjector;
 import com.google.inject.Module;
@@ -29,6 +30,7 @@ import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 import com.google.inject.Scope;
 import com.google.inject.TypeLiteral;
+import com.google.inject.internal.InternalInjectorCreator.InjectorOptions;
 import com.google.inject.spi.BindingTargetVisitor;
 import com.google.inject.spi.ConvertedConstantBinding;
 import com.google.inject.spi.Dependency;
@@ -55,21 +57,31 @@ import java.util.Set;
  */
 final class InjectorImpl implements Injector, Lookups {
   public static final TypeLiteral<String> STRING_TYPE = TypeLiteral.get(String.class);
+  
+  /** some limitations on what just in time bindings are allowed. */
+  enum JitLimitation { 
+    /** does not allow just in time bindings */
+    NO_JIT,
+    /** allows existing just in time bindings, but does not allow new ones */
+    EXISTING_JIT,
+    /** allows existing just in time bindings & allows new ones to be created */
+    NEW_OR_EXISTING_JIT,
+  }
 
   final State state;
   final InjectorImpl parent;
   final BindingsMultimap bindingsMultimap = new BindingsMultimap();
-  final Initializer initializer;
+  final InjectorOptions options;
 
   /** Just-in-time binding cache. Guarded by state.lock() */
   final Map<Key<?>, BindingImpl<?>> jitBindings = Maps.newHashMap();
 
   Lookups lookups = new DeferredLookups(this);
 
-  InjectorImpl(@Nullable InjectorImpl parent, State state, Initializer initializer) {
+  InjectorImpl(@Nullable InjectorImpl parent, State state, InjectorOptions injectorOptions) {
     this.parent = parent;
     this.state = state;
-    this.initializer = initializer;
+    this.options = injectorOptions;
 
     if (parent != null) {
       localContext = parent.localContext;
@@ -101,7 +113,7 @@ final class InjectorImpl implements Injector, Lookups {
   public <T> BindingImpl<T> getBinding(Key<T> key) {
     Errors errors = new Errors(key);
     try {
-      BindingImpl<T> result = getBindingOrThrow(key, errors);
+      BindingImpl<T> result = getBindingOrThrow(key, errors, JitLimitation.EXISTING_JIT);
       errors.throwConfigurationExceptionIfErrorsExist();
       return result;
     } catch (ErrorsException e) {
@@ -115,7 +127,7 @@ final class InjectorImpl implements Injector, Lookups {
    * checks for an explicit binding. If no explicit binding is found, it looks for a just-in-time
    * binding.
    */
-  <T> BindingImpl<T> getBindingOrThrow(Key<T> key, Errors errors)
+  <T> BindingImpl<T> getBindingOrThrow(Key<T> key, Errors errors, JitLimitation jitType)
       throws ErrorsException {
     // Check explicit bindings, i.e. bindings created by modules.
     BindingImpl<T> binding = state.getExplicitBinding(key);
@@ -124,7 +136,7 @@ final class InjectorImpl implements Injector, Lookups {
     }
 
     // Look for an on-demand binding.
-    return getJustInTimeBinding(key, errors);
+    return getJustInTimeBinding(key, errors, jitType);
   }
 
   public <T> Binding<T> getBinding(Class<T> type) {
@@ -136,7 +148,7 @@ final class InjectorImpl implements Injector, Lookups {
   }
 
   public Injector createChildInjector(Iterable<? extends Module> modules) {
-    return new InjectorBuilder()
+    return new InternalInjectorCreator()
         .parentInjector(this)
         .addModules(modules)
         .build();
@@ -151,8 +163,14 @@ final class InjectorImpl implements Injector, Lookups {
    *
    * @throws ErrorsException if the binding could not be created.
    */
-  private <T> BindingImpl<T> getJustInTimeBinding(Key<T> key, Errors errors)
+  private <T> BindingImpl<T> getJustInTimeBinding(Key<T> key, Errors errors, JitLimitation jitType)
       throws ErrorsException {
+
+
+    if(options.jitDisabled && jitType == JitLimitation.NO_JIT && !isProvider(key)) {
+      throw errors.jitDisabled(key).toException();
+    }
+    
     synchronized (state.lock()) {
       // first try to find a JIT binding that we've already created
       for (InjectorImpl injector = this; injector != null; injector = injector.parent) {
@@ -163,8 +181,12 @@ final class InjectorImpl implements Injector, Lookups {
           return binding;
         }
       }
-
-      return createJustInTimeBindingRecursive(key, errors);
+      
+      if(options.jitDisabled && jitType != JitLimitation.NEW_OR_EXISTING_JIT && !isProvider(key)) {
+        throw errors.jitDisabled(key).toException();
+      } else {
+        return createJustInTimeBindingRecursive(key, errors);
+      }
     }
   }
 
@@ -217,7 +239,7 @@ final class InjectorImpl implements Injector, Lookups {
     @SuppressWarnings("unchecked") // safe because T came from Key<Provider<T>>
     Key<T> providedKey = (Key<T>) key.ofType(entryType);
 
-    BindingImpl<T> delegate = getBindingOrThrow(providedKey, errors);
+    BindingImpl<T> delegate = getBindingOrThrow(providedKey, errors, JitLimitation.NO_JIT);
     return new ProviderBindingImpl<T>(this, key, delegate);
   }
 
@@ -234,7 +256,7 @@ final class InjectorImpl implements Injector, Lookups {
     static <T> InternalFactory<Provider<T>> createInternalFactory(Binding<T> providedBinding) {
       final Provider<T> provider = providedBinding.getProvider();
       return new InternalFactory<Provider<T>>() {
-        public Provider<T> get(Errors errors, InternalContext context, Dependency dependency) {
+        public Provider<T> get(Errors errors, InternalContext context, Dependency dependency, boolean linked) {
           return provider;
         }
       };
@@ -402,7 +424,7 @@ final class InjectorImpl implements Injector, Lookups {
    * none is specified.
    */
   <T> BindingImpl<T> createUninitializedBinding(Key<T> key, Scoping scoping, Object source,
-      Errors errors) throws ErrorsException {
+      Errors errors, boolean jitBinding) throws ErrorsException {
     Class<?> rawType = key.getTypeLiteral().getRawType();
 
     // Don't try to inject arrays, or enums.
@@ -432,7 +454,8 @@ final class InjectorImpl implements Injector, Lookups {
       return createProvidedByBinding(key, scoping, providedBy, errors);
     }
 
-    return ConstructorBindingImpl.create(this, key, null, source, scoping, errors);
+    
+    return ConstructorBindingImpl.create(this, key, null, source, scoping, errors, jitBinding && options.jitDisabled);
   }
 
   /**
@@ -481,14 +504,14 @@ final class InjectorImpl implements Injector, Lookups {
     final Key<? extends Provider<T>> providerKey
         = (Key<? extends Provider<T>>) Key.get(providerType);
     final BindingImpl<? extends Provider<?>> providerBinding
-        = getBindingOrThrow(providerKey, errors);
+        = getBindingOrThrow(providerKey, errors, JitLimitation.NEW_OR_EXISTING_JIT);
 
     InternalFactory<T> internalFactory = new InternalFactory<T>() {
-      public T get(Errors errors, InternalContext context, Dependency dependency)
+      public T get(Errors errors, InternalContext context, Dependency dependency, boolean linked)
           throws ErrorsException {
         errors = errors.withSource(providerKey);
         Provider<?> provider = providerBinding.getInternalFactory().get(
-            errors, context, dependency);
+            errors, context, dependency, true);
         try {
           Object o = provider.get();
           if (o != null && !rawType.isInstance(o)) {
@@ -535,13 +558,13 @@ final class InjectorImpl implements Injector, Lookups {
 
     // Look up the target binding.
     final Key<? extends T> targetKey = Key.get(subclass);
-    final BindingImpl<? extends T> targetBinding = getBindingOrThrow(targetKey, errors);
+    final BindingImpl<? extends T> targetBinding = getBindingOrThrow(targetKey, errors, JitLimitation.NEW_OR_EXISTING_JIT);
 
     InternalFactory<T> internalFactory = new InternalFactory<T>() {
-      public T get(Errors errors, InternalContext context, Dependency<?> dependency)
+      public T get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked)
           throws ErrorsException {
         return targetBinding.getInternalFactory().get(
-            errors.withSource(targetKey), context, dependency);
+            errors.withSource(targetKey), context, dependency, true);
       }
     };
 
@@ -562,7 +585,7 @@ final class InjectorImpl implements Injector, Lookups {
   private <T> BindingImpl<T> createJustInTimeBindingRecursive(Key<T> key, Errors errors)
       throws ErrorsException {
     // ask the parent to create the JIT binding
-    if (false && parent != null) { // MCCULLS: disable parent JIT bindings
+    if (parent != null && !parent.options.jitDisabled) {
       try {
         return parent.createJustInTimeBindingRecursive(key, new Errors());
       } catch (ErrorsException ignored) {
@@ -630,7 +653,7 @@ final class InjectorImpl implements Injector, Lookups {
       if (key.hasAttributes()) {
         try {
           Errors ignored = new Errors();
-          return getBindingOrThrow(key.withoutAttributes(), ignored);
+          return getBindingOrThrow(key.withoutAttributes(), ignored, JitLimitation.NO_JIT);
         } catch (ErrorsException ignored) {
           // throw with a more appropriate message below
         }
@@ -639,15 +662,15 @@ final class InjectorImpl implements Injector, Lookups {
     }
 
     Object source = key.getTypeLiteral().getRawType();
-    BindingImpl<T> binding = createUninitializedBinding(key, Scoping.UNSCOPED, source, errors);
+    BindingImpl<T> binding = createUninitializedBinding(key, Scoping.UNSCOPED, source, errors, true);
     errors.throwIfNewErrors(numErrorsBefore);
     initializeJitBinding(binding, errors);
     return binding;
   }
 
-  <T> InternalFactory<? extends T> getInternalFactory(Key<T> key, Errors errors)
+  <T> InternalFactory<? extends T> getInternalFactory(Key<T> key, Errors errors, JitLimitation jitType)
       throws ErrorsException {
-    return getBindingOrThrow(key, errors).getInternalFactory();
+    return getBindingOrThrow(key, errors, jitType).getInternalFactory();
   }
 
   public Map<Key<?>, Binding<?>> getBindings() {
@@ -719,7 +742,7 @@ final class InjectorImpl implements Injector, Lookups {
 
   <T> SingleParameterInjector<T> createParameterInjector(final Dependency<T> dependency,
       final Errors errors) throws ErrorsException {
-    InternalFactory<? extends T> factory = getInternalFactory(dependency.getKey(), errors);
+    InternalFactory<? extends T> factory = getInternalFactory(dependency.getKey(), errors, JitLimitation.NO_JIT);
     return new SingleParameterInjector<T>(dependency, factory);
   }
 
@@ -759,7 +782,9 @@ final class InjectorImpl implements Injector, Lookups {
   }
 
   <T> Provider<T> getProviderOrThrow(final Key<T> key, Errors errors) throws ErrorsException {
-    final InternalFactory<? extends T> factory = getInternalFactory(key, errors);
+    
+    
+    final InternalFactory<? extends T> factory = getInternalFactory(key, errors, JitLimitation.NO_JIT);
     final Dependency<T> dependency = Dependency.get(key);
 
     return new Provider<T>() {
@@ -770,7 +795,7 @@ final class InjectorImpl implements Injector, Lookups {
             public T call(InternalContext context) throws ErrorsException {
               Dependency previous = context.setDependency(dependency);
               try {
-                return factory.get(errors, context, dependency);
+                return factory.get(errors, context, dependency, false);
               } finally {
                 context.setDependency(previous);
               }

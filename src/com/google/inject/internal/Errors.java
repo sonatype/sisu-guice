@@ -125,6 +125,10 @@ public final class Errors implements Serializable {
   public Errors missingImplementation(Key key) {
     return addMessage("No implementation for %s was bound.", key);
   }
+  
+  public Errors jitDisabled(Key key) {
+    return addMessage("Explicit bindings are required and %s is not explicitly bound.", key);
+  }
 
   public Errors converterReturnedNull(String stringValue, Object source,
       TypeLiteral<?> type, TypeConverterBinding typeConverterBinding) {
