@@ -585,7 +585,7 @@ final class InjectorImpl implements Injector, Lookups {
   private <T> BindingImpl<T> createJustInTimeBindingRecursive(Key<T> key, Errors errors)
       throws ErrorsException {
     // ask the parent to create the JIT binding
-    if (parent != null && !parent.options.jitDisabled) {
+    if (false && parent != null && !parent.options.jitDisabled) { // MCCULLS: disable parent JIT bindings
       try {
         return parent.createJustInTimeBindingRecursive(key, new Errors());
       } catch (ErrorsException ignored) {
