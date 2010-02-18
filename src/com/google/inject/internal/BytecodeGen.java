@@ -56,34 +56,14 @@ import java.util.logging.Logger;
  */
 final class BytecodeGen {
 
-  static final Logger LOGGER = Logger.getLogger(BytecodeGen.class.getName());
+  static final Logger logger = Logger.getLogger(BytecodeGen.class.getName());
 
-  private static final class ClassSpace {
-    final ClassLoader classLoader;
+  static final ClassLoader GUICE_CLASS_LOADER = canonicalize(BytecodeGen.class.getClassLoader());
 
-    ClassSpace(ClassLoader classLoader) {
-      this.classLoader = classLoader;
-    }
-
-    @Override public boolean equals( Object obj ) {
-      if (obj instanceof ClassSpace) {
-        return classLoader == ((ClassSpace)obj).classLoader;
-      }
-      return false;
-    }
-
-    @Override public int hashCode() {
-      return null == classLoader ? 0 : classLoader.hashCode();
-    }
-
-    @Override public String toString() {
-      return null == classLoader ? "SystemClassLoader" : classLoader.toString();
-    }
+  // initialization-on-demand...
+  private static class SystemBridgeHolder {
+    static final BridgeClassLoader SYSTEM_BRIDGE = new BridgeClassLoader();
   }
-
-  static final ClassSpace SYSTEM_CLASS_SPACE = getSystemClassSpace();
-
-  static final ClassSpace GUICE_CLASS_SPACE = getClassSpace(BytecodeGen.class.getClassLoader());
 
   /** ie. "com.google.inject.internal" */
   static final String GUICE_INTERNAL_PACKAGE
@@ -94,7 +74,7 @@ final class BytecodeGen {
   static final String CGLIB_PACKAGE
       = net.sf.cglib.proxy.Enhancer.class.getName().replaceFirst("\\.cglib\\..*$", ".cglib");
 
-  private static final net.sf.cglib.core.NamingPolicy NAMING_POLICY
+  static final net.sf.cglib.core.NamingPolicy NAMING_POLICY
       = new net.sf.cglib.core.DefaultNamingPolicy() {
     @Override protected String getTag() {
       return "ByGuice";
@@ -107,40 +87,31 @@ final class BytecodeGen {
 
   /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
   private static final boolean CUSTOM_LOADER_ENABLED
-      = "true".equalsIgnoreCase(System.getProperty("guice.custom.loader", "true"));
+      = Boolean.parseBoolean(System.getProperty("guice.custom.loader", "true"));
 
   /**
    * Weak cache of bridge class loaders that make the Guice implementation
    * classes visible to various code-generated proxies of client classes.
    */
-  private static final Map<ClassSpace, ClassLoader> BRIDGE_CLASS_LOADER_CACHE
+  private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE
       = new MapMaker().weakKeys().weakValues().makeComputingMap(
-          new Function<ClassSpace, ClassLoader>() {
-    public ClassLoader apply(final ClassSpace classSpace) {
-      LOGGER.fine("Creating a bridge ClassLoader for " + classSpace);
+          new Function<ClassLoader, ClassLoader>() {
+    public ClassLoader apply(final @Nullable ClassLoader typeClassLoader) {
+      logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
       return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
         public ClassLoader run() {
-          return new BridgeClassLoader(classSpace.classLoader);
+          return new BridgeClassLoader(typeClassLoader);
         }
       });
     }
   });
 
-  private static ClassSpace getSystemClassSpace() {
-    ClassLoader systemClassLoader = null;
-    try {
-      systemClassLoader = AccessController.doPrivileged(
-          new PrivilegedAction<ClassLoader>() {
-        public ClassLoader run() {
-      return ClassLoader.getSystemClassLoader();
-    }
-      });
-    } catch (SecurityException e) {/* ignore */}
-    return new ClassSpace(systemClassLoader);
-  }
-
-  private static ClassSpace getClassSpace(ClassLoader classLoader) {
-    return null == classLoader ? SYSTEM_CLASS_SPACE : new ClassSpace(classLoader);
+  /**
+   * Attempts to canonicalize null references to the system class loader.
+   * May return null if for some reason the system loader is unavailable.
+   */
+  private static ClassLoader canonicalize(ClassLoader classLoader) {
+    return classLoader != null ? classLoader : SystemBridgeHolder.SYSTEM_BRIDGE.getParent();
   }
 
   /**
@@ -152,27 +123,29 @@ final class BytecodeGen {
 
   private static ClassLoader getClassLoader(Class<?> type, ClassLoader delegate) {
 
+    // simple case: do nothing!
     if (!CUSTOM_LOADER_ENABLED) {
       return delegate;
     }
 
-    // Don't bother bridging existing bridge classloaders
-    if (delegate instanceof BridgeClassLoader) {
+    delegate = canonicalize(delegate);
+
+    // no need for a bridge if using same class loader, or it's already a bridge
+    if (delegate == GUICE_CLASS_LOADER || delegate instanceof BridgeClassLoader) {
       return delegate;
     }
 
-    ClassSpace classSpace = getClassSpace(delegate);
-
-    // same class space, no bridging required
-    if (GUICE_CLASS_SPACE.equals(classSpace)) {
-      return delegate;
-    }
-
+    // don't try bridging private types as it won't work
     if (Visibility.forType(type) == Visibility.PUBLIC) {
-      return BRIDGE_CLASS_LOADER_CACHE.get(classSpace);
+      if (delegate != SystemBridgeHolder.SYSTEM_BRIDGE.getParent()) {
+        // delegate guaranteed to be non-null here
+        return CLASS_LOADER_CACHE.get(delegate);
+      }
+      // delegate may or may not be null here
+      return SystemBridgeHolder.SYSTEM_BRIDGE;
     }
 
-    return delegate;
+    return delegate; // last-resort: do nothing!
   }
 
   /*if[AOP]*/
@@ -185,7 +158,7 @@ final class BytecodeGen {
       generator.setClassLoader(getClassLoader(type));
     }
     generator.setNamingPolicy(NAMING_POLICY);
-    LOGGER.fine("Loading " + type + " FastClass with " + generator.getClassLoader());
+    logger.fine("Loading " + type + " FastClass with " + generator.getClassLoader());
     return generator.create();
   }
 
@@ -197,7 +170,7 @@ final class BytecodeGen {
       enhancer.setClassLoader(getClassLoader(type));
     }
     enhancer.setNamingPolicy(NAMING_POLICY);
-    LOGGER.fine("Loading " + type + " Enhancer with " + enhancer.getClassLoader());
+    logger.fine("Loading " + type + " Enhancer with " + enhancer.getClassLoader());
     return enhancer;
   }
   /*end[AOP]*/
@@ -216,7 +189,8 @@ final class BytecodeGen {
      * target class. These generated classes may be loaded by our bridge classloader.
      */
     PUBLIC {
-      @Override public Visibility and(Visibility that) {
+      @Override
+      public Visibility and(Visibility that) {
         return that;
       }
     },
@@ -228,7 +202,8 @@ final class BytecodeGen {
      * garbage collected.
      */
     SAME_PACKAGE {
-      @Override public Visibility and(Visibility that) {
+      @Override
+      public Visibility and(Visibility that) {
         return this;
       }
     };
@@ -238,8 +213,8 @@ final class BytecodeGen {
         return SAME_PACKAGE;
       }
 
-      Class<?>[] parameterTypes = member instanceof Constructor<?>
-          ? ((Constructor<?>) member).getParameterTypes()
+      Class[] parameterTypes = member instanceof Constructor
+          ? ((Constructor) member).getParameterTypes()
           : ((Method) member).getParameterTypes();
       for (Class<?> type : parameterTypes) {
         if (forType(type) == SAME_PACKAGE) {
@@ -263,7 +238,11 @@ final class BytecodeGen {
    * Loader for Guice-generated classes. For referenced classes, this delegates to either either the
    * user's classloader (which is the parent of this classloader) or Guice's class loader.
    */
-  private static final class BridgeClassLoader extends ClassLoader {
+  private static class BridgeClassLoader extends ClassLoader {
+
+    BridgeClassLoader() {
+      // use system loader as parent
+    }
 
     BridgeClassLoader(ClassLoader usersClassLoader) {
       super(usersClassLoader);
@@ -272,27 +251,32 @@ final class BytecodeGen {
     @Override protected Class<?> loadClass(String name, boolean resolve)
         throws ClassNotFoundException {
 
-      ClassSpace classSpace = null;
-
-      // redirect requests for Guice internal classes and reflection helpers
-      if (name.startsWith(GUICE_INTERNAL_PACKAGE) || name.startsWith(CGLIB_PACKAGE)) {
-        classSpace = GUICE_CLASS_SPACE;
-      } else if (name.startsWith("sun.reflect")) {
-        classSpace = SYSTEM_CLASS_SPACE;
+      if (name.startsWith("sun.reflect")) {
+        // these reflection classes need to be loaded from the bootstrap class loader
+        return SystemBridgeHolder.SYSTEM_BRIDGE.loadClassFromParent(name, resolve);
       }
 
-      if (classSpace != null) {
+      if (name.startsWith(GUICE_INTERNAL_PACKAGE) || name.startsWith(CGLIB_PACKAGE)) {
+        if (null == GUICE_CLASS_LOADER) {
+          // use special system bridge to load classes from the bootstrap class loader
+          return SystemBridgeHolder.SYSTEM_BRIDGE.loadClassFromParent(name, resolve);
+        }
         try {
-          Class<?> clazz = classSpace.classLoader.loadClass(name);
+          Class<?> clazz = GUICE_CLASS_LOADER.loadClass(name);
           if (resolve) {
             resolveClass(clazz);
           }
           return clazz;
-        } catch (Exception e) {
-          // fall back to classic delegation
+        } catch (Throwable e) {
+          // fall-back to classic delegation
         }
       }
 
+      return loadClassFromParent(name, resolve);
+    }
+
+    Class<?> loadClassFromParent(String name, boolean resolve)
+      throws ClassNotFoundException {
       return super.loadClass(name, resolve);
     }
   }
