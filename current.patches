@@ -1,6 +1,6 @@
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/build.properties ./build.properties
---- /home/stuart/Code/guice-vanilla/build.properties	2010-02-16 14:31:43.678978300 +0800
-+++ ./build.properties	2010-02-16 13:46:44.964978000 +0800
+diff -urwN guice-trunk/build.properties guice-patches-2.1.1/build.properties
+--- guice-trunk/build.properties	2009-10-20 16:02:21.673071000 +0800
++++ guice-patches-2.1.1/build.properties	2010-01-11 16:22:45.723658000 +0800
 @@ -10,7 +10,7 @@
  multibindings.src.dir=extensions/multibindings/src
  privatemodules.src.dir=extensions/privatemodules/src
@@ -19,9 +19,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
 +
 +Bundle-Vendor: Sonatype Inc.
 +Bundle-SymbolicName: org.sonatype.spice.inject.guice-patches
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/build.xml ./build.xml
---- /home/stuart/Code/guice-vanilla/build.xml	2010-02-16 14:31:44.236978300 +0800
-+++ ./build.xml	2010-02-16 14:18:43.683978300 +0800
+diff -urwN guice-trunk/build.xml guice-patches-2.1.1/build.xml
+--- guice-trunk/build.xml	2009-10-20 16:02:21.673071000 +0800
++++ guice-patches-2.1.1/build.xml	2010-01-11 14:03:24.283569000 +0800
 @@ -2,9 +2,6 @@
  
  <project name="guice" default="compile">
@@ -93,9 +93,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
        <link href="http://aopalliance.sourceforge.net/doc"/>
        <link href="http://java.sun.com/javase/6/docs/api"/>
      </javadoc>
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/common.xml ./common.xml
---- /home/stuart/Code/guice-vanilla/common.xml	2010-02-16 14:31:42.758978300 +0800
-+++ ./common.xml	2010-02-16 13:49:15.099978000 +0800
+diff -urwN guice-trunk/common.xml guice-patches-2.1.1/common.xml
+--- guice-trunk/common.xml	2009-12-30 09:05:45.216587000 +0800
++++ guice-patches-2.1.1/common.xml	2010-01-08 17:29:42.583128000 +0800
 @@ -25,13 +25,14 @@
    <target name="manifest" description="Generate OSGi manifest." depends="compile">
      <dirname property="common.basedir" file="${ant.file.common}"/>
@@ -136,9 +136,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
      <property name="-removeheaders" value="Bnd-LastModified,Ignore-Package,Include-Resource,Private-Package,Tool"/>
  
      <bndwrap jars="${build.dir}/classes" output="${build.dir}"/>
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/Injector.java ./src/com/google/inject/Injector.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/Injector.java	2010-02-16 14:31:43.625978300 +0800
-+++ ./src/com/google/inject/Injector.java	2010-02-16 13:34:54.176978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/Injector.java guice-patches-2.1.1/src/com/google/inject/Injector.java
+--- guice-trunk/src/com/google/inject/Injector.java	2010-02-14 00:16:44.563660000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/Injector.java	2009-12-16 01:32:52.779554000 +0800
 @@ -20,6 +20,8 @@
  import java.util.List;
  import java.util.Map;
@@ -161,9 +161,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
 +   */
 +  List<TypeConverterBinding> getTypeConverterBindings();
  }
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/BindingProcessor.java ./src/com/google/inject/internal/BindingProcessor.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/BindingProcessor.java	2010-02-16 14:22:11.335978300 +0800
-+++ ./src/com/google/inject/internal/BindingProcessor.java	2010-02-16 14:57:31.442978300 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/BindingProcessor.java guice-patches-2.1.1/src/com/google/inject/internal/BindingProcessor.java
+--- guice-trunk/src/com/google/inject/internal/BindingProcessor.java	2010-02-12 06:07:07.298517000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/BindingProcessor.java	2010-02-16 15:11:49.212339000 +0800
 @@ -219,8 +219,12 @@
    }
  
@@ -179,9 +179,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
    }
  
    <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/BytecodeGen.java ./src/com/google/inject/internal/BytecodeGen.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/BytecodeGen.java	2010-02-16 14:31:43.313978300 +0800
-+++ ./src/com/google/inject/internal/BytecodeGen.java	2010-02-16 13:33:58.979978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/BytecodeGen.java guice-patches-2.1.1/src/com/google/inject/internal/BytecodeGen.java
+--- guice-trunk/src/com/google/inject/internal/BytecodeGen.java	2009-06-07 01:51:27.912017000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/BytecodeGen.java	2010-02-19 00:48:17.748594000 +0800
 @@ -16,7 +16,6 @@
  
  package com.google.inject.internal;
@@ -190,40 +190,20 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
  import java.lang.reflect.Constructor;
  import java.lang.reflect.Member;
  import java.lang.reflect.Method;
-@@ -57,20 +56,45 @@
+@@ -57,17 +56,22 @@
   */
  final class BytecodeGen {
  
 -  private static final Logger logger = Logger.getLogger(BytecodeGen.class.getName());
-+  static final Logger LOGGER = Logger.getLogger(BytecodeGen.class.getName());
++  static final Logger logger = Logger.getLogger(BytecodeGen.class.getName());
  
 -  static final ClassLoader GUICE_CLASS_LOADER = BytecodeGen.class.getClassLoader();
-+  private static final class ClassSpace {
-+    final ClassLoader classLoader;
++  static final ClassLoader GUICE_CLASS_LOADER = canonicalize(BytecodeGen.class.getClassLoader());
 +
-+    ClassSpace(ClassLoader classLoader) {
-+      this.classLoader = classLoader;
-+    }
-+
-+    @Override public boolean equals( Object obj ) {
-+      if (obj instanceof ClassSpace) {
-+        return classLoader == ((ClassSpace)obj).classLoader;
-+      }
-+      return false;
-+    }
-+
-+    @Override public int hashCode() {
-+      return null == classLoader ? 0 : classLoader.hashCode();
-+    }
-+
-+    @Override public String toString() {
-+      return null == classLoader ? "SystemClassLoader" : classLoader.toString();
-+    }
++  // initialization-on-demand...
++  private static class SystemBridgeHolder {
++    static final BridgeClassLoader SYSTEM_BRIDGE = new BridgeClassLoader();
 +  }
-+
-+  static final ClassSpace SYSTEM_CLASS_SPACE = getSystemClassSpace();
-+
-+  static final ClassSpace GUICE_CLASS_SPACE = getClassSpace(BytecodeGen.class.getClassLoader());
  
    /** ie. "com.google.inject.internal" */
 -  private static final String GUICE_INTERNAL_PACKAGE
@@ -236,48 +216,29 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
 +  static final String CGLIB_PACKAGE
        = net.sf.cglib.proxy.Enhancer.class.getName().replaceFirst("\\.cglib\\..*$", ".cglib");
  
--  static final net.sf.cglib.core.NamingPolicy NAMING_POLICY
-+  private static final net.sf.cglib.core.NamingPolicy NAMING_POLICY
-       = new net.sf.cglib.core.DefaultNamingPolicy() {
-     @Override protected String getTag() {
-       return "ByGuice";
-@@ -82,47 +106,41 @@
+   static final net.sf.cglib.core.NamingPolicy NAMING_POLICY
+@@ -82,8 +86,8 @@
    end[NO_AOP]*/
  
    /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
 -  static final boolean HOOK_ENABLED
 -      = "true".equals(System.getProperty("guice.custom.loader", "true"));
 +  private static final boolean CUSTOM_LOADER_ENABLED
-+      = "true".equalsIgnoreCase(System.getProperty("guice.custom.loader", "true"));
++      = Boolean.parseBoolean(System.getProperty("guice.custom.loader", "true"));
  
    /**
     * Weak cache of bridge class loaders that make the Guice implementation
-    * classes visible to various code-generated proxies of client classes.
-    */
--  private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE
-+  private static final Map<ClassSpace, ClassLoader> BRIDGE_CLASS_LOADER_CACHE
-       = new MapMaker().weakKeys().weakValues().makeComputingMap(
--          new Function<ClassLoader, ClassLoader>() {
--    public ClassLoader apply(final @Nullable ClassLoader typeClassLoader) {
--      logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
-+          new Function<ClassSpace, ClassLoader>() {
-+    public ClassLoader apply(final ClassSpace classSpace) {
-+      LOGGER.fine("Creating a bridge ClassLoader for " + classSpace);
-       return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-         public ClassLoader run() {
--          return new BridgeClassLoader(typeClassLoader);
-+          return new BridgeClassLoader(classSpace.classLoader);
-         }
-       });
-     }
+@@ -103,26 +107,11 @@
    });
  
--  /**
+   /**
 -   * For class loaders, {@code null}, is always an alias to the
 -   * {@link ClassLoader#getSystemClassLoader() system class loader}. This method
 -   * will not return null.
--   */
--  private static ClassLoader canonicalize(ClassLoader classLoader) {
++   * Attempts to canonicalize null references to the system class loader.
++   * May return null if for some reason the system loader is unavailable.
+    */
+   private static ClassLoader canonicalize(ClassLoader classLoader) {
 -    return classLoader != null
 -        ? classLoader
 -        : checkNotNull(getSystemClassLoaderOrNull(), "Couldn't get a ClassLoader");
@@ -288,27 +249,16 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
 -   * permission.
 -   */
 -  private static ClassLoader getSystemClassLoaderOrNull() {
-+  private static ClassSpace getSystemClassSpace() {
-+    ClassLoader systemClassLoader = null;
-     try {
-+      systemClassLoader = AccessController.doPrivileged(
-+          new PrivilegedAction<ClassLoader>() {
-+        public ClassLoader run() {
-       return ClassLoader.getSystemClassLoader();
+-    try {
+-      return ClassLoader.getSystemClassLoader();
 -    } catch (SecurityException e) {
 -      return null;
-     }
-+      });
-+    } catch (SecurityException e) {/* ignore */}
-+    return new ClassSpace(systemClassLoader);
-+  }
-+
-+  private static ClassSpace getClassSpace(ClassLoader classLoader) {
-+    return null == classLoader ? SYSTEM_CLASS_SPACE : new ClassSpace(classLoader);
+-    }
++    return classLoader != null ? classLoader : SystemBridgeHolder.SYSTEM_BRIDGE.getParent();
    }
  
    /**
-@@ -133,10 +151,8 @@
+@@ -133,23 +122,30 @@
    }
  
    private static ClassLoader getClassLoader(Class<?> type, ClassLoader delegate) {
@@ -316,83 +266,61 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
  
 -    // if the application is running in the System classloader, assume we can run there too
 -    if (delegate == getSystemClassLoaderOrNull()) {
++    // simple case: do nothing!
 +    if (!CUSTOM_LOADER_ENABLED) {
        return delegate;
      }
  
-@@ -145,8 +161,15 @@
+-    // Don't bother bridging existing bridge classloaders
+-    if (delegate instanceof BridgeClassLoader) {
++    delegate = canonicalize(delegate);
++
++    // no need for a bridge if using same class loader, or it's already a bridge
++    if (delegate == GUICE_CLASS_LOADER || delegate instanceof BridgeClassLoader) {
        return delegate;
      }
  
 -    if (HOOK_ENABLED && Visibility.forType(type) == Visibility.PUBLIC) {
--      return CLASS_LOADER_CACHE.get(delegate);
-+    ClassSpace classSpace = getClassSpace(delegate);
-+
-+    // same class space, no bridging required
-+    if (GUICE_CLASS_SPACE.equals(classSpace)) {
-+      return delegate;
-+    }
-+
++    // don't try bridging private types as it won't work
 +    if (Visibility.forType(type) == Visibility.PUBLIC) {
-+      return BRIDGE_CLASS_LOADER_CACHE.get(classSpace);
++      if (delegate != SystemBridgeHolder.SYSTEM_BRIDGE.getParent()) {
++        // delegate guaranteed to be non-null here
+       return CLASS_LOADER_CACHE.get(delegate);
      }
++      // delegate may or may not be null here
++      return SystemBridgeHolder.SYSTEM_BRIDGE;
++    }
  
-     return delegate;
-@@ -162,7 +185,7 @@
-       generator.setClassLoader(getClassLoader(type));
-     }
-     generator.setNamingPolicy(NAMING_POLICY);
--    logger.fine("Loading " + type + " FastClass with " + generator.getClassLoader());
-+    LOGGER.fine("Loading " + type + " FastClass with " + generator.getClassLoader());
-     return generator.create();
+-    return delegate;
++    return delegate; // last-resort: do nothing!
    }
  
-@@ -174,7 +197,7 @@
-       enhancer.setClassLoader(getClassLoader(type));
-     }
-     enhancer.setNamingPolicy(NAMING_POLICY);
--    logger.fine("Loading " + type + " Enhancer with " + enhancer.getClassLoader());
-+    LOGGER.fine("Loading " + type + " Enhancer with " + enhancer.getClassLoader());
-     return enhancer;
-   }
-   /*end[AOP]*/
-@@ -193,7 +216,7 @@
+   /*if[AOP]*/
+@@ -193,6 +189,7 @@
       * target class. These generated classes may be loaded by our bridge classloader.
       */
      PUBLIC {
--      public Visibility and(Visibility that) {
-+      @Override public Visibility and(Visibility that) {
++      @Override
+       public Visibility and(Visibility that) {
          return that;
        }
-     },
-@@ -205,7 +228,7 @@
+@@ -205,6 +202,7 @@
       * garbage collected.
       */
      SAME_PACKAGE {
--      public Visibility and(Visibility that) {
-+      @Override public Visibility and(Visibility that) {
++      @Override
+       public Visibility and(Visibility that) {
          return this;
        }
-     };
-@@ -215,8 +238,8 @@
-         return SAME_PACKAGE;
-       }
- 
--      Class[] parameterTypes = member instanceof Constructor
--          ? ((Constructor) member).getParameterTypes()
-+      Class<?>[] parameterTypes = member instanceof Constructor<?>
-+          ? ((Constructor<?>) member).getParameterTypes()
-           : ((Method) member).getParameterTypes();
-       for (Class<?> type : parameterTypes) {
-         if (forType(type) == SAME_PACKAGE) {
-@@ -240,19 +263,27 @@
-    * Loader for Guice-generated classes. For referenced classes, this delegates to either either the
-    * user's classloader (which is the parent of this classloader) or Guice's class loader.
+@@ -242,26 +240,43 @@
     */
--  private static class BridgeClassLoader extends ClassLoader {
-+  private static final class BridgeClassLoader extends ClassLoader {
+   private static class BridgeClassLoader extends ClassLoader {
  
 -    public BridgeClassLoader(ClassLoader usersClassLoader) {
++    BridgeClassLoader() {
++      // use system loader as parent
++    }
++
 +    BridgeClassLoader(ClassLoader usersClassLoader) {
        super(usersClassLoader);
      }
@@ -401,25 +329,40 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
          throws ClassNotFoundException {
  
 -      // delegate internal requests to Guice class space
-+      ClassSpace classSpace = null;
-+
-+      // redirect requests for Guice internal classes and reflection helpers
-       if (name.startsWith(GUICE_INTERNAL_PACKAGE) || name.startsWith(CGLIB_PACKAGE)) {
-+        classSpace = GUICE_CLASS_SPACE;
-+      } else if (name.startsWith("sun.reflect")) {
-+        classSpace = SYSTEM_CLASS_SPACE;
++      if (name.startsWith("sun.reflect")) {
++        // these reflection classes need to be loaded from the bootstrap class loader
++        return SystemBridgeHolder.SYSTEM_BRIDGE.loadClassFromParent(name, resolve);
 +      }
 +
-+      if (classSpace != null) {
+       if (name.startsWith(GUICE_INTERNAL_PACKAGE) || name.startsWith(CGLIB_PACKAGE)) {
++        if (null == GUICE_CLASS_LOADER) {
++          // use special system bridge to load classes from the bootstrap class loader
++          return SystemBridgeHolder.SYSTEM_BRIDGE.loadClassFromParent(name, resolve);
++        }
          try {
--          Class<?> clazz = GUICE_CLASS_LOADER.loadClass(name);
-+          Class<?> clazz = classSpace.classLoader.loadClass(name);
+           Class<?> clazz = GUICE_CLASS_LOADER.loadClass(name);
            if (resolve) {
              resolveClass(clazz);
            }
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/DefaultConstructionProxyFactory.java ./src/com/google/inject/internal/DefaultConstructionProxyFactory.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/DefaultConstructionProxyFactory.java	2010-02-16 14:31:43.067978300 +0800
-+++ ./src/com/google/inject/internal/DefaultConstructionProxyFactory.java	2010-02-16 13:33:58.901978000 +0800
+           return clazz;
+-        } catch (Exception e) {
+-          // fall back to classic delegation
++        } catch (Throwable e) {
++          // fall-back to classic delegation
+         }
+       }
+ 
++      return loadClassFromParent(name, resolve);
++    }
++
++    Class<?> loadClassFromParent(String name, boolean resolve)
++      throws ClassNotFoundException {
+       return super.loadClass(name, resolve);
+     }
+   }
+diff -urwN guice-trunk/src/com/google/inject/internal/DefaultConstructionProxyFactory.java guice-patches-2.1.1/src/com/google/inject/internal/DefaultConstructionProxyFactory.java
+--- guice-trunk/src/com/google/inject/internal/DefaultConstructionProxyFactory.java	2009-06-07 01:51:27.912017000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/DefaultConstructionProxyFactory.java	2009-12-16 01:32:52.779554000 +0800
 @@ -24,6 +24,8 @@
  import java.lang.reflect.Modifier;
  import java.util.List;
@@ -448,9 +391,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
        /*end[AOP]*/
      } else {
        constructor.setAccessible(true);
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/Errors.java ./src/com/google/inject/internal/Errors.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/Errors.java	2010-02-16 14:31:42.998978300 +0800
-+++ ./src/com/google/inject/internal/Errors.java	2010-02-16 14:59:02.525978300 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/Errors.java guice-patches-2.1.1/src/com/google/inject/internal/Errors.java
+--- guice-trunk/src/com/google/inject/internal/Errors.java	2010-02-12 06:07:07.298517000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/Errors.java	2010-02-16 15:11:49.212339000 +0800
 @@ -28,6 +28,7 @@
  import com.google.inject.spi.InjectionListener;
  import com.google.inject.spi.InjectionPoint;
@@ -515,9 +458,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
      }
  
      String convert(Object o) {
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/InheritingState.java ./src/com/google/inject/internal/InheritingState.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/InheritingState.java	2010-02-16 14:31:43.378978300 +0800
-+++ ./src/com/google/inject/internal/InheritingState.java	2010-02-16 13:34:54.108978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/InheritingState.java guice-patches-2.1.1/src/com/google/inject/internal/InheritingState.java
+--- guice-trunk/src/com/google/inject/internal/InheritingState.java	2009-07-24 08:48:12.842057000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/InheritingState.java	2009-12-16 01:32:52.779554000 +0800
 @@ -21,6 +21,8 @@
  import com.google.inject.Scope;
  import com.google.inject.TypeLiteral;
@@ -562,9 +505,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
          if (converter.getTypeMatcher().matches(type)) {
            if (matchingConverter != null) {
              errors.ambiguousTypeConversion(stringValue, source, type, matchingConverter, converter);
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/InjectorImpl.java ./src/com/google/inject/internal/InjectorImpl.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/InjectorImpl.java	2010-02-16 14:31:43.109978300 +0800
-+++ ./src/com/google/inject/internal/InjectorImpl.java	2010-02-16 14:04:09.849978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/InjectorImpl.java guice-patches-2.1.1/src/com/google/inject/internal/InjectorImpl.java
+--- guice-trunk/src/com/google/inject/internal/InjectorImpl.java	2010-02-14 00:16:44.563660000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/InjectorImpl.java	2010-02-17 22:30:57.321460000 +0800
 @@ -37,6 +37,7 @@
  import com.google.inject.spi.HasDependencies;
  import com.google.inject.spi.InjectionPoint;
@@ -645,6 +588,15 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
      public Key<String> getSourceKey() {
        return originalBinding.getKey();
      }
+@@ -576,7 +585,7 @@
+   private <T> BindingImpl<T> createJustInTimeBindingRecursive(Key<T> key, Errors errors)
+       throws ErrorsException {
+     // ask the parent to create the JIT binding
+-    if (parent != null && !parent.options.jitDisabled) {
++    if (false && parent != null && !parent.options.jitDisabled) { // MCCULLS: disable parent JIT bindings
+       try {
+         return parent.createJustInTimeBindingRecursive(key, new Errors());
+       } catch (ErrorsException ignored) {
 @@ -678,7 +687,11 @@
    }
  
@@ -658,9 +610,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
    }
  
    private static class BindingsMultimap {
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/InternalContext.java ./src/com/google/inject/internal/InternalContext.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/InternalContext.java	2010-02-16 14:31:43.517978300 +0800
-+++ ./src/com/google/inject/internal/InternalContext.java	2010-02-16 13:39:50.520978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/InternalContext.java guice-patches-2.1.1/src/com/google/inject/internal/InternalContext.java
+--- guice-trunk/src/com/google/inject/internal/InternalContext.java	2009-06-23 08:29:43.635093000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/InternalContext.java	2009-12-16 01:32:52.779554000 +0800
 @@ -46,7 +46,7 @@
    }
  
@@ -670,9 +622,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
      this.dependency = dependency;
      return previous;
    }
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/InternalInjectorCreator.java ./src/com/google/inject/internal/InternalInjectorCreator.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/InternalInjectorCreator.java	2010-02-16 14:31:43.569978300 +0800
-+++ ./src/com/google/inject/internal/InternalInjectorCreator.java	2010-02-16 14:12:47.619978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/InternalInjectorCreator.java guice-patches-2.1.1/src/com/google/inject/internal/InternalInjectorCreator.java
+--- guice-trunk/src/com/google/inject/internal/InternalInjectorCreator.java	2010-02-14 00:16:44.563660000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/InternalInjectorCreator.java	2010-02-16 15:11:49.212339000 +0800
 @@ -26,6 +26,7 @@
  import com.google.inject.TypeLiteral;
  import com.google.inject.Scope;
@@ -691,9 +643,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
      public <T> Provider<T> getProvider(Key<T> key) {
        throw new UnsupportedOperationException(
          "Injector.getProvider(Key<T>) is not supported in Stage.TOOL");
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/MatcherAndConverter.java ./src/com/google/inject/internal/MatcherAndConverter.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/MatcherAndConverter.java	2010-02-16 14:31:43.252978300 +0800
-+++ ./src/com/google/inject/internal/MatcherAndConverter.java	2010-02-16 13:34:54.031978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/MatcherAndConverter.java guice-patches-2.1.1/src/com/google/inject/internal/MatcherAndConverter.java
+--- guice-trunk/src/com/google/inject/internal/MatcherAndConverter.java	2009-06-07 01:51:27.912017000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/MatcherAndConverter.java	2009-12-16 01:32:52.779554000 +0800
 @@ -1,56 +0,0 @@
 -/*
 - * Copyright (C) 2007 Google Inc.
@@ -751,9 +703,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
 -        + " (bound at " + source + ")";
 -  }
 -}
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/ProxyFactory.java ./src/com/google/inject/internal/ProxyFactory.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/ProxyFactory.java	2010-02-16 14:31:43.158978300 +0800
-+++ ./src/com/google/inject/internal/ProxyFactory.java	2010-02-16 13:33:58.923978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/ProxyFactory.java guice-patches-2.1.1/src/com/google/inject/internal/ProxyFactory.java
+--- guice-trunk/src/com/google/inject/internal/ProxyFactory.java	2009-06-07 01:51:27.912017000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/ProxyFactory.java	2009-12-16 01:32:52.779554000 +0800
 @@ -17,6 +17,8 @@
  package com.google.inject.internal;
  
@@ -778,9 +730,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
    }
  
    private static class MethodInterceptorsPair {
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/SingleMethodInjector.java ./src/com/google/inject/internal/SingleMethodInjector.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/SingleMethodInjector.java	2010-02-16 14:31:43.202978300 +0800
-+++ ./src/com/google/inject/internal/SingleMethodInjector.java	2010-02-16 13:33:58.944978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/SingleMethodInjector.java guice-patches-2.1.1/src/com/google/inject/internal/SingleMethodInjector.java
+--- guice-trunk/src/com/google/inject/internal/SingleMethodInjector.java	2009-06-07 01:51:27.912017000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/SingleMethodInjector.java	2009-12-16 01:32:52.779554000 +0800
 @@ -23,6 +23,8 @@
  import java.lang.reflect.Method;
  import java.lang.reflect.Modifier;
@@ -809,9 +761,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
        /*end[AOP]*/
      }
  
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/State.java ./src/com/google/inject/internal/State.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/State.java	2010-02-16 14:31:43.479978300 +0800
-+++ ./src/com/google/inject/internal/State.java	2010-02-16 13:34:54.153978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/State.java guice-patches-2.1.1/src/com/google/inject/internal/State.java
+--- guice-trunk/src/com/google/inject/internal/State.java	2009-07-24 08:48:12.842057000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/State.java	2009-12-16 01:32:52.779554000 +0800
 @@ -20,6 +20,7 @@
  import com.google.inject.Key;
  import com.google.inject.Scope;
@@ -860,9 +812,79 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
  
    /*if[AOP]*/
    void addMethodAspect(MethodAspect methodAspect);
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/TypeConverterBindingProcessor.java ./src/com/google/inject/internal/TypeConverterBindingProcessor.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/internal/TypeConverterBindingProcessor.java	2010-02-16 14:31:43.428978300 +0800
-+++ ./src/com/google/inject/internal/TypeConverterBindingProcessor.java	2010-02-16 13:34:54.130978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/internal/TypeConverterBindingImpl.java guice-patches-2.1.1/src/com/google/inject/internal/TypeConverterBindingImpl.java
+--- guice-trunk/src/com/google/inject/internal/TypeConverterBindingImpl.java	1970-01-01 08:00:00.000000000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/TypeConverterBindingImpl.java	2009-12-16 01:32:52.779554000 +0800
+@@ -0,0 +1,66 @@
++/**
++ * Copyright (C) 2008 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject.internal;
++
++import com.google.inject.TypeLiteral;
++import com.google.inject.Binder;
++import static com.google.inject.internal.Preconditions.checkNotNull;
++import com.google.inject.matcher.Matcher;
++import com.google.inject.spi.ElementVisitor;
++import com.google.inject.spi.TypeConverter;
++import com.google.inject.spi.TypeConverterBinding;
++
++/**
++ * @author jessewilson@google.com (Jesse Wilson)
++ */
++public final class TypeConverterBindingImpl implements TypeConverterBinding {
++  private final Object source;
++  private final Matcher<? super TypeLiteral<?>> typeMatcher;
++  private final TypeConverter typeConverter;
++
++  public TypeConverterBindingImpl(Object source, Matcher<? super TypeLiteral<?>> typeMatcher,
++      TypeConverter typeConverter) {
++    this.source = checkNotNull(source, "source");
++    this.typeMatcher = checkNotNull(typeMatcher, "typeMatcher");
++    this.typeConverter = checkNotNull(typeConverter, "typeConverter");
++  }
++
++  public Object getSource() {
++    return source;
++  }
++
++  public Matcher<? super TypeLiteral<?>> getTypeMatcher() {
++    return typeMatcher;
++  }
++
++  public TypeConverter getTypeConverter() {
++    return typeConverter;
++  }
++
++  public <T> T acceptVisitor(ElementVisitor<T> visitor) {
++    return visitor.visit(this);
++  }
++
++  public void applyTo(Binder binder) {
++    binder.withSource(getSource()).convertToTypes(typeMatcher, typeConverter);
++  }
++
++  @Override public String toString() {
++    return typeConverter + " which matches " + typeMatcher
++        + " (bound at " + source + ")";
++  }
++}
+diff -urwN guice-trunk/src/com/google/inject/internal/TypeConverterBindingProcessor.java guice-patches-2.1.1/src/com/google/inject/internal/TypeConverterBindingProcessor.java
+--- guice-trunk/src/com/google/inject/internal/TypeConverterBindingProcessor.java	2009-06-07 01:51:27.912017000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/internal/TypeConverterBindingProcessor.java	2009-12-16 01:32:52.779554000 +0800
 @@ -159,12 +159,12 @@
    private void internalConvertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
        TypeConverter converter) {
@@ -879,9 +901,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
      return true;
    }
  }
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/spi/ConvertedConstantBinding.java ./src/com/google/inject/spi/ConvertedConstantBinding.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/spi/ConvertedConstantBinding.java	2010-02-16 14:31:42.879978300 +0800
-+++ ./src/com/google/inject/spi/ConvertedConstantBinding.java	2010-02-16 13:34:53.827978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/spi/ConvertedConstantBinding.java guice-patches-2.1.1/src/com/google/inject/spi/ConvertedConstantBinding.java
+--- guice-trunk/src/com/google/inject/spi/ConvertedConstantBinding.java	2008-12-27 10:57:04.090268000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/spi/ConvertedConstantBinding.java	2009-12-16 01:32:52.779554000 +0800
 @@ -35,6 +35,11 @@
    T getValue();
  
@@ -894,9 +916,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
     * Returns the key for the source binding. That binding can e retrieved from an injector using
     * {@link com.google.inject.Injector#getBinding(Key) Injector.getBinding(key)}.
     */
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/spi/Elements.java ./src/com/google/inject/spi/Elements.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/spi/Elements.java	2010-02-16 14:31:42.818978300 +0800
-+++ ./src/com/google/inject/spi/Elements.java	2010-02-16 13:34:53.802978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/spi/Elements.java guice-patches-2.1.1/src/com/google/inject/spi/Elements.java
+--- guice-trunk/src/com/google/inject/spi/Elements.java	2009-06-07 01:51:27.912017000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/spi/Elements.java	2009-12-16 01:32:52.779554000 +0800
 @@ -37,6 +37,8 @@
  import com.google.inject.internal.Errors;
  import com.google.inject.internal.ImmutableList;
@@ -915,9 +937,9 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
      }
  
      public RecordingBinder withSource(final Object source) {
-diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-vanilla/src/com/google/inject/spi/TypeConverterBinding.java ./src/com/google/inject/spi/TypeConverterBinding.java
---- /home/stuart/Code/guice-vanilla/src/com/google/inject/spi/TypeConverterBinding.java	2010-02-16 14:31:42.924978300 +0800
-+++ ./src/com/google/inject/spi/TypeConverterBinding.java	2010-02-16 13:34:53.851978000 +0800
+diff -urwN guice-trunk/src/com/google/inject/spi/TypeConverterBinding.java guice-patches-2.1.1/src/com/google/inject/spi/TypeConverterBinding.java
+--- guice-trunk/src/com/google/inject/spi/TypeConverterBinding.java	2009-03-18 13:34:39.988564000 +0800
++++ guice-patches-2.1.1/src/com/google/inject/spi/TypeConverterBinding.java	2009-12-16 01:32:52.779554000 +0800
 @@ -18,7 +18,6 @@
  
  import com.google.inject.TypeLiteral;
@@ -941,35 +963,30 @@ diff -u -r -x pom.xml -x .svn -x .project -x .settings /home/stuart/Code/guice-v
 -    this.typeMatcher = checkNotNull(typeMatcher, "typeMatcher");
 -    this.typeConverter = checkNotNull(typeConverter, "typeConverter");
 -  }
--
++public interface TypeConverterBinding extends Element {
+ 
 -  public Object getSource() {
 -    return source;
 -  }
--
++  Object getSource();
+ 
 -  public Matcher<? super TypeLiteral<?>> getTypeMatcher() {
 -    return typeMatcher;
 -  }
--
++  Matcher<? super TypeLiteral<?>> getTypeMatcher();
+ 
 -  public TypeConverter getTypeConverter() {
 -    return typeConverter;
 -  }
--
++  TypeConverter getTypeConverter();
+ 
 -  public <T> T acceptVisitor(ElementVisitor<T> visitor) {
 -    return visitor.visit(this);
 -  }
--
++  <T> T acceptVisitor(ElementVisitor<T> visitor);
+ 
 -  public void applyTo(Binder binder) {
 -    binder.withSource(getSource()).convertToTypes(typeMatcher, typeConverter);
 -  }
-+public interface TypeConverterBinding extends Element {
-+
-+  Object getSource();
-+
-+  Matcher<? super TypeLiteral<?>> getTypeMatcher();
-+
-+  TypeConverter getTypeConverter();
-+
-+  <T> T acceptVisitor(ElementVisitor<T> visitor);
-+
 +  void applyTo(Binder binder);
  }
