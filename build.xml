@@ -168,8 +168,8 @@
   <target name="no_aop"
           description="Create a copy of the Guice source that doesn't do bytecode generation.">
     <taskdef name="munge" classname="MungeTask" classpath="lib/build/munge.jar"/>
-    <mkdir dir="build/no_aop"/>
-    <munge todir="build/no_aop">
+    <mkdir dir="${build.dir}/no_aop"/>
+    <munge todir="${build.dir}/no_aop">
       <fileset dir=".">
         <!-- exclude generated files -->
         <exclude name="build/**"/>
@@ -196,8 +196,8 @@
       </fileset>
       <arg value="-DNO_AOP" />
     </munge>
-    <replace file="build/no_aop/common.xml" token="&lt;zipfileset src=&quot;${common.basedir}/lib/build/asm-3.1.jar&quot;/&gt;" value=""/>
-    <replace file="build/no_aop/common.xml" token="&lt;zipfileset src=&quot;${common.basedir}/lib/build/cglib-2.2.1-snapshot.jar&quot;/&gt;" value=""/>
+    <replace file="${build.dir}/no_aop/common.xml" token="&lt;zipfileset src=&quot;${common.basedir}/lib/build/asm-3.1.jar&quot;/&gt;" value=""/>
+    <replace file="${build.dir}/no_aop/common.xml" token="&lt;zipfileset src=&quot;${common.basedir}/lib/build/cglib-2.2.1-snapshot.jar&quot;/&gt;" value=""/>
   </target>
 
   <target name="clean.all"

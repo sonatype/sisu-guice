@@ -29,9 +29,13 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
+                <property name="build.dir" value="${project.build.directory}"/>
                 <property name="build.compiler" value="extJavac"/>
                 <property name="version" value="${project.version}"/>
-                <ant antfile="${basedir}/build.xml">
+                <ant>
+                  <target name="no_aop"/>
+                </ant>
+                <ant dir="${project.build.directory}/no_aop">
                   <target name="jar"/>
                 </ant>
               </tasks>

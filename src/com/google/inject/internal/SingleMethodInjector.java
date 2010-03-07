@@ -23,7 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+/*if[AOP]*/
 import net.sf.cglib.core.CodeGenerationException;
+/*end[AOP]*/
 
 /**
  * Invokes an injectable method.

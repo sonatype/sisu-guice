@@ -24,7 +24,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+/*if[AOP]*/
 import net.sf.cglib.core.CodeGenerationException;
+/*end[AOP]*/
 
 /**
  * Produces construction proxies that invoke the class constructor.
