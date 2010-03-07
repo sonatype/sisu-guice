@@ -19,6 +19,11 @@
 
   <name>Guice - Custom patches</name>
 
+  <properties>
+    <build.dir>${project.build.directory}</build.dir>
+    <noaop.dir>${project.build.directory}/no_aop</noaop.dir>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -29,13 +34,20 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
-                <property name="build.dir" value="${project.build.directory}"/>
+                <property name="build.dir" value="${build.dir}"/>
                 <property name="build.compiler" value="extJavac"/>
                 <property name="version" value="${project.version}"/>
+                <property name="Bundle-SymbolicName" value="${project.groupId}.guice-patches"/>
+                <property name="Bundle-Vendor" value="Sonatype Inc."/>
+                <ant>
+                  <target name="jar"/>
+                </ant>
                 <ant>
                   <target name="no_aop"/>
                 </ant>
-                <ant dir="${project.build.directory}/no_aop">
+                <ant dir="${noaop.dir}">
+                  <property name="build.dir" value="${noaop.dir}"/>
+                  <property name="Bundle-SymbolicName" value="${project.groupId}.guice-patches-noaop"/>
                   <target name="jar"/>
                 </ant>
               </tasks>
@@ -59,7 +71,29 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${project.build.directory}/dist/guice-${project.version}.jar</file>
+                  <file>${build.dir}/dist/guice-${project.version}.jar</file>
+                  <type>jar</type>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-noaop-build</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${noaop.dir}/dist/guice-${project.version}.jar</file>
+                  <classifier>noaop</classifier>
                   <type>jar</type>
                 </artifact>
               </artifacts>
@@ -83,14 +117,15 @@
                 <phase>package</phase>
                 <configuration>
                   <tasks>
+                    <property name="build.dir" value="${build.dir}"/>
                     <property name="build.compiler" value="extJavac"/>
                     <property name="version" value="${project.version}"/>
-                    <ant antfile="${basedir}/build.xml">
+                    <ant>
                       <target name="source.jar"/>
                       <target name="javadoc"/>
                     </ant>
-                    <zip destfile="${project.build.directory}/guice-${project.version}-doc.jar">
-                      <zipfileset dir="${project.build.directory}/javadoc"/>
+                    <zip destfile="${build.dir}/guice-${project.version}-doc.jar">
+                      <zipfileset dir="${build.dir}/javadoc"/>
                     </zip>
                   </tasks>
                 </configuration>
@@ -113,14 +148,14 @@
                 <configuration>
                   <artifacts>
                     <artifact>
-                      <file>${project.build.directory}/guice-${project.version}-src.jar</file>
-                      <type>jar</type>
+                      <file>${build.dir}/guice-${project.version}-src.jar</file>
                       <classifier>sources</classifier>
+                      <type>jar</type>
                     </artifact>
                     <artifact>
-                      <file>${project.build.directory}/guice-${project.version}-doc.jar</file>
-                      <type>jar</type>
+                      <file>${build.dir}/guice-${project.version}-doc.jar</file>
                       <classifier>javadoc</classifier>
+                      <type>jar</type>
                     </artifact>
                   </artifacts>
                 </configuration>
