@@ -72,7 +72,6 @@
               <artifacts>
                 <artifact>
                   <file>${build.dir}/dist/guice-${project.version}.jar</file>
-                  <type>jar</type>
                 </artifact>
               </artifacts>
             </configuration>
@@ -94,7 +93,6 @@
                 <artifact>
                   <file>${noaop.dir}/dist/guice-${project.version}.jar</file>
                   <classifier>noaop</classifier>
-                  <type>jar</type>
                 </artifact>
               </artifacts>
             </configuration>
@@ -150,12 +148,10 @@
                     <artifact>
                       <file>${build.dir}/guice-${project.version}-src.jar</file>
                       <classifier>sources</classifier>
-                      <type>jar</type>
                     </artifact>
                     <artifact>
                       <file>${build.dir}/guice-${project.version}-doc.jar</file>
                       <classifier>javadoc</classifier>
-                      <type>jar</type>
                     </artifact>
                   </artifacts>
                 </configuration>
