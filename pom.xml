@@ -63,7 +63,7 @@
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>attach-jar</id>
+            <id>attach-jars</id>
             <phase>package</phase>
             <goals>
               <goal>attach-artifact</goal>
@@ -73,23 +73,6 @@
                 <artifact>
                   <file>${build.dir}/dist/guice-${project.version}.jar</file>
                 </artifact>
-              </artifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-noaop-build</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <configuration>
-              <artifacts>
                 <artifact>
                   <file>${noaop.dir}/dist/guice-${project.version}.jar</file>
                   <classifier>noaop</classifier>
