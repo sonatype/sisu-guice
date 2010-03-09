@@ -16,29 +16,13 @@
 
 package com.google.inject.spi;
 
-import com.google.inject.TypeLiteral;
-import com.google.inject.Binder;
-import com.google.inject.matcher.Matcher;
+import com.google.inject.Binding;
 
 /**
- * Registration of type converters for matching target types. Instances are created
- * explicitly in a module using {@link com.google.inject.Binder#convertToTypes(Matcher,
- * TypeConverter) convertToTypes()} statements:
- * <pre>
- *     convertToTypes(Matchers.only(TypeLiteral.get(DateTime.class)), new DateTimeConverter());</pre>
+ * An untargetted binding. This binding indicates that the injector should use its implicit binding
+ * strategies to resolve injections.
  *
  * @author jessewilson@google.com (Jesse Wilson)
  * @since 2.0
  */
-public interface TypeConverterBinding extends Element {
-
-  Object getSource();
-
-  Matcher<? super TypeLiteral<?>> getTypeMatcher();
-
-  TypeConverter getTypeConverter();
-
-  <T> T acceptVisitor(ElementVisitor<T> visitor);
-
-  void applyTo(Binder binder);
-}
+public interface UntargettedBinding<T> extends Binding<T> {}

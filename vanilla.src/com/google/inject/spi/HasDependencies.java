@@ -16,29 +16,23 @@
 
 package com.google.inject.spi;
 
-import com.google.inject.TypeLiteral;
-import com.google.inject.Binder;
-import com.google.inject.matcher.Matcher;
+import java.util.Set;
 
 /**
- * Registration of type converters for matching target types. Instances are created
- * explicitly in a module using {@link com.google.inject.Binder#convertToTypes(Matcher,
- * TypeConverter) convertToTypes()} statements:
- * <pre>
- *     convertToTypes(Matchers.only(TypeLiteral.get(DateTime.class)), new DateTimeConverter());</pre>
+ * Implemented by {@link com.google.inject.Binding bindings}, {@link com.google.inject.Provider
+ * providers} and instances that expose their dependencies explicitly.
  *
  * @author jessewilson@google.com (Jesse Wilson)
  * @since 2.0
  */
-public interface TypeConverterBinding extends Element {
+public interface HasDependencies {
 
-  Object getSource();
-
-  Matcher<? super TypeLiteral<?>> getTypeMatcher();
-
-  TypeConverter getTypeConverter();
-
-  <T> T acceptVisitor(ElementVisitor<T> visitor);
-
-  void applyTo(Binder binder);
+  /**
+   * Returns the known dependencies for this type. If this has dependencies whose values are not
+   * known statically, a dependency for the {@link com.google.inject.Injector Injector} will be
+   * included in the returned set.
+   * 
+   * @return a possibly empty set
+   */
+  Set<Dependency<?>> getDependencies();
 }
