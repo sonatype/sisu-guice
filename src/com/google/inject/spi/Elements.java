@@ -37,8 +37,6 @@ import com.google.inject.internal.ConstantBindingBuilderImpl;
 import com.google.inject.internal.Errors;
 import com.google.inject.internal.ImmutableList;
 import com.google.inject.internal.Lists;
-import com.google.inject.internal.TypeConverterBindingImpl;
-
 import static com.google.inject.internal.Preconditions.checkArgument;
 import com.google.inject.internal.PrivateElementsImpl;
 import com.google.inject.internal.ProviderMethodsModule;
@@ -280,7 +278,7 @@ public final class Elements {
 
     public void convertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
         TypeConverter converter) {
-      elements.add(new TypeConverterBindingImpl(getSource(), typeMatcher, converter));
+      elements.add(new TypeConverterBinding(getSource(), typeMatcher, converter));
     }
 
     public RecordingBinder withSource(final Object source) {

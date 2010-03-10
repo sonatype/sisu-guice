@@ -18,6 +18,7 @@ package com.google.inject.spi;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.Binder;
+import static com.google.inject.internal.Preconditions.checkNotNull;
 import com.google.inject.matcher.Matcher;
 
 /**
@@ -30,15 +31,40 @@ import com.google.inject.matcher.Matcher;
  * @author jessewilson@google.com (Jesse Wilson)
  * @since 2.0
  */
-public interface TypeConverterBinding extends Element {
+public final class TypeConverterBinding implements Element {
+  private final Object source;
+  private final Matcher<? super TypeLiteral<?>> typeMatcher;
+  private final TypeConverter typeConverter;
 
-  Object getSource();
+  public TypeConverterBinding(Object source, Matcher<? super TypeLiteral<?>> typeMatcher,
+      TypeConverter typeConverter) {
+    this.source = checkNotNull(source, "source");
+    this.typeMatcher = checkNotNull(typeMatcher, "typeMatcher");
+    this.typeConverter = checkNotNull(typeConverter, "typeConverter");
+  }
 
-  Matcher<? super TypeLiteral<?>> getTypeMatcher();
+  public Object getSource() {
+    return source;
+  }
 
-  TypeConverter getTypeConverter();
+  public Matcher<? super TypeLiteral<?>> getTypeMatcher() {
+    return typeMatcher;
+  }
 
-  <T> T acceptVisitor(ElementVisitor<T> visitor);
+  public TypeConverter getTypeConverter() {
+    return typeConverter;
+  }
 
-  void applyTo(Binder binder);
+  public <T> T acceptVisitor(ElementVisitor<T> visitor) {
+    return visitor.visit(this);
+  }
+
+  public void applyTo(Binder binder) {
+    binder.withSource(getSource()).convertToTypes(typeMatcher, typeConverter);
+  }
+
+  @Override public String toString() {
+    return typeConverter + " which matches " + typeMatcher
+        + " (bound at " + source + ")";
+  }
 }

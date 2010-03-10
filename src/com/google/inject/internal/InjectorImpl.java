@@ -329,7 +329,7 @@ final class InjectorImpl implements Injector, Lookups {
       }
 
       return new ConvertedConstantBindingImpl<T>(this, key, converted, stringBinding,
-            typeConverterBinding);
+          typeConverterBinding);
     } catch (ErrorsException e) {
       throw e;
     } catch (RuntimeException e) {
