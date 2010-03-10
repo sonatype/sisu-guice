@@ -21,6 +21,7 @@
 
   <properties>
     <build.dir>${project.build.directory}</build.dir>
+    <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
     <noaop.dir>${project.build.directory}/no_aop</noaop.dir>
   </properties>
 
@@ -37,7 +38,7 @@
                 <property name="build.dir" value="${build.dir}"/>
                 <property name="build.compiler" value="extJavac"/>
                 <property name="version" value="${project.version}"/>
-                <property name="Bundle-SymbolicName" value="${project.groupId}.guice-patches"/>
+                <property name="Bundle-SymbolicName" value="${symbolic.name}"/>
                 <property name="Bundle-Vendor" value="Sonatype Inc."/>
                 <ant>
                   <target name="jar"/>
@@ -47,7 +48,7 @@
                 </ant>
                 <ant dir="${noaop.dir}">
                   <property name="build.dir" value="${noaop.dir}"/>
-                  <property name="Bundle-SymbolicName" value="${project.groupId}.guice-patches-noaop"/>
+                  <property name="Bundle-SymbolicName" value="${symbolic.name}-noaop"/>
                   <target name="jar"/>
                 </ant>
               </tasks>
