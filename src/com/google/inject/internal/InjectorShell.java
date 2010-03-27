@@ -226,6 +226,15 @@ final class InjectorShell {
         new ProviderInstanceBindingImpl<Logger>(injector, key,
             SourceProvider.UNKNOWN_SOURCE, loggerFactory, Scoping.UNSCOPED,
             loggerFactory, ImmutableSet.<InjectionPoint>of()));
+
+    try {
+      Key<org.slf4j.Logger> slf4jKey = Key.get(org.slf4j.Logger.class);
+      SLF4JLoggerFactory slf4jLoggerFactory = new SLF4JLoggerFactory();
+      injector.state.putBinding(slf4jKey,
+          new ProviderInstanceBindingImpl<org.slf4j.Logger>(injector, slf4jKey,
+              SourceProvider.UNKNOWN_SOURCE, slf4jLoggerFactory, Scoping.UNSCOPED,
+              slf4jLoggerFactory, ImmutableSet.<InjectionPoint>of()));
+    } catch (Throwable e) {}
   }
 
   private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
@@ -242,6 +251,23 @@ final class InjectorShell {
 
     public String toString() {
       return "Provider<Logger>";
+    }
+  }
+
+  private static class SLF4JLoggerFactory implements InternalFactory<org.slf4j.Logger>, Provider<org.slf4j.Logger> {
+    public org.slf4j.Logger get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked) {
+      InjectionPoint injectionPoint = dependency.getInjectionPoint();
+      return injectionPoint == null
+          ? org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
+          : org.slf4j.LoggerFactory.getLogger(injectionPoint.getMember().getDeclaringClass());
+    }
+
+    public org.slf4j.Logger get() {
+      return org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+    }
+
+    public String toString() {
+      return "Provider<org.slf4j.Logger>";
     }
   }
 
