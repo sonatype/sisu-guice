@@ -140,6 +140,7 @@ public class AllTests {
     suite.addTestSuite(MethodInterceptionTest.class);
     suite.addTestSuite(com.googlecode.guice.BytecodeGenTest.class);
     suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
+    suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
     /*end[AOP]*/
 
     // googlecode.guice
