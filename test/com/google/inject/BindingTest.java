@@ -273,6 +273,7 @@ public class BindingTest extends TestCase {
     }
   }
 
+/*if[AOP]*/
   public void testToConstructorAndMethodInterceptors() throws NoSuchMethodException {
     final Constructor<D> constructor = D.class.getConstructor(Stage.class);
     final AtomicInteger count = new AtomicInteger();
@@ -295,6 +296,7 @@ public class BindingTest extends TestCase {
     d.hashCode();
     assertEquals(2, count.get());
   }
+/*end[AOP]*/
 
   public void testInaccessibleConstructor() throws NoSuchMethodException {
     final Constructor<E> constructor = E.class.getDeclaredConstructor(Stage.class);

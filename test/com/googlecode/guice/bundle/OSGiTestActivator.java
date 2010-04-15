@@ -442,6 +442,7 @@ import com.google.inject.matcher.AbstractMatcher;
     }
   }
 
+/*if[AOP]*/
   // applies method-interception to classes with enough visibility
   static class InterceptorModule
       extends AbstractModule {
@@ -477,6 +478,7 @@ import com.google.inject.matcher.AbstractMatcher;
       });
     }
   }
+/*end[AOP]*/
 
   // called from OSGi when bundle starts
   public void start(BundleContext context)
@@ -485,19 +487,25 @@ import com.google.inject.matcher.AbstractMatcher;
     final Bundle bundle = context.getBundle();
 
     Injector injector = Guice.createInjector(new TestModule(bundle));
+/*if[AOP]*/
     Injector aopInjector = Guice.createInjector(new TestModule(bundle), new InterceptorModule());
+/*end[AOP]*/
 
     // test code-generation support
     for (Class<?> api : TEST_CLAZZES) {
       for (Visibility vis : Visibility.values()) {
         injector.getInstance(Key.get(api, named(vis.name())));
+/*if[AOP]*/
         aopInjector.getInstance(Key.get(api, named(vis.name())));
+/*end[AOP]*/
       }
     }
 
     // test injection of system class (issue 343)
     injector.getInstance(Random.class);
+/*if[AOP]*/
     aopInjector.getInstance(Random.class);
+/*end[AOP]*/
   }
 
   // called from OSGi when bundle stops

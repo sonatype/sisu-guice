@@ -47,12 +47,14 @@ public class OSGiContainerTest
   // build properties passed from Ant
   static final String VERSION = System.getProperty("version", "snapshot");
   static final String BUILD_DIR = System.getProperty("build.dir", "build");
-  static final String LIB_DIR = System.getProperty("lib.dir", "lib");
 
   static final String BUILD_DIST_DIR = BUILD_DIR + "/dist";
   static final String BUILD_TEST_DIR = BUILD_DIR + "/test";
 
   static final String GUICE_JAR = BUILD_DIST_DIR + "/guice-" + VERSION + ".jar";
+
+  static final String AOPALLIANCE_JAR = System.getProperty("aopalliance.jar", "lib/aopalliance.jar");
+  static final String JAVAX_INJECT_JAR = System.getProperty("javax.inject.jar", "lib/javax.inject.jar");
 
   // dynamically build test bundles
   @Override protected void setUp()
@@ -60,19 +62,21 @@ public class OSGiContainerTest
 
     // verify properties
     assertTrue(new File(BUILD_DIR).isDirectory());
-    assertTrue(new File(LIB_DIR).isDirectory());
     assertTrue(new File(GUICE_JAR).isFile());
+
+    assertTrue(new File(AOPALLIANCE_JAR).isFile());
+    assertTrue(new File(JAVAX_INJECT_JAR).isFile());
 
     Properties instructions = new Properties();
 
-    // javax.inject is an API bundle --> export the full API
-    instructions.setProperty("Export-Package", "javax.inject.*");
-    buildBundle("javax.inject", instructions, LIB_DIR + "/javax.inject.jar");
-    instructions.clear();
-
     // aopalliance is an API bundle --> export the full API
     instructions.setProperty("Export-Package", "org.aopalliance.*");
-    buildBundle("aopalliance", instructions, LIB_DIR + "/aopalliance.jar");
+    buildBundle("aopalliance", instructions, AOPALLIANCE_JAR);
+    instructions.clear();
+
+    // javax.inject is an API bundle --> export the full API
+    instructions.setProperty("Export-Package", "javax.inject.*");
+    buildBundle("javax.inject", instructions, JAVAX_INJECT_JAR);
     instructions.clear();
 
     // strict imports to make sure test bundle only has access to these packages

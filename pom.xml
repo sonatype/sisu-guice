@@ -37,7 +37,7 @@
               <tasks>
 
                 <property name="external.compile.classpath" refid="maven.compile.classpath"/>
-                <property name="asm.dependency.path" value="${maven.dependency.asm.asm.jar.path}"/>
+                <property name="asm.jar" value="${maven.dependency.asm.asm.jar.path}"/>
 
                 <property name="build.dir" value="${build.dir}" />
                 <property name="build.compiler" value="extJavac" />
@@ -60,6 +60,44 @@
                   <target name="jar" />
                 </ant>
 
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>test</phase>
+            <configuration>
+              <tasks>
+
+                <property name="external.compile.classpath" refid="maven.test.classpath"/>
+                <property name="asm.jar" value="${maven.dependency.asm.asm.jar.path}"/>
+
+                <property name="aopalliance.jar" value="${maven.dependency.aopalliance.aopalliance.jar.path}"/>
+                <property name="javax.inject.jar" value="${maven.dependency.javax.inject.javax.inject.jar.path}"/>
+                <property name="felix.jar" value="${maven.dependency.org.apache.felix.org.apache.felix.framework.jar.path}"/>
+                <property name="junit.jar" value="${maven.dependency.junit.junit.jar.path}"/>
+
+                <property name="build.dir" value="${build.dir}" />
+                <property name="build.compiler" value="extJavac" />
+                <property name="version" value="${project.version}" />
+
+                <ant>
+                  <target name="test.dist" />
+                </ant>
+<!--
+                <ant dir="${noaop.dir}">
+                  <property name="build.dir" value="${noaop.dir}" />
+                  <target name="test.dist" />
+                </ant>
+-->
               </tasks>
             </configuration>
             <goals>
@@ -179,6 +217,11 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

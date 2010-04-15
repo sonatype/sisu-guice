@@ -10,6 +10,7 @@
     <pathelement path="${external.compile.classpath}"/>
   </path>
 
+
   <target name="jar" depends="jar.withdeps, manifest" description="Build jar.">
     <jar jarfile="${build.dir}/dist/guice-${version}.jar"
         manifest="${build.dir}/META-INF/MANIFEST.MF">
@@ -88,8 +89,12 @@
         <pathelement location="lib/build/easymock.jar"/>
         <pathelement location="lib/javax.inject.jar"/>
 -->
+        <pathelement location="${aopalliance.jar}"/>
+        <pathelement location="${javax.inject.jar}"/>
+        <pathelement location="${junit.jar}"/>
         <pathelement location="lib/build/javax.inject-tck.jar"/>
         <pathelement location="lib/build/bnd-0.0.384.jar"/>
+        <pathelement location="${felix.jar}"/>
       </classpath>
       <arg value="com.google.inject.AllTests"/>    
       <syspropertyset>
@@ -98,6 +103,10 @@
         <propertyref name="build.dir"/>
         <propertyref name="lib.dir"/>
       </syspropertyset>
+      <redirector>
+        <outputmapper type="merge" to="${build.dir}/test.log"/>
+        <errormapper type="merge" to="${build.dir}/test.err"/>
+      </redirector>
     </java>
   </target>
   
@@ -180,8 +189,10 @@
         <exclude name="javadoc/**"/>
         <exclude name="latest-javadoc/**"/>
         <!-- exclude AOP-specific libraries -->
+<!--
         <exclude name="lib/aopalliance.jar"/>
         <exclude name="lib/build/asm-*.jar"/>
+-->
         <exclude name="lib/build/cglib-*.jar"/>
         <!-- exclude AOP-specific classes -->
         <exclude name="**/LineNumbers.java"/>
