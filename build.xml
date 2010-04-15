@@ -102,11 +102,15 @@
         <propertyref name="version"/>
         <propertyref name="build.dir"/>
         <propertyref name="lib.dir"/>
+        <propertyref name="aopalliance.jar"/>
+        <propertyref name="javax.inject.jar"/>
       </syspropertyset>
+<!--
       <redirector>
         <outputmapper type="merge" to="${build.dir}/test.log"/>
         <errormapper type="merge" to="${build.dir}/test.err"/>
       </redirector>
+-->
     </java>
   </target>
   
