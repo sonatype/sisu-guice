@@ -35,22 +35,31 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
+
+                <property name="external.compile.classpath" refid="maven.compile.classpath"/>
+                <property name="asm.dependency.path" value="${maven.dependency.asm.asm.jar.path}"/>
+
                 <property name="build.dir" value="${build.dir}" />
                 <property name="build.compiler" value="extJavac" />
                 <property name="version" value="${project.version}" />
+
                 <property name="Bundle-SymbolicName" value="${symbolic.name}" />
                 <property name="Bundle-Vendor" value="Sonatype Inc." />
+
                 <ant>
                   <target name="jar" />
                 </ant>
+
                 <ant>
                   <target name="no_aop" />
                 </ant>
+
                 <ant dir="${noaop.dir}">
                   <property name="build.dir" value="${noaop.dir}" />
                   <property name="Bundle-SymbolicName" value="${symbolic.name}-noaop" />
                   <target name="jar" />
                 </ant>
+
               </tasks>
             </configuration>
             <goals>
@@ -99,16 +108,22 @@
                 <phase>package</phase>
                 <configuration>
                   <tasks>
+
+                    <property name="external.compile.classpath" refid="maven.compile.classpath"/>
+
                     <property name="build.dir" value="${build.dir}" />
                     <property name="build.compiler" value="extJavac" />
                     <property name="version" value="${project.version}" />
+
                     <ant>
                       <target name="source.jar" />
                       <target name="javadoc" />
                     </ant>
+
                     <zip destfile="${build.dir}/guice-${project.version}-doc.jar">
                       <zipfileset dir="${build.dir}/javadoc" />
                     </zip>
+
                   </tasks>
                 </configuration>
                 <goals>
@@ -149,12 +164,21 @@
 
   <dependencies>
     <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 

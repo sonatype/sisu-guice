@@ -7,6 +7,7 @@
   <path id="compile.classpath">
     <fileset dir="${lib.dir}" includes="*.jar"/>
     <fileset dir="${lib.dir}/build" includes="*.jar"/>
+    <pathelement path="${external.compile.classpath}"/>
   </path>
 
   <target name="jar" depends="jar.withdeps, manifest" description="Build jar.">
@@ -80,14 +81,15 @@
       <classpath>
         <pathelement location="${build.dir}/test"/>
         <pathelement location="${build.dir}/dist/guice-${version}.jar"/>
+<!--
         <pathelement location="lib/aopalliance.jar"/>
         <pathelement location="lib/build/junit.jar"/>
         <pathelement location="lib/build/servlet-api-2.5.jar"/>
         <pathelement location="lib/build/easymock.jar"/>
         <pathelement location="lib/javax.inject.jar"/>
+-->
         <pathelement location="lib/build/javax.inject-tck.jar"/>
         <pathelement location="lib/build/bnd-0.0.384.jar"/>
-        <pathelement location="lib/build/felix-2.0.2.jar"/>
       </classpath>
       <arg value="com.google.inject.AllTests"/>    
       <syspropertyset>
