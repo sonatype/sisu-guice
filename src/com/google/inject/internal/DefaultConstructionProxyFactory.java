@@ -24,10 +24,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-/*if[AOP]*/
-import net.sf.cglib.core.CodeGenerationException;
-/*end[AOP]*/
-
 /**
  * Produces construction proxies that invoke the class constructor.
  *
@@ -50,34 +46,34 @@ final class DefaultConstructionProxyFactory<T> implements ConstructionProxyFacto
 
     // Use FastConstructor if the constructor is public.
     if (Modifier.isPublic(constructor.getModifiers())) {
+      Class<T> classToConstruct = constructor.getDeclaringClass();
       /*if[AOP]*/
       try {
-      return new ConstructionProxy<T>() {
-        Class<T> classToConstruct = constructor.getDeclaringClass();
         final net.sf.cglib.reflect.FastConstructor fastConstructor
             = BytecodeGen.newFastClass(classToConstruct, Visibility.forMember(constructor))
                 .getConstructor(constructor);
 
-        @SuppressWarnings("unchecked")
-        public T newInstance(Object... arguments) throws InvocationTargetException {
-          return (T) fastConstructor.newInstance(arguments);
-        }
-        public InjectionPoint getInjectionPoint() {
-          return injectionPoint;
-        }
-        public Constructor<T> getConstructor() {
-          return constructor;
-        }
-        public ImmutableMap<Method, List<org.aopalliance.intercept.MethodInterceptor>>
-            getMethodInterceptors() {
-          return ImmutableMap.of();
-        }
-      };
-      } catch (CodeGenerationException e) {
-        // FastConstructor failed: make accessible before reverting to JDK reflection
+        return new ConstructionProxy<T>() {
+          @SuppressWarnings("unchecked")
+          public T newInstance(Object... arguments) throws InvocationTargetException {
+            return (T) fastConstructor.newInstance(arguments);
+          }
+          public InjectionPoint getInjectionPoint() {
+            return injectionPoint;
+          }
+          public Constructor<T> getConstructor() {
+            return constructor;
+          }
+          public ImmutableMap<Method, List<org.aopalliance.intercept.MethodInterceptor>>
+              getMethodInterceptors() {
+            return ImmutableMap.of();
+          }
+        };
+      } catch (net.sf.cglib.core.CodeGenerationException e) {/* fall-through */}
+      /*end[AOP]*/
+      if (!Modifier.isPublic(classToConstruct.getModifiers())) {
         constructor.setAccessible(true);
       }
-      /*end[AOP]*/
     } else {
       constructor.setAccessible(true);
     }

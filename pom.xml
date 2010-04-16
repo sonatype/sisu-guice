@@ -92,12 +92,12 @@
                 <ant>
                   <target name="test.dist" />
                 </ant>
-<!--
+
                 <ant dir="${noaop.dir}">
                   <property name="build.dir" value="${noaop.dir}" />
                   <target name="test.dist" />
                 </ant>
--->
+
               </tasks>
             </configuration>
             <goals>

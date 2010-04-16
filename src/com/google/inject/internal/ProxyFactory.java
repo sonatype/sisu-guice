@@ -162,7 +162,7 @@ final class ProxyFactory<T> implements ConstructionProxyFactory<T> {
     return new ProxyConstructor<T>(enhancer, injectionPoint, callbacks, interceptors);
     } catch (Throwable e) {
       throw new ProvisionException("Unable to method intercept: " + declaringClass, e);
-  }
+    }
   }
 
   private static class MethodInterceptorsPair {

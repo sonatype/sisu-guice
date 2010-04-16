@@ -30,8 +30,8 @@ import junit.framework.TestCase;
  */
 public class LineNumbersTest extends TestCase {
 
-  /*if[AOP]*/
   public void testCanHandleLineNumbersForGuiceGeneratedClasses() {
+    /*if[AOP]*/
     try {
       Guice.createInjector(new AbstractModule() {
         protected void configure() {
@@ -52,8 +52,8 @@ public class LineNumbersTest extends TestCase {
           "for parameter 0 at " + A.class.getName() + ".<init>(LineNumbersTest.java:",
           "at " + LineNumbersTest.class.getName(), ".configure(LineNumbersTest.java:");
     }
+    /*end[AOP]*/
   }
-  /*end[AOP]*/
 
   static class A {
     @Inject A(B b) {}

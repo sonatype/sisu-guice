@@ -23,10 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-/*if[AOP]*/
-import net.sf.cglib.core.CodeGenerationException;
-/*end[AOP]*/
-
 /**
  * Invokes an injectable method.
  */
@@ -50,24 +46,22 @@ final class SingleMethodInjector implements SingleMemberInjector {
     if (!Modifier.isPrivate(modifiers) && !Modifier.isProtected(modifiers)) {
       /*if[AOP]*/
       try {
-      final net.sf.cglib.reflect.FastMethod fastMethod
-          = BytecodeGen.newFastClass(method.getDeclaringClass(), Visibility.forMember(method))
-              .getMethod(method);
+        final net.sf.cglib.reflect.FastMethod fastMethod
+            = BytecodeGen.newFastClass(method.getDeclaringClass(), Visibility.forMember(method))
+                .getMethod(method);
 
-      return new MethodInvoker() {
-        public Object invoke(Object target, Object... parameters)
-            throws IllegalAccessException, InvocationTargetException {
-          return fastMethod.invoke(target, parameters);
-        }
-      };
-      } catch (CodeGenerationException e) {
-        // FastMethod failed: make accessible before reverting to JDK reflection
-        method.setAccessible(true);
-      }
+        return new MethodInvoker() {
+          public Object invoke(Object target, Object... parameters)
+              throws IllegalAccessException, InvocationTargetException {
+            return fastMethod.invoke(target, parameters);
+          }
+        };
+      } catch (net.sf.cglib.core.CodeGenerationException e) {/* fall-through */}
       /*end[AOP]*/
     }
 
-    if (!Modifier.isPublic(modifiers)) {
+    if (!Modifier.isPublic(modifiers) ||
+        !Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
       method.setAccessible(true);
     }
 
