@@ -56,6 +56,12 @@ import java.util.Set;
  * @see InjectorBuilder
  */
 final class InjectorImpl implements Injector, Lookups {
+
+//------------------------------------------------------------------------------
+  private static final boolean GUICE_PLEXUS_MODE
+      = Boolean.parseBoolean(System.getProperty("guice.plexus.mode", "false"));
+//------------------------------------------------------------------------------
+
   public static final TypeLiteral<String> STRING_TYPE = TypeLiteral.get(String.class);
   
   /** some limitations on what just in time bindings are allowed. */
@@ -624,13 +630,19 @@ final class InjectorImpl implements Injector, Lookups {
    */
   private <T> BindingImpl<T> createJustInTimeBindingRecursive(Key<T> key, Errors errors)
       throws ErrorsException {
+//------------------------------------------------------------------------------
+if (!GUICE_PLEXUS_MODE) {
+//------------------------------------------------------------------------------
     // ask the parent to create the JIT binding
-    if (false && parent != null && !parent.options.jitDisabled) { // MCCULLS: disable parent JIT bindings
+    if (parent != null && !parent.options.jitDisabled) {
       try {
         return parent.createJustInTimeBindingRecursive(key, new Errors());
       } catch (ErrorsException ignored) {
       }
     }
+//------------------------------------------------------------------------------
+}
+//------------------------------------------------------------------------------
 
     if (state.isBlacklisted(key)) {
       throw errors.childBindingAlreadySet(key).toException();

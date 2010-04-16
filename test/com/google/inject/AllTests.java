@@ -84,14 +84,14 @@ public class AllTests {
     suite.addTestSuite(NullableInjectionPointTest.class);
     suite.addTestSuite(OptionalBindingTest.class);
     suite.addTestSuite(OverrideModuleTest.class);
-//FIXME: suite.addTestSuite(ParentInjectorTest.class);
+    suite.addTestSuite(ParentInjectorTest.class);
     suite.addTestSuite(PrivateModuleTest.class);
     suite.addTestSuite(ProviderInjectionTest.class);
     suite.addTestSuite(ProvisionExceptionTest.class);
     // ProxyFactoryTest is AOP-only
     suite.addTestSuite(ReflectionTest.class);
     suite.addTestSuite(RequestInjectionTest.class);
-//FIXME: suite.addTestSuite(ScopesTest.class);
+    suite.addTestSuite(ScopesTest.class);
     suite.addTestSuite(SerializationTest.class);
     suite.addTestSuite(SuperclassTest.class);
     suite.addTestSuite(TypeConversionTest.class);
@@ -137,11 +137,11 @@ public class AllTests {
     suite.addTestSuite(IntegrationTest.class);
     suite.addTestSuite(MethodInterceptionTest.class);
     suite.addTestSuite(com.googlecode.guice.BytecodeGenTest.class);
-//FIXME: suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
-//FIXME: suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
     /*end[AOP]*/
 
     // googlecode.guice
+    suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
+    suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
     suite.addTestSuite(Jsr330Test.class);
 
     return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);
