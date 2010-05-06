@@ -66,11 +66,6 @@
               <goal>run</goal>
             </goals>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
           <execution>
             <id>test</id>
             <phase>test</phase>
@@ -202,11 +197,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>asm</groupId>
-      <artifactId>asm</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
@@ -215,8 +205,14 @@
       <artifactId>aopalliance</artifactId>
     </dependency>
     <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>

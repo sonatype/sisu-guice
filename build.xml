@@ -184,6 +184,7 @@
     <munge todir="${build.dir}/no_aop">
       <fileset dir=".">
         <!-- exclude generated files -->
+        <exclude name="vanilla*/**"/>
         <exclude name="target/**"/>
         <exclude name="classes/**"/>
         <exclude name="latest-api-diffs/**"/>
