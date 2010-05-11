@@ -21,9 +21,11 @@ import com.google.inject.internal.ImmutableSet;
 import com.google.inject.internal.Jsr166HashMapTest;
 import com.google.inject.internal.LineNumbersTest;
 import com.google.inject.internal.MapMakerTestSuite;
+import com.google.inject.internal.MoreTypesTest;
 import com.google.inject.internal.ProxyFactoryTest;
 import com.google.inject.internal.UniqueAnnotationsTest;
 import com.google.inject.matcher.MatcherTest;
+import com.google.inject.name.NamedEquivalanceTest;
 import com.google.inject.name.NamesTest;
 import com.google.inject.spi.BindingTargetVisitorTest;
 import com.google.inject.spi.ElementApplyToTest;
@@ -38,7 +40,6 @@ import com.google.inject.spi.ToolStageInjectorTest;
 import com.google.inject.util.NoopOverrideTest;
 import com.google.inject.util.ProvidersTest;
 import com.google.inject.util.TypesTest;
-import com.googlecode.guice.BytecodeGenTest;
 import com.googlecode.guice.Jsr330Test;
 import com.googlecode.guice.GuiceTck;
 import java.util.Enumeration;
@@ -106,6 +107,7 @@ public class AllTests {
     suite.addTestSuite(Jsr166HashMapTest.class);
     suite.addTestSuite(LineNumbersTest.class);
     suite.addTest(MapMakerTestSuite.suite());
+    suite.addTestSuite(MoreTypesTest.class);
     suite.addTestSuite(UniqueAnnotationsTest.class);
 
     // matcher
@@ -113,6 +115,7 @@ public class AllTests {
 
     // names
     suite.addTestSuite(NamesTest.class);
+    suite.addTestSuite(NamedEquivalanceTest.class);
 
     // spi
     suite.addTestSuite(BindingTargetVisitorTest.class);
@@ -139,11 +142,11 @@ public class AllTests {
     suite.addTestSuite(IntegrationTest.class);
     suite.addTestSuite(MethodInterceptionTest.class);
     suite.addTestSuite(com.googlecode.guice.BytecodeGenTest.class);
-    suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
     /*end[AOP]*/
 
     // googlecode.guice
-    suite.addTestSuite(BytecodeGenTest.class);
+    suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
+    suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
     suite.addTestSuite(Jsr330Test.class);
 
     return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);

@@ -91,10 +91,13 @@
 -->
         <pathelement location="${aopalliance.jar}"/>
         <pathelement location="${javax.inject.jar}"/>
+        <pathelement location="${felix.jar}"/>
         <pathelement location="${junit.jar}"/>
         <pathelement location="lib/build/javax.inject-tck.jar"/>
         <pathelement location="lib/build/bnd-0.0.384.jar"/>
-        <pathelement location="${felix.jar}"/>
+<!--
+        <pathelement location="lib/build/felix-2.0.5.jar"/>
+-->
       </classpath>
       <arg value="com.google.inject.AllTests"/>    
       <syspropertyset>
