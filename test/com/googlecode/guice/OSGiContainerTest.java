@@ -61,11 +61,11 @@ public class OSGiContainerTest
       throws Exception {
 
     // verify properties
-    assertTrue(new File(BUILD_DIR).isDirectory());
-    assertTrue(new File(GUICE_JAR).isFile());
+    assertTrue(failMsg(), new File(BUILD_DIR).isDirectory());
+    assertTrue(failMsg(), new File(GUICE_JAR).isFile());
 
-    assertTrue(new File(AOPALLIANCE_JAR).isFile());
-    assertTrue(new File(JAVAX_INJECT_JAR).isFile());
+    assertTrue(failMsg(), new File(AOPALLIANCE_JAR).isFile());
+    assertTrue(failMsg(), new File(JAVAX_INJECT_JAR).isFile());
 
     Properties instructions = new Properties();
 
@@ -81,7 +81,7 @@ public class OSGiContainerTest
 
     // strict imports to make sure test bundle only has access to these packages
     instructions.setProperty("Import-Package", "org.osgi.framework,org.aopalliance.intercept,"
-        + "com.google.inject(|.binder|.matcher|.name);version=\"[1,2)\"");
+        + "com.google.inject(|.binder|.matcher|.name)");
 
     // test bundle should only contain the local test classes, nothing else
     instructions.setProperty("Bundle-Activator", OSGiTestActivator.class.getName());
@@ -103,7 +103,16 @@ public class OSGiContainerTest
     // assemble bundle, use -failok switch to avoid early exit
     bnd.main(new String[]{"-failok", "build", "-classpath", classpath, bndFileName});
   }
+  
+  private String failMsg() {
+    return "This test may fail if it is not run from ant, or if it is not run after ant has "
+         + "compiled & built jars. This is because the test is validating that the Guice jar "
+         + "is properly setup to load in an OSGi container";
+  }
 
+  //This test may fail if it is not run from ant, or if it is not run after ant has
+  //compiled & built jars. This is because the test is validating that the Guice jar
+  //is properly setup to load in an OSGi container
   public void testGuiceWorksInOSGiContainer()
       throws Throwable {
 

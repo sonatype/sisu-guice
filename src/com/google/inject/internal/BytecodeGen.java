@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  * @author mcculls@gmail.com (Stuart McCulloch)
  * @author jessewilson@google.com (Jesse Wilson)
  */
-final class BytecodeGen {
+public final class BytecodeGen {
 
   static final Logger logger = Logger.getLogger(BytecodeGen.class.getName());
 
@@ -93,18 +93,25 @@ final class BytecodeGen {
    * Weak cache of bridge class loaders that make the Guice implementation
    * classes visible to various code-generated proxies of client classes.
    */
-  private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE
-      = new MapMaker().weakKeys().weakValues().makeComputingMap(
+  private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
+
+  static {
+    if (CUSTOM_LOADER_ENABLED) {
+      CLASS_LOADER_CACHE = new MapMaker().weakKeys().weakValues().makeComputingMap(
           new Function<ClassLoader, ClassLoader>() {
-    public ClassLoader apply(final @Nullable ClassLoader typeClassLoader) {
-      logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
-      return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-        public ClassLoader run() {
-          return new BridgeClassLoader(typeClassLoader);
-        }
-      });
+            public ClassLoader apply(final @Nullable ClassLoader typeClassLoader) {
+              logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
+              return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                  return new BridgeClassLoader(typeClassLoader);
+                }
+              });
+            }
+          });
+    } else {
+      CLASS_LOADER_CACHE = ImmutableMap.of();
     }
-  });
+  }
 
   /**
    * Attempts to canonicalize null references to the system class loader.
@@ -252,14 +259,14 @@ final class BytecodeGen {
         throws ClassNotFoundException {
 
       if (name.startsWith("sun.reflect")) {
-        // these reflection classes need to be loaded from the bootstrap class loader
-        return SystemBridgeHolder.SYSTEM_BRIDGE.loadClassFromParent(name, resolve);
+        // these reflection classes must be loaded from bootstrap class loader
+        return SystemBridgeHolder.SYSTEM_BRIDGE.classicLoadClass(name, resolve);
       }
 
       if (name.startsWith(GUICE_INTERNAL_PACKAGE) || name.startsWith(CGLIB_PACKAGE)) {
         if (null == GUICE_CLASS_LOADER) {
-          // use special system bridge to load classes from the bootstrap class loader
-          return SystemBridgeHolder.SYSTEM_BRIDGE.loadClassFromParent(name, resolve);
+          // use special system bridge to load classes from bootstrap class loader
+          return SystemBridgeHolder.SYSTEM_BRIDGE.classicLoadClass(name, resolve);
         }
         try {
           Class<?> clazz = GUICE_CLASS_LOADER.loadClass(name);
@@ -272,10 +279,11 @@ final class BytecodeGen {
         }
       }
 
-      return loadClassFromParent(name, resolve);
+      return classicLoadClass(name, resolve);
     }
 
-    Class<?> loadClassFromParent(String name, boolean resolve)
+    // make the classic delegating loadClass method visible
+    Class<?> classicLoadClass(String name, boolean resolve)
       throws ClassNotFoundException {
       return super.loadClass(name, resolve);
     }
