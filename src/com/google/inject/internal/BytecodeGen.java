@@ -135,6 +135,11 @@ public final class BytecodeGen {
       return delegate;
     }
 
+    // java.* types can be seen everywhere
+    if (type.getName().startsWith("java.")) {
+      return GUICE_CLASS_LOADER;
+    }
+
     delegate = canonicalize(delegate);
 
     // no need for a bridge if using same class loader, or it's already a bridge
