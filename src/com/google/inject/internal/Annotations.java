@@ -139,4 +139,13 @@ public class Annotations {
       return annotation;
     }
   }
+
+  public static Class<? extends Annotation> canonicalizeIfNamed(
+      Class<? extends Annotation> annotationType) {
+    if(annotationType == javax.inject.Named.class) {
+      return Named.class;
+    } else {
+      return annotationType;
+    }
+  }
 }
