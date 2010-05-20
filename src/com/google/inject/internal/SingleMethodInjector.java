@@ -46,16 +46,16 @@ final class SingleMethodInjector implements SingleMemberInjector {
     if (!Modifier.isPrivate(modifiers) && !Modifier.isProtected(modifiers)) {
       /*if[AOP]*/
       try {
-        final net.sf.cglib.reflect.FastMethod fastMethod
-            = BytecodeGen.newFastClass(method.getDeclaringClass(), Visibility.forMember(method))
-                .getMethod(method);
+      final net.sf.cglib.reflect.FastMethod fastMethod
+          = BytecodeGen.newFastClass(method.getDeclaringClass(), Visibility.forMember(method))
+              .getMethod(method);
 
-        return new MethodInvoker() {
-          public Object invoke(Object target, Object... parameters)
-              throws IllegalAccessException, InvocationTargetException {
-            return fastMethod.invoke(target, parameters);
-          }
-        };
+      return new MethodInvoker() {
+        public Object invoke(Object target, Object... parameters)
+            throws IllegalAccessException, InvocationTargetException {
+          return fastMethod.invoke(target, parameters);
+        }
+      };
       } catch (net.sf.cglib.core.CodeGenerationException e) {/* fall-through */}
       /*end[AOP]*/
     }

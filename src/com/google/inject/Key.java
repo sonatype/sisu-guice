@@ -350,6 +350,7 @@ public class Key<T> {
     ensureRetainedAtRuntime(annotationType);
     ensureIsBindingAnnotation(annotationType);
     return new AnnotationTypeStrategy(Annotations.canonicalizeIfNamed(annotationType), null);
+
   }
 
   private static void ensureRetainedAtRuntime(

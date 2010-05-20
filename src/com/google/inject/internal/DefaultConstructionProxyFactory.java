@@ -53,22 +53,22 @@ final class DefaultConstructionProxyFactory<T> implements ConstructionProxyFacto
             = BytecodeGen.newFastClass(classToConstruct, Visibility.forMember(constructor))
                 .getConstructor(constructor);
 
-        return new ConstructionProxy<T>() {
-          @SuppressWarnings("unchecked")
-          public T newInstance(Object... arguments) throws InvocationTargetException {
-            return (T) fastConstructor.newInstance(arguments);
-          }
-          public InjectionPoint getInjectionPoint() {
-            return injectionPoint;
-          }
-          public Constructor<T> getConstructor() {
-            return constructor;
-          }
-          public ImmutableMap<Method, List<org.aopalliance.intercept.MethodInterceptor>>
-              getMethodInterceptors() {
-            return ImmutableMap.of();
-          }
-        };
+      return new ConstructionProxy<T>() {
+        @SuppressWarnings("unchecked")
+        public T newInstance(Object... arguments) throws InvocationTargetException {
+          return (T) fastConstructor.newInstance(arguments);
+        }
+        public InjectionPoint getInjectionPoint() {
+          return injectionPoint;
+        }
+        public Constructor<T> getConstructor() {
+          return constructor;
+        }
+        public ImmutableMap<Method, List<org.aopalliance.intercept.MethodInterceptor>>
+            getMethodInterceptors() {
+          return ImmutableMap.of();
+        }
+      };
       } catch (net.sf.cglib.core.CodeGenerationException e) {/* fall-through */}
       /*end[AOP]*/
       if (!Modifier.isPublic(classToConstruct.getModifiers())) {
