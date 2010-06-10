@@ -49,11 +49,6 @@ import java.util.Set;
  */
 final class BindingProcessor extends AbstractProcessor {
 
-//------------------------------------------------------------------------------
-  private static final boolean GUICE_PLEXUS_MODE
-      = Boolean.parseBoolean(System.getProperty("guice.plexus.mode", "false"));
-//------------------------------------------------------------------------------
-
   private final List<CreationListener> creationListeners = Lists.newArrayList();
   private final Initializer initializer;
   private final List<Runnable> uninitializedBindings = Lists.newArrayList();
@@ -224,14 +219,8 @@ final class BindingProcessor extends AbstractProcessor {
   }
 
   private <T> void validateKey(Object source, Key<T> key) {
-//------------------------------------------------------------------------------
-if (!GUICE_PLEXUS_MODE) {
-//------------------------------------------------------------------------------
     Annotations.checkForMisplacedScopeAnnotations(
         key.getTypeLiteral().getRawType(), source, errors);
-//------------------------------------------------------------------------------
-}
-//------------------------------------------------------------------------------
   }
 
   <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
