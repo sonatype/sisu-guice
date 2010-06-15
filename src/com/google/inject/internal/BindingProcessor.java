@@ -49,6 +49,12 @@ import java.util.Set;
  */
 final class BindingProcessor extends AbstractProcessor {
 
+//------------------------------------------------------------------------------
+  private static final boolean DISABLE_MISPLACED_ANNOTATION_CHECK
+      = Boolean.parseBoolean(System.getProperty(
+          "guice.disable.misplaced.annotation.check", "false"));
+//------------------------------------------------------------------------------
+
   private final List<CreationListener> creationListeners = Lists.newArrayList();
   private final Initializer initializer;
   private final List<Runnable> uninitializedBindings = Lists.newArrayList();
@@ -219,8 +225,14 @@ final class BindingProcessor extends AbstractProcessor {
   }
 
   private <T> void validateKey(Object source, Key<T> key) {
+//------------------------------------------------------------------------------
+if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
+//------------------------------------------------------------------------------
     Annotations.checkForMisplacedScopeAnnotations(
         key.getTypeLiteral().getRawType(), source, errors);
+//------------------------------------------------------------------------------
+}
+//------------------------------------------------------------------------------
   }
 
   <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
