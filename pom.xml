@@ -21,7 +21,7 @@
 
   <properties>
     <build.dir>${project.build.directory}</build.dir>
-    <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
+    <symbolic.name>org.sonatype.guice</symbolic.name>
     <noaop.dir>${project.build.directory}/no_aop</noaop.dir>
   </properties>
 
@@ -126,12 +126,16 @@
                     <property name="build.compiler" value="extJavac" />
                     <property name="version" value="${project.version}" />
 
+                    <property name="Bundle-SymbolicName" value="${symbolic.name}" />
+                    <property name="Bundle-Vendor" value="Sonatype Inc." />
+
                     <ant>
                       <target name="test.dist" />
                     </ant>
 
                     <ant dir="${noaop.dir}">
                       <property name="build.dir" value="${noaop.dir}" />
+                      <property name="Bundle-SymbolicName" value="${symbolic.name}-noaop" />
                       <target name="test.dist" />
                     </ant>
 
