@@ -30,6 +30,8 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.TestCase;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -215,19 +217,14 @@ public class BytecodeGenTest extends TestCase {
      * this should be enough to queue the weak reference
      * unless something is holding onto it accidentally.
      */
-    String[] buf;
     System.gc();
-    buf = new String[3 * 1024 * 1024];
-    buf = null;
+    List<Reference> refs = new ArrayList<Reference>();
+    for (int i = 0; i < 42; i++) {
+      refs.add(new WeakReference(new byte[1024 * 1024]));
+      Thread.yield();
+    }
     System.gc();
-    buf = new String[3 * 1024 * 1024];
-    buf = null;
-    System.gc();
-    buf = new String[3 * 1024 * 1024];
-    buf = null;
-    System.gc();
-    buf = new String[3 * 1024 * 1024];
-    buf = null;
+    refs = null;
     System.gc();
 
     // This test could be somewhat flaky when the GC isn't working.
