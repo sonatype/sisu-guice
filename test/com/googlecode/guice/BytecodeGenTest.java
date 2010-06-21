@@ -217,16 +217,16 @@ public class BytecodeGenTest extends TestCase {
      */
     String[] buf;
     System.gc();
-    buf = new String[8 * 1024 * 1024];
+    buf = new String[3 * 1024 * 1024];
     buf = null;
     System.gc();
-    buf = new String[8 * 1024 * 1024];
+    buf = new String[3 * 1024 * 1024];
     buf = null;
     System.gc();
-    buf = new String[8 * 1024 * 1024];
+    buf = new String[3 * 1024 * 1024];
     buf = null;
     System.gc();
-    buf = new String[8 * 1024 * 1024];
+    buf = new String[3 * 1024 * 1024];
     buf = null;
     System.gc();
 
