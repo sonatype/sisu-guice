@@ -57,7 +57,6 @@ import java.util.Set;
  * @see InjectorBuilder
  */
 final class InjectorImpl implements Injector, Lookups {
-
   public static final TypeLiteral<String> STRING_TYPE = TypeLiteral.get(String.class);
   
   /** some limitations on what just in time bindings are allowed. */
@@ -504,12 +503,12 @@ final class InjectorImpl implements Injector, Lookups {
   
   /** Cleans up any state that may have been cached when constructing the JIT binding. */
   private void removeFailedJitBinding(Key<?> key, InjectionPoint ip) {
-          jitBindings.remove(key);
+    jitBindings.remove(key);
     membersInjectorStore.remove(key.getTypeLiteral());
     if(ip != null) {
       constructors.remove(ip);
-        }
-      }
+    }
+  }
   
   /** Safely gets the dependencies of possibly not initialized bindings. */
   @SuppressWarnings("unchecked")

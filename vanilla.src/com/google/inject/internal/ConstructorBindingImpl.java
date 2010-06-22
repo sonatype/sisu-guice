@@ -121,7 +121,7 @@ final class ConstructorBindingImpl<T> extends BindingImpl<T> implements Construc
     factory.constructorInjector
         = (ConstructorInjector<T>) injector.constructors.get(constructorInjectionPoint, errors);
   }
-
+  
   /** True if this binding has been initialized and is ready for use. */
   boolean isInitialized() {
     return factory.constructorInjector != null;

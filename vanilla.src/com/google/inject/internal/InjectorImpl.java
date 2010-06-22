@@ -494,12 +494,12 @@ final class InjectorImpl implements Injector, Lookups {
   
   /** Cleans up any state that may have been cached when constructing the JIT binding. */
   private void removeFailedJitBinding(Key<?> key, InjectionPoint ip) {
-          jitBindings.remove(key);
+    jitBindings.remove(key);
     membersInjectorStore.remove(key.getTypeLiteral());
     if(ip != null) {
       constructors.remove(ip);
-        }
-      }
+    }
+  }
   
   /** Safely gets the dependencies of possibly not initialized bindings. */
   @SuppressWarnings("unchecked")

@@ -123,7 +123,7 @@ public class ImplicitBindingTest extends TestCase {
         bind(Valid2.class);
       }
     });
-
+    
     // Capture good bindings.
     Binding v1 = injector.getBinding(Valid.class);
     Binding v2 = injector.getBinding(Valid2.class);
@@ -145,14 +145,14 @@ public class ImplicitBindingTest extends TestCase {
     // Validate that we didn't erase the valid JIT bindings
     assertSame(jv1, injector.getBinding(JitValid.class));
     assertSame(jv2, injector.getBinding(JitValid2.class));
-    }
-
+  }
+  
   @SuppressWarnings("unchecked")
   private void assertFailure(Injector injector, Class clazz) {
     try {
       injector.getBinding(clazz);
       fail("Shouldn't have been able to get binding of: " + clazz);
-    } catch (ConfigurationException expected) {
+    } catch(ConfigurationException expected) {
       List<Object> sources = Iterables.getOnlyElement(expected.getErrorMessages()).getSources();
       // Assert that the first item in the sources if the key for the class we're looking up,
       // ensuring that each lookup is "new".
@@ -182,7 +182,7 @@ public class ImplicitBindingTest extends TestCase {
   static class InvalidLinked2Impl implements InvalidLinked2 {
     @Inject InvalidLinked2Impl(Invalid2 a) {}
   }
-
+  
   static class Invalid2 {
     @Inject Invalid a;
   }
@@ -257,6 +257,6 @@ public class ImplicitBindingTest extends TestCase {
       
       return providedStringValue;
     }
-  }
+  }  
 
 }

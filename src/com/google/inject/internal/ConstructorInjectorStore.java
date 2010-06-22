@@ -47,7 +47,7 @@ final class ConstructorInjectorStore {
       throws ErrorsException {
     return cache.get(constructorInjector, errors);
   }
-
+  
   /**
    * Purges an injection point from the cache. Use this only if the cache is not actually valid and
    * needs to be purged. (See issue 319 and
