@@ -25,6 +25,7 @@ import static com.google.inject.matcher.Matchers.any;
 import com.googlecode.guice.PackageVisibilityTestModule.PublicUserOfPackagePrivate;
 import java.io.File;
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -218,13 +219,12 @@ public class BytecodeGenTest extends TestCase {
      * unless something is holding onto it accidentally.
      */
     System.gc();
+    System.gc();
     List<Reference> refs = new ArrayList<Reference>();
     for (int i = 0; i < 42; i++) {
-      refs.add(new WeakReference(new byte[1024 * 1024]));
-      Thread.yield();
+      refs.add(new SoftReference(new byte[2 * 1024 * 1024]));
     }
     System.gc();
-    refs = null;
     System.gc();
 
     // This test could be somewhat flaky when the GC isn't working.
