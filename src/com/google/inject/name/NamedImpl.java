@@ -38,12 +38,13 @@ class NamedImpl implements Named, Serializable {
   }
 
   public boolean equals(Object o) {
-    if (!(o instanceof Named)) {
-      return false;
+    if (o == this) {
+      return true;
     }
-
-    Named other = (Named) o;
-    return value.equals(other.value());
+    if (o instanceof Named) {
+      return value.equals(((Named) o).value());
+    }
+    return false;
   }
 
   public String toString() {
