@@ -21,7 +21,7 @@
 
   <properties>
     <build.dir>${project.build.directory}</build.dir>
-    <symbolic.name>org.sonatype.guice</symbolic.name>
+    <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
     <noaop.dir>${project.build.directory}/no_aop</noaop.dir>
   </properties>
 
@@ -44,6 +44,7 @@
                 <property name="version" value="${project.version}" />
 
                 <property name="Bundle-SymbolicName" value="${symbolic.name}" />
+                <property name="Bundle-Name" value="${project.artifactId}" />
                 <property name="Bundle-Vendor" value="Sonatype Inc." />
 
                 <ant>
@@ -127,6 +128,7 @@
                     <property name="version" value="${project.version}" />
 
                     <property name="Bundle-SymbolicName" value="${symbolic.name}" />
+                    <property name="Bundle-Name" value="${project.artifactId}" />
                     <property name="Bundle-Vendor" value="Sonatype Inc." />
 
                     <ant>
