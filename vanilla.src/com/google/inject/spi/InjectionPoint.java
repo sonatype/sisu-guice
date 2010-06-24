@@ -433,6 +433,12 @@ public final class InjectionPoint {
 
   static class InjectableMethod extends InjectableMember {
     final Method method;
+    /**
+     * true if this method overrode a method that was annotated
+     * with com.google.inject.Inject.  used to allow different
+     * override behavior for guice inject vs javax.inject.Inject
+     */
+    boolean overrodeGuiceInject;
     InjectableMethod(TypeLiteral<?> declaringType, Method method,
         Annotation atInject) {
       super(declaringType, atInject);
@@ -515,9 +521,23 @@ public final class InjectionPoint {
     Signature lastSignature;
 
     /**
-     * Removes a method overridden by the given method, if present.
+     * Removes a method overridden by the given method, if present. In order to
+     * remain backwards compatible with prior Guice versions, this will *not*
+     * remove overridden methods if 'alwaysRemove' is false and the overridden
+     * signature was annotated with a com.google.inject.Inject.
+     * 
+     * @param method
+     *          The method used to determine what is overridden and should be
+     *          removed.
+     * @param alwaysRemove
+     *          true if overridden methods should be removed even if they were
+     *          guice @Inject
+     * @param injectableMethod
+     *          if this method overrode any guice @Inject methods,
+     *          {@link InjectableMethod#overrodeGuiceInject} is set to true
      */
-    boolean removeIfOverriddenBy(Method method) {
+    boolean removeIfOverriddenBy(Method method, boolean alwaysRemove, 
+        InjectableMethod injectableMethod) {
       if (position == Position.TOP) {
         // If we're at the top of the hierarchy, there's nothing to override.
         return false;
@@ -547,9 +567,19 @@ public final class InjectionPoint {
             iterator.hasNext();) {
           InjectableMethod possiblyOverridden = iterator.next();
           if (overrides(method, possiblyOverridden.method)) {
-            removed = true;
-            iterator.remove();
-            injectableMembers.remove(possiblyOverridden);
+            boolean wasGuiceInject =
+              !possiblyOverridden.jsr330 || possiblyOverridden.overrodeGuiceInject;
+            if(injectableMethod != null) {
+              injectableMethod.overrodeGuiceInject = wasGuiceInject;
+            }
+            // Only actually remove the methods if we want to force
+            // remove or if the signature never specified @com.google.inject.Inject
+            // somewhere.
+            if(alwaysRemove || !wasGuiceInject) {
+              removed = true;
+              iterator.remove();
+              injectableMembers.remove(possiblyOverridden);
+            }
           }
         }
       }
@@ -623,22 +653,21 @@ public final class InjectionPoint {
 
       for (Method method : current.getRawType().getDeclaredMethods()) {
         if (Modifier.isStatic(method.getModifiers()) == statics) {
-          boolean removed = false;
-          if (overrideIndex != null) {
-            removed = overrideIndex.removeIfOverriddenBy(method);
-          }
           Annotation atInject = getAtInject(method);
           if (atInject != null) {
             InjectableMethod injectableMethod = new InjectableMethod(
                 current, method, atInject);
             if (checkForMisplacedBindingAnnotations(method, errors)
                 | !isValidMethod(injectableMethod, errors)) {
-              if(removed) {
-                logger.log(Level.WARNING, "Method: {0} is not a valid injectable method ("
-                    + "because it either has misplaced binding annotations "
-                    + "or specifies type parameters) but is overriding a method that is valid. "
-                    + "Because it is not valid, the method will not be injected. "
-                    + "To fix this, make the method a valid injectable method.", method);
+              if (overrideIndex != null) {
+                boolean removed = overrideIndex.removeIfOverriddenBy(method, false, injectableMethod);
+                if(removed) {
+                  logger.log(Level.WARNING, "Method: {0} is not a valid injectable method ("
+                      + "because it either has misplaced binding annotations "
+                      + "or specifies type parameters) but is overriding a method that is valid. "
+                      + "Because it is not valid, the method will not be injected. "
+                      + "To fix this, make the method a valid injectable method.", method);
+                }
               }
               continue;
             }
@@ -653,15 +682,22 @@ public final class InjectionPoint {
                  * methods, etc.).
                  */
                 overrideIndex = new OverrideIndex(injectableMembers);
+              } else {
+                // Forcibly remove the overriden method, otherwise we'll inject
+                // it twice.
+                overrideIndex.removeIfOverriddenBy(method, true, injectableMethod);
               }
               overrideIndex.add(injectableMethod);
             }
           } else {
-            if(removed) {
-              logger.log(Level.WARNING, "Method: {0} is not annotated with @Inject but "
-                  + "is overriding a method that is annotated with @Inject.  Because "
-                  + "it is not annotated with @Inject, the method will not be injected. "
-                  + "To fix this, annotate the method with @Inject.", method);
+            if(overrideIndex != null) {
+              boolean removed = overrideIndex.removeIfOverriddenBy(method, false, null);
+              if(removed) {
+                logger.log(Level.WARNING, "Method: {0} is not annotated with @Inject but "
+                    + "is overriding a method that is annotated with @javax.inject.Inject.  Because "
+                    + "it is not annotated with @Inject, the method will not be injected. "
+                    + "To fix this, annotate the method with @Inject.", method);
+              }
             }
           }
         }

@@ -236,4 +236,73 @@ public class InjectionPointTest extends TestCase {
     public void a(String s, int i) {}
     void b() {}
   }
+  
+  public void testOverrideBehavior() {
+	  Set<InjectionPoint> points;
+	  
+	  points = InjectionPoint.forInstanceMethodsAndFields(Super.class);
+	  assertEquals(points.toString(), 6, points.size());
+	  assertPoints(points, Super.class, "atInject", "gInject", "privateAtAndPublicG",
+	      "privateGAndPublicAt", "atFirstThenG", "gFirstThenAt");
+	  
+	  points = InjectionPoint.forInstanceMethodsAndFields(Sub.class);
+    assertEquals(points.toString(), 7, points.size());
+    // Superclass will always have is private members injected,
+    // and 'gInject' was last @Injected in Super, so that remains the owner
+    assertPoints(points, Super.class, "privateAtAndPublicG", "privateGAndPublicAt", "gInject");
+    // Subclass also has the "private" methods, but they do not override
+    // the superclass' methods, and it now owns the inject2 methods.
+    assertPoints(points, Sub.class, "privateAtAndPublicG", "privateGAndPublicAt",
+        "atFirstThenG", "gFirstThenAt");
+    
+    points = InjectionPoint.forInstanceMethodsAndFields(SubSub.class);
+    assertEquals(points.toString(), 6, points.size());
+    // Superclass still has all the injection points it did before..
+    assertPoints(points, Super.class, "privateAtAndPublicG", "privateGAndPublicAt", "gInject");
+    // Subclass is missing the privateGAndPublicAt because it first became public with
+    // javax.inject.Inject and was overrode without an annotation, which means it
+    // disappears.  (It was guice @Inject in Super, but it was private there, so it doesn't
+    // effect the annotations of the subclasses.)
+    assertPoints(points, Sub.class, "privateAtAndPublicG", "atFirstThenG", "gFirstThenAt");    
+  }
+  
+  private void assertPoints(Iterable<InjectionPoint> points, Class clazz, String... methodNames) {
+    Set<String> methods = new HashSet<String>();
+    for(InjectionPoint point : points) {
+      if(point.getDeclaringType().getRawType() == clazz) {
+        methods.add(point.getMember().getName());
+      }
+    }
+    assertEquals(points.toString(), ImmutableSet.of(methodNames), methods);
+  }
+  
+  static class Super {
+	  @javax.inject.Inject public void atInject() {}
+	  @com.google.inject.Inject public void gInject() {}
+	  
+	  @javax.inject.Inject private void privateAtAndPublicG() {}
+	  @com.google.inject.Inject private void privateGAndPublicAt() {}
+	  
+	  @javax.inject.Inject public void atFirstThenG() {}
+    @com.google.inject.Inject public void gFirstThenAt() {}
+  }
+  
+  static class Sub extends Super {
+    public void atInject() {}
+    public void gInject() {}
+    
+    @com.google.inject.Inject public void privateAtAndPublicG() {}
+    @javax.inject.Inject public void privateGAndPublicAt() {}
+    
+    @com.google.inject.Inject public void atFirstThenG() {}
+    @javax.inject.Inject public void gFirstThenAt() {}
+  }
+  
+  static class SubSub extends Sub {
+    public void privateAtAndPublicG() {}
+    public void privateGAndPublicAt() {}
+    
+    public void atFirstThenG() {}
+    public void gFirstThenAt() {}
+  }
 }
