@@ -260,10 +260,17 @@ if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
       return;
     }
 
-    Binding<?> original = injector.state.getExplicitBinding(key);
-    if (original != null && !isOkayDuplicate(original, binding)) {
-      errors.bindingAlreadySet(key, original.getSource());
-      return;
+    BindingImpl<?> original = injector.state.getExplicitBinding(key);
+    if (original != null) {
+      try {
+        if(!isOkayDuplicate(original, binding, injector.state)) {
+          errors.bindingAlreadySet(key, original.getSource());
+          return;
+        }
+      } catch(Throwable t) {
+        errors.errorCheckingDuplicateBinding(key, original.getSource(), t);
+        return;
+      }
     }
 
     // prevent the parent from creating a JIT binding for this key
@@ -272,18 +279,27 @@ if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
   }
 
   /**
-   * We tolerate duplicate bindings only if one exposes the other.
+   * We tolerate duplicate bindings if one exposes the other or if the two bindings
+   * are considered duplicates (see {@link Bindings#areDuplicates(BindingImpl, BindingImpl)}. 
    *
    * @param original the binding in the parent injector (candidate for an exposing binding)
    * @param binding the binding to check (candidate for the exposed binding)
    */
-  private boolean isOkayDuplicate(Binding<?> original, BindingImpl<?> binding) {
+  private boolean isOkayDuplicate(BindingImpl<?> original, BindingImpl<?> binding, State state) {
     if (original instanceof ExposedBindingImpl) {
       ExposedBindingImpl exposed = (ExposedBindingImpl) original;
       InjectorImpl exposedFrom = (InjectorImpl) exposed.getPrivateElements().getInjector();
       return (exposedFrom == binding.getInjector());
+    } else {
+      original = (BindingImpl<?>)state.getExplicitBindingsThisLevel().get(binding.getKey());
+      // If no original at this level, the original was on a parent, and we don't
+      // allow deduplication between parents & children.
+      if(original == null) {
+        return false;
+      } else {
+        return original.equals(binding);
+      }
     }
-    return false;
   }
 
   // It's unfortunate that we have to maintain a blacklist of specific
