@@ -16,12 +16,11 @@
 
 package com.google.inject;
 
-import java.lang.annotation.Annotation;
-
 import com.google.inject.internal.CircularDependencyProxy;
 import com.google.inject.internal.InternalInjectorCreator;
 import com.google.inject.internal.LinkedBindingImpl;
 import com.google.inject.spi.BindingScopingVisitor;
+import java.lang.annotation.Annotation;
 
 /**
  * Built-in scope implementations.
@@ -124,7 +123,7 @@ public class Scopes {
    * was retrieved via {@link Injector#getBinding Injector.getBinding()}), then this method will
    * also true if the target binding is singleton-scoped.
    *
-   * @since 2.1
+   * @since 3.0
    */
   public static boolean isSingleton(Binding<?> binding) {
     do {

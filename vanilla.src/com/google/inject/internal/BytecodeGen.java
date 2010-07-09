@@ -16,6 +16,8 @@
 
 package com.google.inject.internal;
 
+import com.google.inject.internal.util.ImmutableMap;
+import com.google.inject.internal.util.MapMaker;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -133,6 +135,11 @@ public final class BytecodeGen {
     // simple case: do nothing!
     if (!CUSTOM_LOADER_ENABLED) {
       return delegate;
+    }
+    
+    // java.* types can be seen everywhere
+    if (type.getName().startsWith("java.")) {
+      return GUICE_CLASS_LOADER;
     }
 
     delegate = canonicalize(delegate);

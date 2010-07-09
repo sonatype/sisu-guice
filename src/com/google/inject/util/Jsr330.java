@@ -16,14 +16,15 @@
 
 package com.google.inject.util;
 
-import static com.google.inject.internal.Preconditions.checkNotNull;
+import static com.google.inject.internal.util.Preconditions.checkNotNull;
 import javax.inject.Provider;
 
 /**
  * Utility methods for use with <a href="http://code.google.com/p/atinject/">JSR
  * 330</a>.
  *
- * @author jessewilson@google.com (Jesse Wilson)
+ * @author jessewilson@google.com (Jesse Wilson) 
+ * @since 3.0
  */
 public class Jsr330 {
 

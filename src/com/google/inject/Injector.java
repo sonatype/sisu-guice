@@ -114,6 +114,8 @@ public interface Injector {
    * injector}, should one exist.
    *
    * <p>This method is part of the Guice SPI and is intended for use by tools and extensions.
+   * 
+   * @since 3.0
    */
   Map<Key<?>, Binding<?>> getAllBindings();
 
@@ -146,6 +148,8 @@ public interface Injector {
    * for keys that aren't bound.
    * 
    * <p> This method is part of the Guice SPI and is intended for use by tools and extensions.
+   * 
+   * @since 3.0
    */
   <T> Binding<T> getExistingBinding(Key<T> key);  
 
@@ -241,6 +245,8 @@ public interface Injector {
    * Scopes.SINGLETON}. The returned map is immutable.
    *
    * <p>This method is part of the Guice SPI and is intended for use by tools and extensions.
+   * 
+   * @since 3.0
    */
   Map<Class<? extends Annotation>, Scope> getScopeBindings();
 

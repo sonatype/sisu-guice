@@ -18,9 +18,8 @@ package com.google.inject;
 
 import com.google.inject.internal.Annotations;
 import com.google.inject.internal.MoreTypes;
-
-import static com.google.inject.internal.Preconditions.checkArgument;
-import static com.google.inject.internal.Preconditions.checkNotNull;
+import static com.google.inject.internal.util.Preconditions.checkArgument;
+import static com.google.inject.internal.util.Preconditions.checkNotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
@@ -276,6 +275,8 @@ public class Key<T> {
   /**
    * Returns a new key of the specified type with the same annotation as this
    * key.
+   * 
+   * @since 3.0
    */
   public <T> Key<T> ofType(Class<T> type) {
     return new Key<T>(type, annotationStrategy);
@@ -284,6 +285,8 @@ public class Key<T> {
   /**
    * Returns a new key of the specified type with the same annotation as this
    * key.
+   * 
+   * @since 3.0
    */
   public Key<?> ofType(Type type) {
     return new Key<Object>(type, annotationStrategy);
@@ -292,6 +295,8 @@ public class Key<T> {
   /**
    * Returns a new key of the specified type with the same annotation as this
    * key.
+   * 
+   * @since 3.0
    */
   public <T> Key<T> ofType(TypeLiteral<T> type) {
     return new Key<T>(type, annotationStrategy);
@@ -299,6 +304,8 @@ public class Key<T> {
 
   /**
    * Returns true if this key has annotation attributes.
+   * 
+   * @since 3.0
    */
   public boolean hasAttributes() {
     return annotationStrategy.hasAttributes();
@@ -307,6 +314,8 @@ public class Key<T> {
   /**
    * Returns this key without annotation attributes, i.e. with only the
    * annotation type.
+   * 
+   * @since 3.0
    */
   public Key<T> withoutAttributes() {
     return new Key<T>(typeLiteral, annotationStrategy.withoutAttributes());

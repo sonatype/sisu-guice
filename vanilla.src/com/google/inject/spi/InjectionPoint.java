@@ -23,12 +23,12 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.internal.Annotations;
 import com.google.inject.internal.Errors;
 import com.google.inject.internal.ErrorsException;
-import com.google.inject.internal.ImmutableList;
-import com.google.inject.internal.ImmutableSet;
-import com.google.inject.internal.Lists;
 import com.google.inject.internal.MoreTypes;
 import static com.google.inject.internal.MoreTypes.getRawType;
 import com.google.inject.internal.Nullability;
+import com.google.inject.internal.util.ImmutableList;
+import com.google.inject.internal.util.ImmutableSet;
+import com.google.inject.internal.util.Lists;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -39,11 +39,11 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -162,6 +162,8 @@ public final class InjectionPoint {
   
   /**
    * Returns true if the element is annotated with {@literal @}{@link Toolable}.
+   * 
+   * @since 3.0
    */
   public boolean isToolable() {
     return ((AnnotatedElement)member).isAnnotationPresent(Toolable.class);
@@ -171,6 +173,8 @@ public final class InjectionPoint {
    * Returns the generic type that defines this injection point. If the member exists on a
    * parameterized type, the result will include more type information than the member's {@link
    * Member#getDeclaringClass() raw declaring class}.
+   * 
+   * @since 3.0
    */
   public TypeLiteral<?> getDeclaringType() {
     return declaringType;
@@ -196,6 +200,8 @@ public final class InjectionPoint {
    * type literal.
    *
    * @param constructor any single constructor present on {@code type}.
+   * 
+   * @since 3.0
    */
   public static <T> InjectionPoint forConstructor(Constructor<T> constructor) {
     return new InjectionPoint(TypeLiteral.get(constructor.getDeclaringClass()), constructor);
@@ -206,6 +212,8 @@ public final class InjectionPoint {
    *
    * @param constructor any single constructor present on {@code type}.
    * @param type the concrete type that defines {@code constructor}.
+   * 
+   * @since 3.0
    */
   public static <T> InjectionPoint forConstructor(
       Constructor<T> constructor, TypeLiteral<? extends T> type) {
