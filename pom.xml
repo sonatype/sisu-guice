@@ -58,6 +58,7 @@
                 <ant dir="${noaop.dir}">
                   <property name="build.dir" value="${noaop.dir}" />
                   <property name="Bundle-SymbolicName" value="${symbolic.name}-noaop" />
+                  <property name="Bundle-Name" value="${project.artifactId}-noaop" />
                   <target name="jar" />
                 </ant>
 
@@ -138,6 +139,7 @@
                     <ant dir="${noaop.dir}">
                       <property name="build.dir" value="${noaop.dir}" />
                       <property name="Bundle-SymbolicName" value="${symbolic.name}-noaop" />
+                      <property name="Bundle-Name" value="${project.artifactId}-noaop" />
                       <target name="test.dist" />
                     </ant>
 
