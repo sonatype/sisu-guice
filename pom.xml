@@ -5,27 +5,107 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <relativePath>../pom</relativePath>
-    <groupId>org.sonatype.spice</groupId>
-    <artifactId>spice-inject</artifactId>
-    <version>10-SNAPSHOT</version>
+    <groupId>org.sonatype.forge</groupId>
+    <artifactId>forge-parent</artifactId>
+    <version>6</version>
   </parent>
 
   <packaging>pom</packaging>
 
-  <groupId>org.sonatype.spice.inject</groupId>
-  <artifactId>guice-patches</artifactId>
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-guice</artifactId>
   <version>2.1.7-SNAPSHOT</version>
 
-  <name>Guice - Custom patches</name>
+  <name>Sisu - Guice</name>
+
+  <description>Guice trunk with some patches applied for Sisu</description>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
+    <url>git@github.com:sonatype/sisu-guice.git</url>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <properties>
-    <build.dir>${project.build.directory}</build.dir>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
+    <build.dir>${project.build.directory}</build.dir>
     <noaop.dir>${project.build.directory}/no_aop</noaop.dir>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+    <dependency>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>3.2</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+      <version>3.0.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -219,31 +299,5 @@
       </build>
     </profile>
   </profiles>
-
-  <dependencies>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>aopalliance</groupId>
-      <artifactId>aopalliance</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>asm</groupId>
-      <artifactId>asm</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
 </project>
