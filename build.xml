@@ -187,7 +187,7 @@
     <munge todir="${build.dir}/no_aop">
       <fileset dir=".">
         <!-- exclude generated files -->
-        <exclude name=".git*/**"/>
+        <exclude name=".*/**"/>
         <exclude name="vanilla*/**"/>
         <exclude name="target/**"/>
         <exclude name="classes/**"/>
