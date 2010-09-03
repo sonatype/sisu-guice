@@ -84,11 +84,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.1</version>
-          <configuration>
-            <source>1.5</source>
-            <target>1.5</target>
-          </configuration>
+          <version>2.3.1</version>
         </plugin>
         <plugin>
           <artifactId>maven-antrun-plugin</artifactId>
