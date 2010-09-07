@@ -12,10 +12,10 @@
   <target name="compile" description="Compile Java source.">
     <mkdir dir="${build.dir}/classes"/>
     <javac srcdir="${src.dir}"
+         includeantruntime="false"
          debug="on"
          destdir="${build.dir}/classes"
-         source="1.5" target="1.5"
-         includeantruntime="false">
+         source="1.5" target="1.5">
       <classpath refid="compile.classpath"/>
     </javac>
     <copy toDir="${build.dir}/classes">
@@ -69,10 +69,10 @@
       description="Compile test source.">
     <mkdir dir="${build.dir}/test"/>
     <javac srcdir="${test.dir}"
+         includeantruntime="false"
          debug="on"
          destdir="${build.dir}/test"
-         source="1.5" target="1.5"
-         includeantruntime="false">
+         source="1.5" target="1.5">
       <classpath path="${build.dir}/classes"/>
       <classpath path="${build.dir}/test"/>
       <classpath refid="compile.classpath"/>
