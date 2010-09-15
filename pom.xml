@@ -39,6 +39,7 @@
     <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
     <build.dir>${project.build.directory}</build.dir>
     <noaop.dir>${project.build.directory}/no_aop</noaop.dir>
+    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
   </properties>
 
   <dependencies>
