@@ -10,6 +10,8 @@
     <version>2.1.8-SNAPSHOT</version>
   </parent>
 
+  <packaging>bundle</packaging>
+
   <groupId>org.sonatype.sisu</groupId>
   <artifactId>sisu-guice</artifactId>
 
@@ -56,5 +58,56 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
+<!--
+            <Import-Package>
+              !org.objectweb.asm.*,!net.sf.cglib.*,*
+            </Import-Package>
+-->
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <minimizeJar>true</minimizeJar>
+              <artifactSet>
+                <includes>
+                  <include>asm:asm</include>
+                  <include>org.sonatype.sisu.inject:cglib</include>
+                </includes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>org.objectweb.asm</pattern>
+                  <shadedPattern>com.google.inject.internal.asm</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>net.sf.cglib</pattern>
+                  <shadedPattern>com.google.inject.internal.cglib</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

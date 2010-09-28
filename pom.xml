@@ -33,7 +33,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
   <name>Google Guice</name>
 
   <description>Guice (pronounced 'juice') is a lightweight dependency injection
-    framework for Java 5 and above, brought to you by Google.</description>
+ framework for Java 5 and above, brought to you by Google.</description>
 
   <url>http://code.google.com/p/google-guice/</url>
   <inceptionYear>2006</inceptionYear>
@@ -164,6 +164,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
           <version>2.1.0</version>
           <configuration>
             <instructions>
+              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
               <Bundle-RequiredExecutionEnvironment>
                 J2SE-1.5,JavaSE-1.6
               </Bundle-RequiredExecutionEnvironment>
