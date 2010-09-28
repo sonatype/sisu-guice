@@ -98,8 +98,19 @@ See the Apache License Version 2.0 for the specific language governing permissio
       </dependency>
 
       <dependency>
+        <groupId>biz.aQute</groupId>
+        <artifactId>bnd</artifactId>
+        <version>0.0.384</version>
+      </dependency>
+
+      <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject-tck</artifactId>
         <version>1</version>
       </dependency>
       <dependency>
@@ -190,8 +201,15 @@ See the Apache License Version 2.0 for the specific language governing permissio
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.6</version>
           <configuration>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+            <includes>
+              <include>**/*AllTests.java</include>
+            </includes>
+            <classpathDependencyExcludes>
+              <exclude>org.slf4j:slf4j-api</exclude>
+            </classpathDependencyExcludes>
           </configuration>
         </plugin>
         <plugin>
