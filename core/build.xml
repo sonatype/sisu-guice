@@ -190,7 +190,6 @@
       <fileset dir=".">
         <!-- exclude generated files -->
         <exclude name=".*/**"/>
-        <exclude name="vanilla*/**"/>
         <exclude name="target/**"/>
         <exclude name="classes/**"/>
         <exclude name="latest-api-diffs/**"/>
