@@ -50,15 +50,41 @@
       <artifactId>org.apache.felix.framework</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
+<!--
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>munge-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>munge-fork</goal>
+            </goals>
+            <configuration>
+              <classifier>noaop</classifier>
+              <symbols>NO_AOP</symbols>
+              <excludes>
+                **/InterceptorBinding.java,
+                **/InterceptorBindingProcessor.java,
+                **/InterceptorStackCallback.java,
+                **/LineNumbers.java,
+                **/MethodAspect.java,
+                **/ProxyFactory.java,
+                **/BytecodeGenTest.java,
+                **/IntegrationTest.java,
+                **/MethodInterceptionTest.java,
+                **/ProxyFactoryTest.java
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+-->
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>1.4</version>

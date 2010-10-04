@@ -12,8 +12,8 @@
 
   <packaging>bundle</packaging>
 
-  <artifactId>guice-assistedinject</artifactId>
+  <artifactId>guice-mini</artifactId>
 
-  <name>Google Guice - Extensions - AssistedInject</name>
+  <name>Google Guice - Extensions - Mini</name>
 
 </project>
