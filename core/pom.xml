@@ -82,7 +82,7 @@
         <version>1.0-SNAPSHOT</version>
         <executions>
           <execution>
-            <phase>package</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>munge-fork</goal>
             </goals>
@@ -101,6 +101,21 @@
                 **/MethodInterceptionTest.java,
                 **/ProxyFactoryTest.java
               </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classesDirectory>target/noaop/classes</classesDirectory>
+              <classifier>noaop</classifier>
             </configuration>
           </execution>
         </executions>
