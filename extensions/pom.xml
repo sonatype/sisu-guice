@@ -21,6 +21,7 @@
     <module>grapher</module>
     <module>jmx</module>
     <module>jndi</module>
+    <module>mini</module>
     <module>multibindings</module>
     <module>persist</module>
     <module>service</module>

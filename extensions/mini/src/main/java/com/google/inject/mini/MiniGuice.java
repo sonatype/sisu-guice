@@ -23,11 +23,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -45,7 +45,7 @@ public final class MiniGuice {
   private MiniGuice() {}
 
   private final Map<Key, Provider<?>> bindings = new HashMap<Key, Provider<?>>();
-  private final Queue<RequiredKey> requiredKeys = new ArrayDeque<RequiredKey>();
+  private final Queue<RequiredKey> requiredKeys = new LinkedList<RequiredKey>();
   private final Set<Key> singletons = new HashSet<Key>();
 
   /**
