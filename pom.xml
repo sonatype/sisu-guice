@@ -162,12 +162,22 @@ See the Apache License Version 2.0 for the specific language governing permissio
           <version>2.3.1</version>
         </plugin>
         <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.6</version>
+          <configuration>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java15</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
           <executions>
             <execution>
-              <phase>package</phase>
+              <id>check-java-1.5-compat</id>
+              <phase>process-classes</phase>
               <goals>
-                <goal>test-jar</goal>
+                <goal>check</goal>
               </goals>
             </execution>
           </executions>
@@ -184,6 +194,8 @@ See the Apache License Version 2.0 for the specific language governing permissio
               <Bundle-RequiredExecutionEnvironment>
                 J2SE-1.5,JavaSE-1.6
               </Bundle-RequiredExecutionEnvironment>
+              <Import-Package>!com.google.inject.*,*</Import-Package>
+              <_exportcontents>!*.internal.*,com.google.inject.*;version=${guice.api.version}</_exportcontents>
               <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
               <_nouses>true</_nouses>
               <_removeheaders>
@@ -195,6 +207,30 @@ See the Apache License Version 2.0 for the specific language governing permissio
               </_removeheaders>
             </instructions>
           </configuration>
+          <executions>
+            <execution>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>manifest</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+            </archive>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <artifactId>maven-shade-plugin</artifactId>
@@ -238,23 +274,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.6</version>
-        <configuration>
-          <signature>
-            <groupId>org.codehaus.mojo.signature</groupId>
-            <artifactId>java15</artifactId>
-            <version>1.0</version>
-          </signature>
-        </configuration>
-        <executions>
-          <execution>
-            <id>check-java-1.5-compat</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

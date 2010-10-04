@@ -10,8 +10,6 @@
     <version>2.1.8-SNAPSHOT</version>
   </parent>
 
-  <packaging>bundle</packaging>
-
   <artifactId>guice-multibindings</artifactId>
 
   <name>Google Guice - Extensions - MultiBindings</name>

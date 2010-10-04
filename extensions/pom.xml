@@ -50,19 +50,11 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-            <configuration>
-              <instructions>
-              </instructions>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <instructions>
+            <Fragment-Host>org.sonatype.sisu.guice</Fragment-Host>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>

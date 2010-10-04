@@ -54,6 +54,16 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Import-Package>!*.asm.*,!*.cglib.*,!com.google.inject.*,*</Import-Package>
+            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
+          </instructions>
+        </configuration>
+      </plugin>
 <!--
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
@@ -112,26 +122,6 @@
                   <shadedPattern>com.google.inject.internal.cglib</shadedPattern>
                 </relocation>
               </relocations>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-            <configuration>
-              <instructions>
-                <Export-Package>!*.internal.*,com.google.inject.*;version=${guice.api.version}</Export-Package>
-                <Import-Package>!*.asm.*,!*.cglib.*,!com.google.inject.*,*</Import-Package>
-                <DynamicImport-Package>org.slf4j</DynamicImport-Package>
-              </instructions>
             </configuration>
           </execution>
         </executions>
