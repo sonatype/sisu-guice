@@ -61,7 +61,7 @@
             <exclude>org.slf4j:slf4j-api</exclude>
           </classpathDependencyExcludes>
           <includes>
-            <include>**/*AllTests.java</include>
+            <include>**/AllTests.java</include>
           </includes>
         </configuration>
       </plugin>
