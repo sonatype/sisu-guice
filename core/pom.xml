@@ -86,7 +86,6 @@
               <goal>munge-fork</goal>
             </goals>
             <configuration>
-              <classifier>noaop</classifier>
               <symbols>NO_AOP</symbols>
               <excludes>
                 **/InterceptorBinding.java,
@@ -113,7 +112,7 @@
               <goal>jar</goal>
             </goals>
             <configuration>
-              <classesDirectory>target/noaop/classes</classesDirectory>
+              <classesDirectory>target/munged/classes</classesDirectory>
               <classifier>noaop</classifier>
             </configuration>
           </execution>
