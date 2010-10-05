@@ -75,7 +75,6 @@
           </instructions>
         </configuration>
       </plugin>
-<!--
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>munge-maven-plugin</artifactId>
@@ -120,7 +119,6 @@
           </execution>
         </executions>
       </plugin>
--->
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>1.4</version>
