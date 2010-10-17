@@ -40,5 +40,7 @@ mv extensions/struts2/src/main/java/struts-plugin.xml extensions/struts2/src/mai
 
 svn export --force $GUICE_SVN_DIR/extensions/struts2/example/root extensions/struts2/example/src/main/resources
 
+patch -E -p1 < PATCHES
+
 find . -type f -name "*.java" -exec chmod uog-x {} \;
 

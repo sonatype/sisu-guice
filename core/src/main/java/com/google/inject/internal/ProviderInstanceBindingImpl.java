@@ -57,8 +57,8 @@ final class ProviderInstanceBindingImpl<T> extends BindingImpl<T>
     if(providerInstance instanceof ProviderWithExtensionVisitor) {
       return ((ProviderWithExtensionVisitor<? extends T>)providerInstance).acceptExtensionVisitor(visitor, this);
     } else {
-    return visitor.visit(this);
-  }
+      return visitor.visit(this);
+    }
   }
 
   public Provider<? extends T> getProviderInstance() {
