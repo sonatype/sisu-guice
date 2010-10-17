@@ -35,6 +35,7 @@ do
   fi
 done
 
+mv examples/src/main/java/example/xml/phone.xml examples/src/main/resources/example/xml
 mv extensions/persist/src/main/java/log4j.properties extensions/persist/src/main/resources
 mv extensions/struts2/src/main/java/struts-plugin.xml extensions/struts2/src/main/resources
 
