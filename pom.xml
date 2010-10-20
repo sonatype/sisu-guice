@@ -252,10 +252,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
           </executions>
         </plugin>
         <plugin>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>1.4</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>2.7</version>
         </plugin>

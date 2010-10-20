@@ -123,32 +123,33 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>1.4</version>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>jarjar-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
         <executions>
           <execution>
             <phase>package</phase>
             <goals>
-              <goal>shade</goal>
+              <goal>jarjar</goal>
             </goals>
             <configuration>
-              <minimizeJar>true</minimizeJar>
-              <artifactSet>
-                <includes>
-                  <include>asm:asm</include>
-                  <include>org.sonatype.sisu.inject:cglib</include>
-                </includes>
-              </artifactSet>
-              <relocations>
-                <relocation>
-                  <pattern>org.objectweb.asm</pattern>
-                  <shadedPattern>com.google.inject.internal.asm</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>net.sf.cglib</pattern>
-                  <shadedPattern>com.google.inject.internal.cglib</shadedPattern>
-                </relocation>
-              </relocations>
+              <includes>
+                <include>asm:asm</include>
+                <include>org.sonatype.sisu.inject:cglib</include>
+              </includes>
+              <rules>
+                <rule>
+                  <pattern>org.objectweb.asm.**</pattern>
+                  <result>com.google.inject.internal.asm.@1</result>
+                </rule>
+                <rule>
+                  <pattern>net.sf.cglib.**</pattern>
+                  <result>com.google.inject.internal.cglib.@1</result>
+                </rule>
+                <keep>
+                  <pattern>com.google.inject.**</pattern>
+                </keep>
+              </rules>
             </configuration>
           </execution>
         </executions>
