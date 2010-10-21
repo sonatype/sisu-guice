@@ -116,6 +116,9 @@
               <goal>jar</goal>
             </goals>
             <configuration>
+              <archive>
+                <manifestFile>target/munged/classes/META-INF/MANIFEST.MF</manifestFile>
+              </archive>
               <classesDirectory>target/munged/classes</classesDirectory>
               <classifier>noaop</classifier>
             </configuration>
@@ -125,7 +128,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>jarjar-maven-plugin</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
         <executions>
           <execution>
             <phase>package</phase>
