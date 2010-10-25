@@ -1,34 +1,160 @@
-diff --git a/core/src/com/google/inject/Injector.java b/core/src/com/google/inject/Injector.java
-index 64b584e..eff67ad 100644
---- a/core/src/com/google/inject/Injector.java
-+++ b/core/src/com/google/inject/Injector.java
-@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
- import java.util.List;
- import java.util.Map;
+Index: core/test/com/googlecode/guice/BytecodeGenTest.java
+===================================================================
+--- core/test/com/googlecode/guice/BytecodeGenTest.java	(revision 1319)
++++ core/test/com/googlecode/guice/BytecodeGenTest.java	(working copy)
+@@ -197,6 +197,7 @@
+     }
+   }
+   
++/*******************************************************************************
+   public void testProxyClassUnloading() {
+     Object testObject = Guice.createInjector(interceptorModule, testModule)
+         .getInstance(proxyTestClass);
+@@ -211,10 +212,10 @@
+     // null the proxy
+     testObject = null;
  
+-    /*
++    |*
+      * this should be enough to queue the weak reference
+      * unless something is holding onto it accidentally.
+-     */
++     *|
+     String[] buf;
+     System.gc();
+     buf = new String[8 * 1024 * 1024];
+@@ -234,6 +235,7 @@
+     // If it fails, run the test again to make sure it's failing reliably.
+     assertNull(clazzRef.get());
+   }
++*******************************************************************************/
+ 
+   public void testProxyingPackagePrivateMethods() {
+     Injector injector = Guice.createInjector(interceptorModule);
+Index: core/test/com/google/inject/TypeConversionTest.java
+===================================================================
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1319)
++++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
+@@ -19,7 +19,9 @@
+ import static com.google.inject.Asserts.assertContains;
+ import com.google.inject.internal.util.Iterables;
+ import com.google.inject.matcher.Matchers;
++import com.google.inject.spi.ConvertedConstantBinding;
+ import com.google.inject.spi.TypeConverter;
 +import com.google.inject.spi.TypeConverterBinding;
+ import java.lang.annotation.Retention;
+ import static java.lang.annotation.RetentionPolicy.RUNTIME;
+ import java.util.Date;
+@@ -209,6 +211,14 @@
+     });
+ 
+     assertSame(result, injector.getInstance(DateHolder.class).date);
 +
++    Binding<Date> binding = injector.getBinding(Key.get(Date.class, NumericValue.class));
++    assertTrue(binding instanceof ConvertedConstantBinding<?>);
++
++    TypeConverterBinding converterBinding = ((ConvertedConstantBinding<?>)binding).getTypeConverterBinding();
++    assertEquals("CustomConverter", converterBinding.getTypeConverter().toString());
++
++    assertTrue(injector.getTypeConverterBindings().contains(converterBinding));
+   }
+ 
+   public void testInvalidCustomValue() throws CreationException {
+Index: core/test/com/google/inject/AllTests.java
+===================================================================
+--- core/test/com/google/inject/AllTests.java	(revision 1319)
++++ core/test/com/google/inject/AllTests.java	(working copy)
+@@ -44,12 +44,13 @@
+ import java.util.Enumeration;
+ import java.util.Set;
+ import junit.framework.Test;
++import junit.framework.TestCase;
+ import junit.framework.TestSuite;
+ 
  /**
-  * Builds the graphs of objects that make up your application. The injector tracks the dependencies
-  * for each type and uses bindings to inject them. This is the core of Guice, although you rarely
-@@ -247,4 +249,12 @@ public interface Injector {
-    * @since 3.0
-    */
-   Map<Class<? extends Annotation>, Scope> getScopeBindings();
+  * @author crazybob@google.com (Bob Lee)
+  */
+-public class AllTests {
++public class AllTests extends TestCase {
+ 
+   private static final Set<String> SUPPRESSED_TEST_NAMES = ImmutableSet.of(
+       "testUnscopedProviderWorksOutsideOfRequestedScope(" + ScopesTest.class.getName() + ")",
+@@ -145,7 +146,7 @@
+ 
+     // googlecode.guice
+     suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
+-    suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
++////suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
+     suite.addTestSuite(Jsr330Test.class);
+ 
+     return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);
+Index: core/src/com/google/inject/name/NamedImpl.java
+===================================================================
+--- core/src/com/google/inject/name/NamedImpl.java	(revision 1319)
++++ core/src/com/google/inject/name/NamedImpl.java	(working copy)
+@@ -38,12 +38,13 @@
+   }
+ 
+   public boolean equals(Object o) {
+-    if (!(o instanceof Named)) {
+-      return false;
++    if (o == this) {
++      return true;
+     }
+-
+-    Named other = (Named) o;
+-    return value.equals(other.value());
++    if (o instanceof Named) {
++      return value.equals(((Named) o).value());
++    }
++    return false;
+   }
+ 
+   public String toString() {
+Index: core/src/com/google/inject/spi/ConvertedConstantBinding.java
+===================================================================
+--- core/src/com/google/inject/spi/ConvertedConstantBinding.java	(revision 1319)
++++ core/src/com/google/inject/spi/ConvertedConstantBinding.java	(working copy)
+@@ -35,6 +35,11 @@
+   T getValue();
+ 
+   /**
++   * Returns the type converter binding used to convert the constant.
++   */
++  TypeConverterBinding getTypeConverterBinding();
 +
 +  /**
-+   * Returns a list containing all type converter bindings in the injector. The returned list
-+   * is immutable.
-+   *
-+   * <p>This method is part of the Guice SPI and is intended for use by tools and extensions.
-+   */
-+  List<TypeConverterBinding> getTypeConverterBindings();
+    * Returns the key for the source binding. That binding can e retrieved from an injector using
+    * {@link com.google.inject.Injector#getBinding(Key) Injector.getBinding(key)}.
+    */
+Index: core/src/com/google/inject/spi/TypeConverterBinding.java
+===================================================================
+--- core/src/com/google/inject/spi/TypeConverterBinding.java	(revision 1319)
++++ core/src/com/google/inject/spi/TypeConverterBinding.java	(working copy)
+@@ -36,7 +36,7 @@
+   private final Matcher<? super TypeLiteral<?>> typeMatcher;
+   private final TypeConverter typeConverter;
+ 
+-  TypeConverterBinding(Object source, Matcher<? super TypeLiteral<?>> typeMatcher,
++  public TypeConverterBinding(Object source, Matcher<? super TypeLiteral<?>> typeMatcher,
+       TypeConverter typeConverter) {
+     this.source = checkNotNull(source, "source");
+     this.typeMatcher = checkNotNull(typeMatcher, "typeMatcher");
+@@ -62,4 +62,9 @@
+   public void applyTo(Binder binder) {
+     binder.withSource(getSource()).convertToTypes(typeMatcher, typeConverter);
+   }
++
++  @Override public String toString() {
++    return typeConverter + " which matches " + typeMatcher
++        + " (bound at " + source + ")";
++  }
  }
-diff --git a/core/src/com/google/inject/internal/BindingProcessor.java b/core/src/com/google/inject/internal/BindingProcessor.java
-index 38af5c0..b166c1a 100644
---- a/core/src/com/google/inject/internal/BindingProcessor.java
-+++ b/core/src/com/google/inject/internal/BindingProcessor.java
-@@ -51,6 +51,12 @@ import java.util.Set;
+Index: core/src/com/google/inject/internal/BindingProcessor.java
+===================================================================
+--- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1319)
++++ core/src/com/google/inject/internal/BindingProcessor.java	(working copy)
+@@ -51,6 +51,12 @@
   */
  final class BindingProcessor extends AbstractProcessor {
  
@@ -41,7 +167,7 @@ index 38af5c0..b166c1a 100644
    private final List<CreationListener> creationListeners = Lists.newArrayList();
    private final Initializer initializer;
    private final List<Runnable> uninitializedBindings = Lists.newArrayList();
-@@ -221,8 +227,14 @@ final class BindingProcessor extends AbstractProcessor {
+@@ -221,8 +227,14 @@
    }
  
    private <T> void validateKey(Object source, Key<T> key) {
@@ -56,11 +182,11 @@ index 38af5c0..b166c1a 100644
    }
  
    <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
-diff --git a/core/src/com/google/inject/internal/Errors.java b/core/src/com/google/inject/internal/Errors.java
-index 84fd96e..5baaa27 100644
---- a/core/src/com/google/inject/internal/Errors.java
-+++ b/core/src/com/google/inject/internal/Errors.java
-@@ -33,6 +33,7 @@ import com.google.inject.spi.Dependency;
+Index: core/src/com/google/inject/internal/Errors.java
+===================================================================
+--- core/src/com/google/inject/internal/Errors.java	(revision 1319)
++++ core/src/com/google/inject/internal/Errors.java	(working copy)
+@@ -33,6 +33,7 @@
  import com.google.inject.spi.InjectionListener;
  import com.google.inject.spi.InjectionPoint;
  import com.google.inject.spi.Message;
@@ -68,7 +194,7 @@ index 84fd96e..5baaa27 100644
  import com.google.inject.spi.TypeListenerBinding;
  import java.io.PrintWriter;
  import java.io.Serializable;
-@@ -51,7 +52,7 @@ import java.util.List;
+@@ -51,7 +52,7 @@
  
  /**
   * A collection of error messages. If this type is passed as a method parameter, the method is
@@ -77,7 +203,7 @@ index 84fd96e..5baaa27 100644
   *
   * <p>Errors can be chained to provide additional context. To add context, call {@link #withSource}
   * to create a new Errors instance that contains additional context. All messages added to the
-@@ -135,30 +136,30 @@ public final class Errors implements Serializable {
+@@ -135,30 +136,30 @@
    }
  
    public Errors converterReturnedNull(String stringValue, Object source,
@@ -115,7 +241,7 @@ index 84fd96e..5baaa27 100644
      return addMessage("Multiple converters can convert '%s' (bound at %s) to %s:%n"
          + " %s and%n"
          + " %s.%n"
-@@ -604,7 +605,7 @@ public final class Errors implements Serializable {
+@@ -608,7 +609,7 @@
      }
  
      boolean appliesTo(Object o) {
@@ -124,58 +250,11 @@ index 84fd96e..5baaa27 100644
      }
  
      String convert(Object o) {
-diff --git a/core/src/com/google/inject/internal/InheritingState.java b/core/src/com/google/inject/internal/InheritingState.java
-index 4050b1e..288d875 100644
---- a/core/src/com/google/inject/internal/InheritingState.java
-+++ b/core/src/com/google/inject/internal/InheritingState.java
-@@ -24,6 +24,7 @@ import com.google.inject.internal.util.ImmutableList;
- import com.google.inject.internal.util.Lists;
- import com.google.inject.internal.util.Maps;
- import static com.google.inject.internal.util.Preconditions.checkNotNull;
-+import com.google.inject.spi.TypeConverterBinding;
- import com.google.inject.spi.TypeListenerBinding;
- import java.lang.annotation.Annotation;
- import java.util.ArrayList;
-@@ -43,7 +44,7 @@ final class InheritingState implements State {
-   private final Map<Key<?>, Binding<?>> explicitBindings
-       = Collections.unmodifiableMap(explicitBindingsMutable);
-   private final Map<Class<? extends Annotation>, Scope> scopes = Maps.newHashMap();
--  private final List<MatcherAndConverter> converters = Lists.newArrayList();
-+  private final List<TypeConverterBinding> converters = Lists.newArrayList();
-   /*if[AOP]*/
-   private final List<MethodAspect> methodAspects = Lists.newArrayList();
-   /*end[AOP]*/
-@@ -83,19 +84,19 @@ final class InheritingState implements State {
-     scopes.put(annotationType, scope);
-   }
- 
--  public Iterable<MatcherAndConverter> getConvertersThisLevel() {
-+  public List<TypeConverterBinding> getConvertersThisLevel() {
-     return converters;
-   }
- 
--  public void addConverter(MatcherAndConverter matcherAndConverter) {
--    converters.add(matcherAndConverter);
-+  public void addConverter(TypeConverterBinding typeConverterBinding) {
-+    converters.add(typeConverterBinding);
-   }
- 
--  public MatcherAndConverter getConverter(
-+  public TypeConverterBinding getConverter(
-       String stringValue, TypeLiteral<?> type, Errors errors, Object source) {
--    MatcherAndConverter matchingConverter = null;
-+    TypeConverterBinding matchingConverter = null;
-     for (State s = this; s != State.NONE; s = s.parent()) {
--      for (MatcherAndConverter converter : s.getConvertersThisLevel()) {
-+      for (TypeConverterBinding converter : s.getConvertersThisLevel()) {
-         if (converter.getTypeMatcher().matches(type)) {
-           if (matchingConverter != null) {
-             errors.ambiguousTypeConversion(stringValue, source, type, matchingConverter, converter);
-diff --git a/core/src/com/google/inject/internal/InjectorImpl.java b/core/src/com/google/inject/internal/InjectorImpl.java
-index ab8e281..73ad4d3 100644
---- a/core/src/com/google/inject/internal/InjectorImpl.java
-+++ b/core/src/com/google/inject/internal/InjectorImpl.java
-@@ -45,6 +45,7 @@ import com.google.inject.spi.Dependency;
+Index: core/src/com/google/inject/internal/InjectorImpl.java
+===================================================================
+--- core/src/com/google/inject/internal/InjectorImpl.java	(revision 1319)
++++ core/src/com/google/inject/internal/InjectorImpl.java	(working copy)
+@@ -45,6 +45,7 @@
  import com.google.inject.spi.HasDependencies;
  import com.google.inject.spi.InjectionPoint;
  import com.google.inject.spi.ProviderBinding;
@@ -183,7 +262,7 @@ index ab8e281..73ad4d3 100644
  import com.google.inject.util.Providers;
  import java.lang.annotation.Annotation;
  import java.lang.reflect.GenericArrayType;
-@@ -376,9 +377,9 @@ final class InjectorImpl implements Injector, Lookups {
+@@ -376,9 +377,9 @@
  
      // Find a matching type converter.
      TypeLiteral<T> type = key.getTypeLiteral();
@@ -195,7 +274,7 @@ index ab8e281..73ad4d3 100644
        // No converter can handle the given type.
        return null;
      }
-@@ -386,23 +387,24 @@ final class InjectorImpl implements Injector, Lookups {
+@@ -386,23 +387,24 @@
      // Try to convert the string. A failed conversion results in an error.
      try {
        @SuppressWarnings("unchecked") // This cast is safe because we double check below.
@@ -225,7 +304,7 @@ index ab8e281..73ad4d3 100644
            .toException();
      }
    }
-@@ -412,14 +414,17 @@ final class InjectorImpl implements Injector, Lookups {
+@@ -412,14 +414,17 @@
      final T value;
      final Provider<T> provider;
      final Binding<String> originalBinding;
@@ -244,7 +323,7 @@ index ab8e281..73ad4d3 100644
      }
  
      @Override public Provider<T> getProvider() {
-@@ -434,6 +439,10 @@ final class InjectorImpl implements Injector, Lookups {
+@@ -434,6 +439,10 @@
        return value;
      }
  
@@ -255,24 +334,26 @@ index ab8e281..73ad4d3 100644
      public Key<String> getSourceKey() {
        return originalBinding.getKey();
      }
-@@ -828,7 +837,11 @@ final class InjectorImpl implements Injector, Lookups {
+@@ -828,9 +837,13 @@
    }
  
    public Map<Class<? extends Annotation>, Scope> getScopeBindings() {
 -    return state.getScopes();
 +    return Collections.unmodifiableMap(state.getScopes());
-+  }
-+
-+  public List<TypeConverterBinding> getTypeConverterBindings() {
-+    return Collections.unmodifiableList(state.getConvertersThisLevel());
    }
  
++  public List<TypeConverterBinding> getTypeConverterBindings() {
++    return Collections.unmodifiableList(state.getConvertersThisLevel());
++  }
++
    private static class BindingsMultimap {
-diff --git a/core/src/com/google/inject/internal/InjectorShell.java b/core/src/com/google/inject/internal/InjectorShell.java
-index 87c6a9a..2e51945 100644
---- a/core/src/com/google/inject/internal/InjectorShell.java
-+++ b/core/src/com/google/inject/internal/InjectorShell.java
-@@ -229,6 +229,15 @@ final class InjectorShell {
+     final Map<TypeLiteral<?>, List<Binding<?>>> multimap = Maps.newHashMap();
+ 
+Index: core/src/com/google/inject/internal/InjectorShell.java
+===================================================================
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1319)
++++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
+@@ -229,6 +229,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
              SourceProvider.UNKNOWN_SOURCE, loggerFactory, Scoping.UNSCOPED,
              loggerFactory, ImmutableSet.<InjectionPoint>of()));
@@ -288,7 +369,7 @@ index 87c6a9a..2e51945 100644
    }
  
    private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
-@@ -248,6 +257,23 @@ final class InjectorShell {
+@@ -248,6 +257,23 @@
      }
    }
  
@@ -312,95 +393,78 @@ index 87c6a9a..2e51945 100644
    private static class RootModule implements Module {
      final Stage stage;
  
-diff --git a/core/src/com/google/inject/internal/InternalInjectorCreator.java b/core/src/com/google/inject/internal/InternalInjectorCreator.java
-index 44f0065..157a77a 100644
---- a/core/src/com/google/inject/internal/InternalInjectorCreator.java
-+++ b/core/src/com/google/inject/internal/InternalInjectorCreator.java
-@@ -29,6 +29,7 @@ import com.google.inject.internal.util.ImmutableSet;
- import com.google.inject.internal.util.Iterables;
- import com.google.inject.internal.util.Stopwatch;
- import com.google.inject.spi.Dependency;
+Index: core/src/com/google/inject/internal/InheritingState.java
+===================================================================
+--- core/src/com/google/inject/internal/InheritingState.java	(revision 1319)
++++ core/src/com/google/inject/internal/InheritingState.java	(working copy)
+@@ -24,6 +24,7 @@
+ import com.google.inject.internal.util.Lists;
+ import com.google.inject.internal.util.Maps;
+ import static com.google.inject.internal.util.Preconditions.checkNotNull;
 +import com.google.inject.spi.TypeConverterBinding;
+ import com.google.inject.spi.TypeListenerBinding;
  import java.lang.annotation.Annotation;
- import java.util.Collection;
- import java.util.List;
-@@ -287,6 +288,9 @@ public final class InternalInjectorCreator {
-     public Map<Class<? extends Annotation>, Scope> getScopeBindings() {
-       return delegateInjector.getScopeBindings();
-     }
-+    public List<TypeConverterBinding> getTypeConverterBindings() {
-+      return delegateInjector.getTypeConverterBindings();
-+    }
-     public <T> Provider<T> getProvider(Key<T> key) {
-       throw new UnsupportedOperationException(
-         "Injector.getProvider(Key<T>) is not supported in Stage.TOOL");
-diff --git a/core/src/com/google/inject/internal/MatcherAndConverter.java b/core/src/com/google/inject/internal/MatcherAndConverter.java
-deleted file mode 100644
-index b618b3f..0000000
---- a/core/src/com/google/inject/internal/MatcherAndConverter.java
-+++ /dev/null
-@@ -1,56 +0,0 @@
--/*
-- * Copyright (C) 2007 Google Inc.
-- *
-- * Licensed under the Apache License, Version 2.0 (the "License");
-- * you may not use this file except in compliance with the License.
-- * You may obtain a copy of the License at
-- *
-- * http://www.apache.org/licenses/LICENSE-2.0
-- *
-- * Unless required by applicable law or agreed to in writing, software
-- * distributed under the License is distributed on an "AS IS" BASIS,
-- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-- * See the License for the specific language governing permissions and
-- * limitations under the License.
-- */
--
--package com.google.inject.internal;
--
--import com.google.inject.TypeLiteral;
--import static com.google.inject.internal.util.Preconditions.checkNotNull;
--import com.google.inject.matcher.Matcher;
--import com.google.inject.spi.TypeConverter;
--
--/**
-- * @author crazybob@google.com (Bob Lee)
-- */
--final class MatcherAndConverter {
--
--  private final Matcher<? super TypeLiteral<?>> typeMatcher;
--  private final TypeConverter typeConverter;
--  private final Object source;
--
--  public MatcherAndConverter(Matcher<? super TypeLiteral<?>> typeMatcher,
--      TypeConverter typeConverter, Object source) {
--    this.typeMatcher = checkNotNull(typeMatcher, "type matcher");
--    this.typeConverter = checkNotNull(typeConverter, "converter");
--    this.source = source;
--  }
--
--  public TypeConverter getTypeConverter() {
--    return typeConverter;
--  }
--
--  public Matcher<? super TypeLiteral<?>> getTypeMatcher() {
--    return typeMatcher;
--  }
--
--  public Object getSource() {
--    return source;
--  }
--
--  @Override public String toString() {
--    return typeConverter + " which matches " + typeMatcher
--        + " (bound at " + source + ")";
--  }
--}
-diff --git a/core/src/com/google/inject/internal/State.java b/core/src/com/google/inject/internal/State.java
-index 4bf8025..ad6c59f 100644
---- a/core/src/com/google/inject/internal/State.java
-+++ b/core/src/com/google/inject/internal/State.java
-@@ -23,6 +23,7 @@ import com.google.inject.TypeLiteral;
+ import java.util.ArrayList;
+@@ -43,7 +44,7 @@
+   private final Map<Key<?>, Binding<?>> explicitBindings
+       = Collections.unmodifiableMap(explicitBindingsMutable);
+   private final Map<Class<? extends Annotation>, Scope> scopes = Maps.newHashMap();
+-  private final List<MatcherAndConverter> converters = Lists.newArrayList();
++  private final List<TypeConverterBinding> converters = Lists.newArrayList();
+   /*if[AOP]*/
+   private final List<MethodAspect> methodAspects = Lists.newArrayList();
+   /*end[AOP]*/
+@@ -83,19 +84,19 @@
+     scopes.put(annotationType, scope);
+   }
+ 
+-  public Iterable<MatcherAndConverter> getConvertersThisLevel() {
++  public List<TypeConverterBinding> getConvertersThisLevel() {
+     return converters;
+   }
+ 
+-  public void addConverter(MatcherAndConverter matcherAndConverter) {
+-    converters.add(matcherAndConverter);
++  public void addConverter(TypeConverterBinding typeConverterBinding) {
++    converters.add(typeConverterBinding);
+   }
+ 
+-  public MatcherAndConverter getConverter(
++  public TypeConverterBinding getConverter(
+       String stringValue, TypeLiteral<?> type, Errors errors, Object source) {
+-    MatcherAndConverter matchingConverter = null;
++    TypeConverterBinding matchingConverter = null;
+     for (State s = this; s != State.NONE; s = s.parent()) {
+-      for (MatcherAndConverter converter : s.getConvertersThisLevel()) {
++      for (TypeConverterBinding converter : s.getConvertersThisLevel()) {
+         if (converter.getTypeMatcher().matches(type)) {
+           if (matchingConverter != null) {
+             errors.ambiguousTypeConversion(stringValue, source, type, matchingConverter, converter);
+Index: core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
+===================================================================
+--- core/src/com/google/inject/internal/TypeConverterBindingProcessor.java	(revision 1319)
++++ core/src/com/google/inject/internal/TypeConverterBindingProcessor.java	(working copy)
+@@ -161,12 +161,12 @@
+   private void internalConvertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
+       TypeConverter converter) {
+     injector.state.addConverter(
+-        new MatcherAndConverter(typeMatcher, converter, SourceProvider.UNKNOWN_SOURCE));
++        new TypeConverterBinding(SourceProvider.UNKNOWN_SOURCE, typeMatcher, converter));
+   }
+ 
+   @Override public Boolean visit(TypeConverterBinding command) {
+-    injector.state.addConverter(new MatcherAndConverter(
+-        command.getTypeMatcher(), command.getTypeConverter(), command.getSource()));
++    injector.state.addConverter(new TypeConverterBinding(
++        command.getSource(), command.getTypeMatcher(), command.getTypeConverter()));
+     return true;
+   }
+ }
+Index: core/src/com/google/inject/internal/State.java
+===================================================================
+--- core/src/com/google/inject/internal/State.java	(revision 1319)
++++ core/src/com/google/inject/internal/State.java	(working copy)
+@@ -23,6 +23,7 @@
  import com.google.inject.internal.util.ImmutableList;
  import com.google.inject.internal.util.ImmutableMap;
  import com.google.inject.internal.util.ImmutableSet;
@@ -408,7 +472,7 @@ index 4bf8025..ad6c59f 100644
  import com.google.inject.spi.TypeListenerBinding;
  import java.lang.annotation.Annotation;
  import java.util.List;
-@@ -61,17 +62,17 @@ interface State {
+@@ -61,17 +62,17 @@
        throw new UnsupportedOperationException();
      }
  
@@ -430,7 +494,7 @@ index 4bf8025..ad6c59f 100644
      }
  
      /*if[AOP]*/
-@@ -123,14 +124,14 @@ interface State {
+@@ -123,14 +124,14 @@
  
    void putAnnotation(Class<? extends Annotation> annotationType, Scope scope);
  
@@ -448,183 +512,59 @@ index 4bf8025..ad6c59f 100644
  
    /*if[AOP]*/
    void addMethodAspect(MethodAspect methodAspect);
-diff --git a/core/src/com/google/inject/internal/TypeConverterBindingProcessor.java b/core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
-index 1f10349..ceb0657 100644
---- a/core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
-+++ b/core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
-@@ -161,12 +161,12 @@ final class TypeConverterBindingProcessor extends AbstractProcessor {
-   private void internalConvertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
-       TypeConverter converter) {
-     injector.state.addConverter(
--        new MatcherAndConverter(typeMatcher, converter, SourceProvider.UNKNOWN_SOURCE));
-+        new TypeConverterBinding(SourceProvider.UNKNOWN_SOURCE, typeMatcher, converter));
-   }
- 
-   @Override public Boolean visit(TypeConverterBinding command) {
--    injector.state.addConverter(new MatcherAndConverter(
--        command.getTypeMatcher(), command.getTypeConverter(), command.getSource()));
-+    injector.state.addConverter(new TypeConverterBinding(
-+        command.getSource(), command.getTypeMatcher(), command.getTypeConverter()));
-     return true;
-   }
- }
-diff --git a/core/src/com/google/inject/name/NamedImpl.java b/core/src/com/google/inject/name/NamedImpl.java
-index 8690c51..5ccc7c7 100644
---- a/core/src/com/google/inject/name/NamedImpl.java
-+++ b/core/src/com/google/inject/name/NamedImpl.java
-@@ -38,12 +38,13 @@ class NamedImpl implements Named, Serializable {
-   }
- 
-   public boolean equals(Object o) {
--    if (!(o instanceof Named)) {
--      return false;
-+    if (o == this) {
-+      return true;
+Index: core/src/com/google/inject/internal/InternalInjectorCreator.java
+===================================================================
+--- core/src/com/google/inject/internal/InternalInjectorCreator.java	(revision 1319)
++++ core/src/com/google/inject/internal/InternalInjectorCreator.java	(working copy)
+@@ -29,6 +29,7 @@
+ import com.google.inject.internal.util.Iterables;
+ import com.google.inject.internal.util.Stopwatch;
+ import com.google.inject.spi.Dependency;
++import com.google.inject.spi.TypeConverterBinding;
+ import java.lang.annotation.Annotation;
+ import java.util.Collection;
+ import java.util.List;
+@@ -287,6 +288,9 @@
+     public Map<Class<? extends Annotation>, Scope> getScopeBindings() {
+       return delegateInjector.getScopeBindings();
      }
--
--    Named other = (Named) o;
--    return value.equals(other.value());
-+    if (o instanceof Named) {
-+      return value.equals(((Named) o).value());
++    public List<TypeConverterBinding> getTypeConverterBindings() {
++      return delegateInjector.getTypeConverterBindings();
 +    }
-+    return false;
-   }
+     public <T> Provider<T> getProvider(Key<T> key) {
+       throw new UnsupportedOperationException(
+         "Injector.getProvider(Key<T>) is not supported in Stage.TOOL");
+Index: core/src/com/google/inject/Injector.java
+===================================================================
+--- core/src/com/google/inject/Injector.java	(revision 1319)
++++ core/src/com/google/inject/Injector.java	(working copy)
+@@ -20,6 +20,8 @@
+ import java.util.List;
+ import java.util.Map;
  
-   public String toString() {
-diff --git a/core/src/com/google/inject/spi/ConvertedConstantBinding.java b/core/src/com/google/inject/spi/ConvertedConstantBinding.java
-index 6c78acb..cd7a0ec 100644
---- a/core/src/com/google/inject/spi/ConvertedConstantBinding.java
-+++ b/core/src/com/google/inject/spi/ConvertedConstantBinding.java
-@@ -35,6 +35,11 @@ public interface ConvertedConstantBinding<T> extends Binding<T>, HasDependencies
-   T getValue();
- 
-   /**
-+   * Returns the type converter binding used to convert the constant.
-+   */
-+  TypeConverterBinding getTypeConverterBinding();
++import com.google.inject.spi.TypeConverterBinding;
++
+ /**
+  * Builds the graphs of objects that make up your application. The injector tracks the dependencies
+  * for each type and uses bindings to inject them. This is the core of Guice, although you rarely
+@@ -247,4 +249,12 @@
+    * @since 3.0
+    */
+   Map<Class<? extends Annotation>, Scope> getScopeBindings();
 +
 +  /**
-    * Returns the key for the source binding. That binding can e retrieved from an injector using
-    * {@link com.google.inject.Injector#getBinding(Key) Injector.getBinding(key)}.
-    */
-diff --git a/core/src/com/google/inject/spi/TypeConverterBinding.java b/core/src/com/google/inject/spi/TypeConverterBinding.java
-index 74f7c73..9564715 100644
---- a/core/src/com/google/inject/spi/TypeConverterBinding.java
-+++ b/core/src/com/google/inject/spi/TypeConverterBinding.java
-@@ -36,7 +36,7 @@ public final class TypeConverterBinding implements Element {
-   private final Matcher<? super TypeLiteral<?>> typeMatcher;
-   private final TypeConverter typeConverter;
- 
--  TypeConverterBinding(Object source, Matcher<? super TypeLiteral<?>> typeMatcher,
-+  public TypeConverterBinding(Object source, Matcher<? super TypeLiteral<?>> typeMatcher,
-       TypeConverter typeConverter) {
-     this.source = checkNotNull(source, "source");
-     this.typeMatcher = checkNotNull(typeMatcher, "typeMatcher");
-@@ -62,4 +62,9 @@ public final class TypeConverterBinding implements Element {
-   public void applyTo(Binder binder) {
-     binder.withSource(getSource()).convertToTypes(typeMatcher, typeConverter);
-   }
-+
-+  @Override public String toString() {
-+    return typeConverter + " which matches " + typeMatcher
-+        + " (bound at " + source + ")";
-+  }
++   * Returns a list containing all type converter bindings in the injector. The returned list
++   * is immutable.
++   *
++   * <p>This method is part of the Guice SPI and is intended for use by tools and extensions.
++   */
++  List<TypeConverterBinding> getTypeConverterBindings();
  }
-diff --git a/core/test/com/google/inject/AllTests.java b/core/test/com/google/inject/AllTests.java
-index bcb2f14..f1c9d88 100644
---- a/core/test/com/google/inject/AllTests.java
-+++ b/core/test/com/google/inject/AllTests.java
-@@ -45,12 +44,13 @@ import com.googlecode.guice.GuiceTck;
- import java.util.Enumeration;
- import java.util.Set;
- import junit.framework.Test;
-+import junit.framework.TestCase;
- import junit.framework.TestSuite;
- 
- /**
-  * @author crazybob@google.com (Bob Lee)
-  */
--public class AllTests {
-+public class AllTests extends TestCase {
- 
-   private static final Set<String> SUPPRESSED_TEST_NAMES = ImmutableSet.of(
-       "testUnscopedProviderWorksOutsideOfRequestedScope(" + ScopesTest.class.getName() + ")",
-@@ -146,7 +146,7 @@ public class AllTests {
- 
-     // googlecode.guice
-     suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
--    suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
-+////suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
-     suite.addTestSuite(Jsr330Test.class);
- 
-     return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);
-diff --git a/core/test/com/google/inject/TypeConversionTest.java b/core/test/com/google/inject/TypeConversionTest.java
-index ead3c99..3d57d31 100644
---- a/core/test/com/google/inject/TypeConversionTest.java
-+++ b/core/test/com/google/inject/TypeConversionTest.java
-@@ -19,7 +19,9 @@ package com.google.inject;
- import static com.google.inject.Asserts.assertContains;
- import com.google.inject.internal.util.Iterables;
- import com.google.inject.matcher.Matchers;
-+import com.google.inject.spi.ConvertedConstantBinding;
- import com.google.inject.spi.TypeConverter;
-+import com.google.inject.spi.TypeConverterBinding;
- import java.lang.annotation.Retention;
- import static java.lang.annotation.RetentionPolicy.RUNTIME;
- import java.util.Date;
-@@ -209,6 +211,14 @@ public class TypeConversionTest extends TestCase {
-     });
- 
-     assertSame(result, injector.getInstance(DateHolder.class).date);
-+
-+    Binding<Date> binding = injector.getBinding(Key.get(Date.class, NumericValue.class));
-+    assertTrue(binding instanceof ConvertedConstantBinding<?>);
-+
-+    TypeConverterBinding converterBinding = ((ConvertedConstantBinding<?>)binding).getTypeConverterBinding();
-+    assertEquals("CustomConverter", converterBinding.getTypeConverter().toString());
-+
-+    assertTrue(injector.getTypeConverterBindings().contains(converterBinding));
-   }
- 
-   public void testInvalidCustomValue() throws CreationException {
-diff --git a/core/test/com/googlecode/guice/BytecodeGenTest.java b/core/test/com/googlecode/guice/BytecodeGenTest.java
-index 882049c..f05f10b 100644
---- a/core/test/com/googlecode/guice/BytecodeGenTest.java
-+++ b/core/test/com/googlecode/guice/BytecodeGenTest.java
-@@ -197,6 +197,7 @@ public class BytecodeGenTest extends TestCase {
-     }
-   }
-   
-+/*******************************************************************************
-   public void testProxyClassUnloading() {
-     Object testObject = Guice.createInjector(interceptorModule, testModule)
-         .getInstance(proxyTestClass);
-@@ -211,10 +212,10 @@ public class BytecodeGenTest extends TestCase {
-     // null the proxy
-     testObject = null;
- 
--    /*
-+    |*
-      * this should be enough to queue the weak reference
-      * unless something is holding onto it accidentally.
--     */
-+     *|
-     String[] buf;
-     System.gc();
-     buf = new String[8 * 1024 * 1024];
-@@ -234,6 +235,7 @@ public class BytecodeGenTest extends TestCase {
-     // If it fails, run the test again to make sure it's failing reliably.
-     assertNull(clazzRef.get());
-   }
-+*******************************************************************************/
- 
-   public void testProxyingPackagePrivateMethods() {
-     Injector injector = Guice.createInjector(interceptorModule);
-diff --git a/extensions/mini/src/com/google/inject/mini/MiniGuice.java b/extensions/mini/src/com/google/inject/mini/MiniGuice.java
-index 5484a79..5b319b8 100644
---- a/extensions/mini/src/com/google/inject/mini/MiniGuice.java
-+++ b/extensions/mini/src/com/google/inject/mini/MiniGuice.java
-@@ -23,11 +23,11 @@ import java.lang.reflect.Member;
+Index: extensions/mini/src/com/google/inject/mini/MiniGuice.java
+===================================================================
+--- extensions/mini/src/com/google/inject/mini/MiniGuice.java	(revision 1319)
++++ extensions/mini/src/com/google/inject/mini/MiniGuice.java	(working copy)
+@@ -23,11 +23,11 @@
  import java.lang.reflect.Method;
  import java.lang.reflect.ParameterizedType;
  import java.lang.reflect.Type;
@@ -637,7 +577,7 @@ index 5484a79..5b319b8 100644
  import java.util.List;
  import java.util.Map;
  import java.util.Queue;
-@@ -45,7 +45,7 @@ public final class MiniGuice {
+@@ -45,7 +45,7 @@
    private MiniGuice() {}
  
    private final Map<Key, Provider<?>> bindings = new HashMap<Key, Provider<?>>();
