@@ -1,7 +1,7 @@
-diff --git a/core/src/main/java/com/google/inject/Injector.java b/core/src/main/java/com/google/inject/Injector.java
+diff --git a/core/src/com/google/inject/Injector.java b/core/src/com/google/inject/Injector.java
 index 64b584e..eff67ad 100644
---- a/core/src/main/java/com/google/inject/Injector.java
-+++ b/core/src/main/java/com/google/inject/Injector.java
+--- a/core/src/com/google/inject/Injector.java
++++ b/core/src/com/google/inject/Injector.java
 @@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
  import java.util.List;
  import java.util.Map;
@@ -24,10 +24,10 @@ index 64b584e..eff67ad 100644
 +   */
 +  List<TypeConverterBinding> getTypeConverterBindings();
  }
-diff --git a/core/src/main/java/com/google/inject/internal/BindingProcessor.java b/core/src/main/java/com/google/inject/internal/BindingProcessor.java
+diff --git a/core/src/com/google/inject/internal/BindingProcessor.java b/core/src/com/google/inject/internal/BindingProcessor.java
 index 38af5c0..b166c1a 100644
---- a/core/src/main/java/com/google/inject/internal/BindingProcessor.java
-+++ b/core/src/main/java/com/google/inject/internal/BindingProcessor.java
+--- a/core/src/com/google/inject/internal/BindingProcessor.java
++++ b/core/src/com/google/inject/internal/BindingProcessor.java
 @@ -51,6 +51,12 @@ import java.util.Set;
   */
  final class BindingProcessor extends AbstractProcessor {
@@ -56,10 +56,10 @@ index 38af5c0..b166c1a 100644
    }
  
    <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
-diff --git a/core/src/main/java/com/google/inject/internal/Errors.java b/core/src/main/java/com/google/inject/internal/Errors.java
+diff --git a/core/src/com/google/inject/internal/Errors.java b/core/src/com/google/inject/internal/Errors.java
 index 84fd96e..5baaa27 100644
---- a/core/src/main/java/com/google/inject/internal/Errors.java
-+++ b/core/src/main/java/com/google/inject/internal/Errors.java
+--- a/core/src/com/google/inject/internal/Errors.java
++++ b/core/src/com/google/inject/internal/Errors.java
 @@ -33,6 +33,7 @@ import com.google.inject.spi.Dependency;
  import com.google.inject.spi.InjectionListener;
  import com.google.inject.spi.InjectionPoint;
@@ -124,10 +124,10 @@ index 84fd96e..5baaa27 100644
      }
  
      String convert(Object o) {
-diff --git a/core/src/main/java/com/google/inject/internal/InheritingState.java b/core/src/main/java/com/google/inject/internal/InheritingState.java
+diff --git a/core/src/com/google/inject/internal/InheritingState.java b/core/src/com/google/inject/internal/InheritingState.java
 index 4050b1e..288d875 100644
---- a/core/src/main/java/com/google/inject/internal/InheritingState.java
-+++ b/core/src/main/java/com/google/inject/internal/InheritingState.java
+--- a/core/src/com/google/inject/internal/InheritingState.java
++++ b/core/src/com/google/inject/internal/InheritingState.java
 @@ -24,6 +24,7 @@ import com.google.inject.internal.util.ImmutableList;
  import com.google.inject.internal.util.Lists;
  import com.google.inject.internal.util.Maps;
@@ -171,10 +171,10 @@ index 4050b1e..288d875 100644
          if (converter.getTypeMatcher().matches(type)) {
            if (matchingConverter != null) {
              errors.ambiguousTypeConversion(stringValue, source, type, matchingConverter, converter);
-diff --git a/core/src/main/java/com/google/inject/internal/InjectorImpl.java b/core/src/main/java/com/google/inject/internal/InjectorImpl.java
+diff --git a/core/src/com/google/inject/internal/InjectorImpl.java b/core/src/com/google/inject/internal/InjectorImpl.java
 index ab8e281..73ad4d3 100644
---- a/core/src/main/java/com/google/inject/internal/InjectorImpl.java
-+++ b/core/src/main/java/com/google/inject/internal/InjectorImpl.java
+--- a/core/src/com/google/inject/internal/InjectorImpl.java
++++ b/core/src/com/google/inject/internal/InjectorImpl.java
 @@ -45,6 +45,7 @@ import com.google.inject.spi.Dependency;
  import com.google.inject.spi.HasDependencies;
  import com.google.inject.spi.InjectionPoint;
@@ -268,10 +268,10 @@ index ab8e281..73ad4d3 100644
    }
  
    private static class BindingsMultimap {
-diff --git a/core/src/main/java/com/google/inject/internal/InjectorShell.java b/core/src/main/java/com/google/inject/internal/InjectorShell.java
+diff --git a/core/src/com/google/inject/internal/InjectorShell.java b/core/src/com/google/inject/internal/InjectorShell.java
 index 87c6a9a..2e51945 100644
---- a/core/src/main/java/com/google/inject/internal/InjectorShell.java
-+++ b/core/src/main/java/com/google/inject/internal/InjectorShell.java
+--- a/core/src/com/google/inject/internal/InjectorShell.java
++++ b/core/src/com/google/inject/internal/InjectorShell.java
 @@ -229,6 +229,15 @@ final class InjectorShell {
          new ProviderInstanceBindingImpl<Logger>(injector, key,
              SourceProvider.UNKNOWN_SOURCE, loggerFactory, Scoping.UNSCOPED,
@@ -312,23 +312,10 @@ index 87c6a9a..2e51945 100644
    private static class RootModule implements Module {
      final Stage stage;
  
-diff --git a/core/src/main/java/com/google/inject/internal/InternalContext.java b/core/src/main/java/com/google/inject/internal/InternalContext.java
-index 36bc41a..9930681 100644
---- a/core/src/main/java/com/google/inject/internal/InternalContext.java
-+++ b/core/src/main/java/com/google/inject/internal/InternalContext.java
-@@ -47,7 +47,7 @@ final class InternalContext {
-   }
- 
-   public Dependency setDependency(Dependency dependency) {
--    Dependency previous = dependency;
-+    Dependency previous = this.dependency;
-     this.dependency = dependency;
-     return previous;
-   }
-diff --git a/core/src/main/java/com/google/inject/internal/InternalInjectorCreator.java b/core/src/main/java/com/google/inject/internal/InternalInjectorCreator.java
+diff --git a/core/src/com/google/inject/internal/InternalInjectorCreator.java b/core/src/com/google/inject/internal/InternalInjectorCreator.java
 index 44f0065..157a77a 100644
---- a/core/src/main/java/com/google/inject/internal/InternalInjectorCreator.java
-+++ b/core/src/main/java/com/google/inject/internal/InternalInjectorCreator.java
+--- a/core/src/com/google/inject/internal/InternalInjectorCreator.java
++++ b/core/src/com/google/inject/internal/InternalInjectorCreator.java
 @@ -29,6 +29,7 @@ import com.google.inject.internal.util.ImmutableSet;
  import com.google.inject.internal.util.Iterables;
  import com.google.inject.internal.util.Stopwatch;
@@ -347,10 +334,10 @@ index 44f0065..157a77a 100644
      public <T> Provider<T> getProvider(Key<T> key) {
        throw new UnsupportedOperationException(
          "Injector.getProvider(Key<T>) is not supported in Stage.TOOL");
-diff --git a/core/src/main/java/com/google/inject/internal/MatcherAndConverter.java b/core/src/main/java/com/google/inject/internal/MatcherAndConverter.java
+diff --git a/core/src/com/google/inject/internal/MatcherAndConverter.java b/core/src/com/google/inject/internal/MatcherAndConverter.java
 deleted file mode 100644
 index b618b3f..0000000
---- a/core/src/main/java/com/google/inject/internal/MatcherAndConverter.java
+--- a/core/src/com/google/inject/internal/MatcherAndConverter.java
 +++ /dev/null
 @@ -1,56 +0,0 @@
 -/*
@@ -409,10 +396,10 @@ index b618b3f..0000000
 -        + " (bound at " + source + ")";
 -  }
 -}
-diff --git a/core/src/main/java/com/google/inject/internal/State.java b/core/src/main/java/com/google/inject/internal/State.java
+diff --git a/core/src/com/google/inject/internal/State.java b/core/src/com/google/inject/internal/State.java
 index 4bf8025..ad6c59f 100644
---- a/core/src/main/java/com/google/inject/internal/State.java
-+++ b/core/src/main/java/com/google/inject/internal/State.java
+--- a/core/src/com/google/inject/internal/State.java
++++ b/core/src/com/google/inject/internal/State.java
 @@ -23,6 +23,7 @@ import com.google.inject.TypeLiteral;
  import com.google.inject.internal.util.ImmutableList;
  import com.google.inject.internal.util.ImmutableMap;
@@ -461,10 +448,10 @@ index 4bf8025..ad6c59f 100644
  
    /*if[AOP]*/
    void addMethodAspect(MethodAspect methodAspect);
-diff --git a/core/src/main/java/com/google/inject/internal/TypeConverterBindingProcessor.java b/core/src/main/java/com/google/inject/internal/TypeConverterBindingProcessor.java
+diff --git a/core/src/com/google/inject/internal/TypeConverterBindingProcessor.java b/core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
 index 1f10349..ceb0657 100644
---- a/core/src/main/java/com/google/inject/internal/TypeConverterBindingProcessor.java
-+++ b/core/src/main/java/com/google/inject/internal/TypeConverterBindingProcessor.java
+--- a/core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
++++ b/core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
 @@ -161,12 +161,12 @@ final class TypeConverterBindingProcessor extends AbstractProcessor {
    private void internalConvertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
        TypeConverter converter) {
@@ -481,10 +468,10 @@ index 1f10349..ceb0657 100644
      return true;
    }
  }
-diff --git a/core/src/main/java/com/google/inject/name/NamedImpl.java b/core/src/main/java/com/google/inject/name/NamedImpl.java
+diff --git a/core/src/com/google/inject/name/NamedImpl.java b/core/src/com/google/inject/name/NamedImpl.java
 index 8690c51..5ccc7c7 100644
---- a/core/src/main/java/com/google/inject/name/NamedImpl.java
-+++ b/core/src/main/java/com/google/inject/name/NamedImpl.java
+--- a/core/src/com/google/inject/name/NamedImpl.java
++++ b/core/src/com/google/inject/name/NamedImpl.java
 @@ -38,12 +38,13 @@ class NamedImpl implements Named, Serializable {
    }
  
@@ -504,10 +491,10 @@ index 8690c51..5ccc7c7 100644
    }
  
    public String toString() {
-diff --git a/core/src/main/java/com/google/inject/spi/ConvertedConstantBinding.java b/core/src/main/java/com/google/inject/spi/ConvertedConstantBinding.java
+diff --git a/core/src/com/google/inject/spi/ConvertedConstantBinding.java b/core/src/com/google/inject/spi/ConvertedConstantBinding.java
 index 6c78acb..cd7a0ec 100644
---- a/core/src/main/java/com/google/inject/spi/ConvertedConstantBinding.java
-+++ b/core/src/main/java/com/google/inject/spi/ConvertedConstantBinding.java
+--- a/core/src/com/google/inject/spi/ConvertedConstantBinding.java
++++ b/core/src/com/google/inject/spi/ConvertedConstantBinding.java
 @@ -35,6 +35,11 @@ public interface ConvertedConstantBinding<T> extends Binding<T>, HasDependencies
    T getValue();
  
@@ -520,10 +507,10 @@ index 6c78acb..cd7a0ec 100644
     * Returns the key for the source binding. That binding can e retrieved from an injector using
     * {@link com.google.inject.Injector#getBinding(Key) Injector.getBinding(key)}.
     */
-diff --git a/core/src/main/java/com/google/inject/spi/TypeConverterBinding.java b/core/src/main/java/com/google/inject/spi/TypeConverterBinding.java
+diff --git a/core/src/com/google/inject/spi/TypeConverterBinding.java b/core/src/com/google/inject/spi/TypeConverterBinding.java
 index 74f7c73..9564715 100644
---- a/core/src/main/java/com/google/inject/spi/TypeConverterBinding.java
-+++ b/core/src/main/java/com/google/inject/spi/TypeConverterBinding.java
+--- a/core/src/com/google/inject/spi/TypeConverterBinding.java
++++ b/core/src/com/google/inject/spi/TypeConverterBinding.java
 @@ -36,7 +36,7 @@ public final class TypeConverterBinding implements Element {
    private final Matcher<? super TypeLiteral<?>> typeMatcher;
    private final TypeConverter typeConverter;
@@ -543,18 +530,10 @@ index 74f7c73..9564715 100644
 +        + " (bound at " + source + ")";
 +  }
  }
-diff --git a/core/src/test/java/com/google/inject/AllTests.java b/core/src/test/java/com/google/inject/AllTests.java
+diff --git a/core/test/com/google/inject/AllTests.java b/core/test/com/google/inject/AllTests.java
 index bcb2f14..f1c9d88 100644
---- a/core/src/test/java/com/google/inject/AllTests.java
-+++ b/core/src/test/java/com/google/inject/AllTests.java
-@@ -22,7 +22,6 @@ import com.google.inject.internal.util.Jsr166HashMapTest;
- import com.google.inject.internal.util.LineNumbersTest;
- import com.google.inject.internal.util.MapMakerTestSuite;
- import com.google.inject.internal.MoreTypesTest;
--import com.google.inject.internal.ProxyFactoryTest;
- import com.google.inject.internal.UniqueAnnotationsTest;
- import com.google.inject.matcher.MatcherTest;
- import com.google.inject.name.NamedEquivalanceTest;
+--- a/core/test/com/google/inject/AllTests.java
++++ b/core/test/com/google/inject/AllTests.java
 @@ -45,12 +44,13 @@ import com.googlecode.guice.GuiceTck;
  import java.util.Enumeration;
  import java.util.Set;
@@ -570,15 +549,6 @@ index bcb2f14..f1c9d88 100644
  
    private static final Set<String> SUPPRESSED_TEST_NAMES = ImmutableSet.of(
        "testUnscopedProviderWorksOutsideOfRequestedScope(" + ScopesTest.class.getName() + ")",
-@@ -138,7 +138,7 @@ public class AllTests {
-     suite.addTestSuite(TypesTest.class);
- 
-     /*if[AOP]*/
--    suite.addTestSuite(ProxyFactoryTest.class);
-+    suite.addTestSuite(com.google.inject.internal.ProxyFactoryTest.class);
-     suite.addTestSuite(IntegrationTest.class);
-     suite.addTestSuite(MethodInterceptionTest.class);
-     suite.addTestSuite(com.googlecode.guice.BytecodeGenTest.class);
 @@ -146,7 +146,7 @@ public class AllTests {
  
      // googlecode.guice
@@ -588,30 +558,10 @@ index bcb2f14..f1c9d88 100644
      suite.addTestSuite(Jsr330Test.class);
  
      return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);
-diff --git a/core/src/test/java/com/google/inject/BindingTest.java b/core/src/test/java/com/google/inject/BindingTest.java
-index acaec62..1b71991 100644
---- a/core/src/test/java/com/google/inject/BindingTest.java
-+++ b/core/src/test/java/com/google/inject/BindingTest.java
-@@ -275,6 +275,7 @@ public class BindingTest extends TestCase {
-     }
-   }
- 
-+/*if[AOP]*/
-   public void testToConstructorAndMethodInterceptors() throws NoSuchMethodException {
-     final Constructor<D> constructor = D.class.getConstructor(Stage.class);
-     final AtomicInteger count = new AtomicInteger();
-@@ -297,6 +298,7 @@ public class BindingTest extends TestCase {
-     d.hashCode();
-     assertEquals(2, count.get());
-   }
-+/*end[AOP]*/
- 
-   public void testInaccessibleConstructor() throws NoSuchMethodException {
-     final Constructor<E> constructor = E.class.getDeclaredConstructor(Stage.class);
-diff --git a/core/src/test/java/com/google/inject/TypeConversionTest.java b/core/src/test/java/com/google/inject/TypeConversionTest.java
+diff --git a/core/test/com/google/inject/TypeConversionTest.java b/core/test/com/google/inject/TypeConversionTest.java
 index ead3c99..3d57d31 100644
---- a/core/src/test/java/com/google/inject/TypeConversionTest.java
-+++ b/core/src/test/java/com/google/inject/TypeConversionTest.java
+--- a/core/test/com/google/inject/TypeConversionTest.java
++++ b/core/test/com/google/inject/TypeConversionTest.java
 @@ -19,7 +19,9 @@ package com.google.inject;
  import static com.google.inject.Asserts.assertContains;
  import com.google.inject.internal.util.Iterables;
@@ -637,48 +587,10 @@ index ead3c99..3d57d31 100644
    }
  
    public void testInvalidCustomValue() throws CreationException {
-diff --git a/core/src/test/java/com/google/inject/internal/util/LineNumbersTest.java b/core/src/test/java/com/google/inject/internal/util/LineNumbersTest.java
-index 8931cab..ead8190 100644
---- a/core/src/test/java/com/google/inject/internal/util/LineNumbersTest.java
-+++ b/core/src/test/java/com/google/inject/internal/util/LineNumbersTest.java
-@@ -29,8 +29,8 @@ import junit.framework.TestCase;
-  */
- public class LineNumbersTest extends TestCase {
- 
--  /*if[AOP]*/
-   public void testCanHandleLineNumbersForGuiceGeneratedClasses() {
-+    /*if[AOP]*/
-     try {
-       Guice.createInjector(new AbstractModule() {
-         protected void configure() {
-@@ -51,8 +51,8 @@ public class LineNumbersTest extends TestCase {
-           "for parameter 0 at " + A.class.getName() + ".<init>(LineNumbersTest.java:",
-           "at " + LineNumbersTest.class.getName(), ".configure(LineNumbersTest.java:");
-     }
--  }
-   /*end[AOP]*/
-+  }
- 
-   static class A {
-     @Inject A(B b) {}
-diff --git a/core/src/test/java/com/google/inject/spi/ElementsTest.java b/core/src/test/java/com/google/inject/spi/ElementsTest.java
-index aa1777d..d1275c7 100644
---- a/core/src/test/java/com/google/inject/spi/ElementsTest.java
-+++ b/core/src/test/java/com/google/inject/spi/ElementsTest.java
-@@ -1127,7 +1127,9 @@ public class ElementsTest extends TestCase {
-                 assertEquals(field,
-                     getOnlyElement(constructorBinding.getInjectableMembers()).getMember());
-                 assertEquals(2, constructorBinding.getDependencies().size());
-+/*if[AOP]*/
-                 assertEquals(ImmutableMap.of(), constructorBinding.getMethodInterceptors());
-+/*end[AOP]*/
-                 return null;
-               }
-             });
-diff --git a/core/src/test/java/com/googlecode/guice/BytecodeGenTest.java b/core/src/test/java/com/googlecode/guice/BytecodeGenTest.java
+diff --git a/core/test/com/googlecode/guice/BytecodeGenTest.java b/core/test/com/googlecode/guice/BytecodeGenTest.java
 index 882049c..f05f10b 100644
---- a/core/src/test/java/com/googlecode/guice/BytecodeGenTest.java
-+++ b/core/src/test/java/com/googlecode/guice/BytecodeGenTest.java
+--- a/core/test/com/googlecode/guice/BytecodeGenTest.java
++++ b/core/test/com/googlecode/guice/BytecodeGenTest.java
 @@ -197,6 +197,7 @@ public class BytecodeGenTest extends TestCase {
      }
    }
@@ -708,10 +620,10 @@ index 882049c..f05f10b 100644
  
    public void testProxyingPackagePrivateMethods() {
      Injector injector = Guice.createInjector(interceptorModule);
-diff --git a/extensions/mini/src/main/java/com/google/inject/mini/MiniGuice.java b/extensions/mini/src/main/java/com/google/inject/mini/MiniGuice.java
+diff --git a/extensions/mini/src/com/google/inject/mini/MiniGuice.java b/extensions/mini/src/com/google/inject/mini/MiniGuice.java
 index 5484a79..5b319b8 100644
---- a/extensions/mini/src/main/java/com/google/inject/mini/MiniGuice.java
-+++ b/extensions/mini/src/main/java/com/google/inject/mini/MiniGuice.java
+--- a/extensions/mini/src/com/google/inject/mini/MiniGuice.java
++++ b/extensions/mini/src/com/google/inject/mini/MiniGuice.java
 @@ -23,11 +23,11 @@ import java.lang.reflect.Member;
  import java.lang.reflect.Method;
  import java.lang.reflect.ParameterizedType;
@@ -734,57 +646,3 @@ index 5484a79..5b319b8 100644
    private final Set<Key> singletons = new HashSet<Key>();
  
    /**
-diff --git a/extensions/persist/src/main/java/com/google/inject/persist/jpa/JpaPersistModule.java b/extensions/persist/src/main/java/com/google/inject/persist/jpa/JpaPersistModule.java
-index 510f502..ded3642 100644
---- a/extensions/persist/src/main/java/com/google/inject/persist/jpa/JpaPersistModule.java
-+++ b/extensions/persist/src/main/java/com/google/inject/persist/jpa/JpaPersistModule.java
-@@ -46,7 +46,7 @@ public final class JpaPersistModule extends PersistModule {
-   private final String jpaUnit;
- 
-   public JpaPersistModule(String jpaUnit) {
--    Preconditions.checkArgument(null != jpaUnit && !jpaUnit.isEmpty(),
-+    Preconditions.checkArgument(null != jpaUnit && jpaUnit.length() > 0,
-         "JPA unit name must be a non-empty string.");
-     this.jpaUnit = jpaUnit;
-   }
-diff --git a/core/src/main/java/com/google/inject/internal/ConstructionProxy.java b/core/src/main/java/com/google/inject/internal/ConstructionProxy.java
-index 930d660..7233ae5 100644
---- a/core/src/main/java/com/google/inject/internal/ConstructionProxy.java
-+++ b/core/src/main/java/com/google/inject/internal/ConstructionProxy.java
-@@ -22,7 +22,6 @@ import java.lang.reflect.Constructor;
- import java.lang.reflect.InvocationTargetException;
- import java.lang.reflect.Method;
- import java.util.List;
--import org.aopalliance.intercept.MethodInterceptor;
- 
- /**
-  * Proxies calls to a {@link java.lang.reflect.Constructor} for a class
-@@ -52,6 +51,6 @@ interface ConstructionProxy<T> {
-   /**
-    * Returns the interceptors applied to each method, in order of invocation.
-    */
--  ImmutableMap<Method, List<MethodInterceptor>> getMethodInterceptors();
-+  ImmutableMap<Method, List<org.aopalliance.intercept.MethodInterceptor>> getMethodInterceptors();
-   /*end[AOP]*/
- }
-diff --git a/core/src/main/java/com/google/inject/internal/DefaultConstructionProxyFactory.java b/core/src/main/java/com/google/inject/internal/DefaultConstructionProxyFactory.java
-index c654bbc..74c6756 100644
---- a/core/src/main/java/com/google/inject/internal/DefaultConstructionProxyFactory.java
-+++ b/core/src/main/java/com/google/inject/internal/DefaultConstructionProxyFactory.java
-@@ -24,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
- import java.lang.reflect.Method;
- import java.lang.reflect.Modifier;
- import java.util.List;
--import org.aopalliance.intercept.MethodInterceptor;
- 
- /**
-  * Produces construction proxies that invoke the class constructor.
-@@ -97,7 +96,7 @@ final class DefaultConstructionProxyFactory<T> implements ConstructionProxyFacto
-         return constructor;
-       }
-       /*if[AOP]*/
--      public ImmutableMap<Method, List<MethodInterceptor>>
-+      public ImmutableMap<Method, List<org.aopalliance.intercept.MethodInterceptor>>
-           getMethodInterceptors() {
-         return ImmutableMap.of();
-       }

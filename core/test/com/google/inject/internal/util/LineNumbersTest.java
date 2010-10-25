@@ -29,8 +29,24 @@ import junit.framework.TestCase;
  */
 public class LineNumbersTest extends TestCase {
 
+  public void testLineNumbers() {
+    try {
+      Guice.createInjector(new AbstractModule() {
+        protected void configure() {
+          bind(A.class);
+        }
+      });
+      fail();
+    } catch (CreationException expected) {
+      assertContains(expected.getMessage(),
+          "1) No implementation for " + B.class.getName() + " was bound.",
+          "for parameter 0 at " + A.class.getName() + ".<init>(LineNumbersTest.java:",
+          "at " + LineNumbersTest.class.getName(), ".configure(LineNumbersTest.java:");
+    }
+  }
+
+  /*if[AOP]*/
   public void testCanHandleLineNumbersForGuiceGeneratedClasses() {
-    /*if[AOP]*/
     try {
       Guice.createInjector(new AbstractModule() {
         protected void configure() {
@@ -51,8 +67,8 @@ public class LineNumbersTest extends TestCase {
           "for parameter 0 at " + A.class.getName() + ".<init>(LineNumbersTest.java:",
           "at " + LineNumbersTest.class.getName(), ".configure(LineNumbersTest.java:");
     }
-  /*end[AOP]*/
   }
+  /*end[AOP]*/
 
   static class A {
     @Inject A(B b) {}

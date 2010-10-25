@@ -33,8 +33,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import junit.framework.TestCase;
+/*if[AOP]*/
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+/*end[AOP]*/
 
 /**
  * @author crazybob@google.com (Bob Lee)
