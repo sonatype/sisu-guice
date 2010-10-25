@@ -167,6 +167,26 @@ See the Apache License Version 2.0 for the specific language governing permissio
   </dependencyManagement>
 
   <build>
+    <sourceDirectory>${project.basedir}/src</sourceDirectory>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>${project.basedir}/src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <testSourceDirectory>${project.basedir}/test</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${project.basedir}/test</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
     <pluginManagement>
       <plugins>
         <plugin>
