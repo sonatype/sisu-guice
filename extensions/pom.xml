@@ -11,7 +11,7 @@
 
   <packaging>pom</packaging>
 
-  <artifactId>guice-extensions</artifactId>
+  <artifactId>extensions-parent</artifactId>
 
   <name>Google Guice - Extensions</name>
 
@@ -20,14 +20,16 @@
     <module>grapher</module>
     <module>jmx</module>
     <module>jndi</module>
-    <module>mini</module>
     <module>multibindings</module>
     <module>persist</module>
-    <module>service</module>
     <module>servlet</module>
     <module>spring</module>
     <module>struts2</module>
     <module>throwingproviders</module>
+<!--
+    <module>mini</module>
+    <module>service</module>
+-->
   </modules>
 
   <dependencies>

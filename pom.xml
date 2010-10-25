@@ -71,6 +71,11 @@ See the Apache License Version 2.0 for the specific language governing permissio
     <url>http://code.google.com/p/google-guice/issues/</url>
   </issueManagement>
 
+  <ciManagement>
+    <system>Hudson</system>
+    <url>https://grid.sonatype.org/ci/job/sisu-guice/</url>
+  </ciManagement>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -257,6 +262,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.1</version>
           <configuration>
             <archive>
               <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
