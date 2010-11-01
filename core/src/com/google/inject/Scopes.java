@@ -17,7 +17,6 @@
 package com.google.inject;
 
 import com.google.inject.internal.CircularDependencyProxy;
-import com.google.inject.internal.InternalInjectorCreator;
 import com.google.inject.internal.LinkedBindingImpl;
 import com.google.inject.spi.BindingScopingVisitor;
 import com.google.inject.spi.ExposedBinding;
@@ -60,7 +59,7 @@ public class Scopes {
              *
              * This block is re-entrant for circular dependencies.
              */
-            synchronized (InternalInjectorCreator.class) {
+            synchronized (key.getTypeLiteral().getRawType()) {
               if (instance == null) {
                 T provided = creator.get();
 
