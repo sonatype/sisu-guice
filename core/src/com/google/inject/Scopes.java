@@ -52,14 +52,9 @@ public class Scopes {
         public T get() {
           if (instance == null) {
             /*
-             * Use a pretty coarse lock. We don't want to run into deadlocks
-             * when two threads try to load circularly-dependent objects.
-             * Maybe one of these days we will identify independent graphs of
-             * objects and offer to load them in parallel.
-             *
              * This block is re-entrant for circular dependencies.
              */
-            synchronized (key.getTypeLiteral().getRawType()) {
+            synchronized (this) {
               if (instance == null) {
                 T provided = creator.get();
 
