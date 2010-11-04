@@ -60,6 +60,22 @@ Index: core/test/com/google/inject/TypeConversionTest.java
    }
  
    public void testInvalidCustomValue() throws CreationException {
+@@ -356,7 +366,7 @@
+     @Inject @NumericValue Date date;
+   }
+ 
+-  public void testCannotConvertUnannotatedBindings() {
++/*public void testCannotConvertUnannotatedBindings() {
+     Injector injector = Guice.createInjector(new AbstractModule() {
+       protected void configure() {
+         bind(String.class).toInstance("55");
+@@ -370,5 +380,5 @@
+       Asserts.assertContains(expected.getMessage(),
+           "Could not find a suitable constructor in java.lang.Integer.");
+     }
+-  }
++  }*/
+ }
 Index: core/test/com/google/inject/AllTests.java
 ===================================================================
 --- core/test/com/google/inject/AllTests.java	(revision 1366)
@@ -88,6 +104,28 @@ Index: core/test/com/google/inject/AllTests.java
      suite.addTestSuite(Jsr330Test.class);
  
      return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);
+Index: core/test/com/google/inject/ScopesTest.java
+===================================================================
+--- core/test/com/google/inject/ScopesTest.java	(revision 1366)
++++ core/test/com/google/inject/ScopesTest.java	(working copy)
+@@ -238,7 +238,7 @@
+     Asserts.assertNotSerializable(Scopes.NO_SCOPE);
+   }
+ 
+-  public void testUnscopedProviderWorksOutsideOfRequestedScope() {
++/*public void testUnscopedProviderWorksOutsideOfRequestedScope() {
+     final RememberProviderScope scope = new RememberProviderScope();
+     
+     Injector injector = Guice.createInjector(new AbstractModule() {
+@@ -254,7 +254,7 @@
+     // this line fails with a NullPointerException because the Providers
+     // passed to Scope.scope() don't work outside of the scope() method.
+     assertTrue(listProvider.get() instanceof ArrayList);
+-  }
++  }*/
+ 
+   public void testScopeAnnotationWithoutRuntimeRetention() {
+     try {
 Index: core/src/com/google/inject/name/NamedImpl.java
 ===================================================================
 --- core/src/com/google/inject/name/NamedImpl.java	(revision 1366)
@@ -682,7 +720,7 @@ Index: core/pom.xml
        <groupId>javax.inject</groupId>
        <artifactId>javax.inject-tck</artifactId>
        <version>1</version>
-@@ -59,6 +66,9 @@
+@@ -59,11 +66,11 @@
        <plugin>
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
@@ -690,8 +728,13 @@ Index: core/pom.xml
 +            <exclude>org.slf4j:slf4j-api</exclude>
 +          </classpathDependencyExcludes>
            <excludes>
-             <exclude>**/BytecodeGenTest*</exclude>
+-            <exclude>**/BytecodeGenTest*</exclude>
              <exclude>**/OSGiContainerTest*</exclude>
+-            <exclude>**/ScopesTest*</exclude>
+-            <exclude>**/TypeConversionTest*</exclude>
+           </excludes>
+         </configuration>
+       </plugin>
 Index: pom.xml
 ===================================================================
 --- pom.xml	(revision 1366)
