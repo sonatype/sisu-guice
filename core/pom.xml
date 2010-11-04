@@ -59,6 +59,9 @@
 
   <build>
     <plugins>
+      <!--
+       | Enable Java5 conformance checks
+      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -67,14 +70,23 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.6</version>
         <configuration>
+          <!--
+           | Run core tests without SLF4J on the classpath
+          -->
           <classpathDependencyExcludes>
             <exclude>org.slf4j:slf4j-api</exclude>
           </classpathDependencyExcludes>
+          <!--
+           | This test needs updating for use with Maven
+          -->
           <excludes>
             <exclude>**/OSGiContainerTest*</exclude>
           </excludes>
         </configuration>
       </plugin>
+      <!--
+       | Add OSGi manifest
+      -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -84,6 +96,9 @@
 
   <profiles>
     <profile>
+      <!--
+       | No-AOP profile: repeat the build lifecycle with munged no-AOP source
+      -->
       <id>guice.with.noaop</id>
       <activation>
         <property>
@@ -121,6 +136,9 @@
               </execution>
             </executions>
           </plugin>
+          <!--
+           | Package the no-AOP build with its own OSGi manifest and attach using "noaop" classifier
+          -->
           <plugin>
             <artifactId>maven-jar-plugin</artifactId>
             <executions>
@@ -144,6 +162,9 @@
       </build>
     </profile>
     <profile>
+      <!--
+       | JarJar build profile: re-package ASM and CGLIB classes under the Guice namespace
+      -->
       <id>guice.with.jarjar</id>
       <activation>
         <property>
@@ -164,6 +185,9 @@
             </configuration>
           </plugin>
           <plugin>
+            <!--
+             | Package the original non-JarJar'd classes so extensions can compile against them
+            -->
             <artifactId>maven-jar-plugin</artifactId>
             <executions>
               <execution>
