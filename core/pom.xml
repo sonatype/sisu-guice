@@ -71,8 +71,6 @@
           </classpathDependencyExcludes>
           <excludes>
             <exclude>**/OSGiContainerTest*</exclude>
-            <exclude>**/ScopesTest*</exclude>
-            <exclude>**/TypeConversionTest*</exclude>
           </excludes>
         </configuration>
       </plugin>

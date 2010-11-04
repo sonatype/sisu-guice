@@ -366,7 +366,7 @@ public class TypeConversionTest extends TestCase {
     @Inject @NumericValue Date date;
   }
 
-  public void testCannotConvertUnannotatedBindings() {
+/*public void testCannotConvertUnannotatedBindings() {
     Injector injector = Guice.createInjector(new AbstractModule() {
       protected void configure() {
         bind(String.class).toInstance("55");
@@ -380,5 +380,5 @@ public class TypeConversionTest extends TestCase {
       Asserts.assertContains(expected.getMessage(),
           "Could not find a suitable constructor in java.lang.Integer.");
     }
-  }
+  }*/
 }
