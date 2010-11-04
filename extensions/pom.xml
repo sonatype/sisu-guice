@@ -11,7 +11,7 @@
 
   <packaging>pom</packaging>
 
-  <artifactId>extensions-parent</artifactId>
+  <artifactId>guice-extensions</artifactId>
 
   <name>Google Guice - Extensions</name>
 
