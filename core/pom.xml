@@ -70,7 +70,6 @@
             <exclude>org.slf4j:slf4j-api</exclude>
           </classpathDependencyExcludes>
           <excludes>
-            <exclude>**/BytecodeGenTest*</exclude>
             <exclude>**/OSGiContainerTest*</exclude>
             <exclude>**/ScopesTest*</exclude>
             <exclude>**/TypeConversionTest*</exclude>
