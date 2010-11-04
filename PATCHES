@@ -1018,6 +1018,15 @@ Index: extensions/pom.xml
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
+@@ -73,7 +72,7 @@
+         <artifactId>maven-bundle-plugin</artifactId>
+         <configuration>
+           <instructions>
+-            <Fragment-Host>com.google.inject</Fragment-Host>
++            <Fragment-Host>org.sonatype.sisu.guice</Fragment-Host>
+           </instructions>
+         </configuration>
+       </plugin>
 @@ -98,8 +97,8 @@
           | (optional dependency so it doesn't leak to client projects that depend on Guice artifacts)
          -->
