@@ -65,6 +65,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.6</version>
         <configuration>
           <classpathDependencyExcludes>
             <exclude>org.slf4j:slf4j-api</exclude>
