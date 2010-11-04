@@ -1,6 +1,6 @@
 Index: core/test/com/googlecode/guice/BytecodeGenTest.java
 ===================================================================
---- core/test/com/googlecode/guice/BytecodeGenTest.java	(revision 1319)
+--- core/test/com/googlecode/guice/BytecodeGenTest.java	(revision 1366)
 +++ core/test/com/googlecode/guice/BytecodeGenTest.java	(working copy)
 @@ -197,6 +197,7 @@
      }
@@ -33,7 +33,7 @@ Index: core/test/com/googlecode/guice/BytecodeGenTest.java
      Injector injector = Guice.createInjector(interceptorModule);
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1319)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1366)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -19,7 +19,9 @@
  import static com.google.inject.Asserts.assertContains;
@@ -62,7 +62,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
    public void testInvalidCustomValue() throws CreationException {
 Index: core/test/com/google/inject/AllTests.java
 ===================================================================
---- core/test/com/google/inject/AllTests.java	(revision 1319)
+--- core/test/com/google/inject/AllTests.java	(revision 1366)
 +++ core/test/com/google/inject/AllTests.java	(working copy)
 @@ -44,12 +44,13 @@
  import java.util.Enumeration;
@@ -90,7 +90,7 @@ Index: core/test/com/google/inject/AllTests.java
      return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);
 Index: core/src/com/google/inject/name/NamedImpl.java
 ===================================================================
---- core/src/com/google/inject/name/NamedImpl.java	(revision 1319)
+--- core/src/com/google/inject/name/NamedImpl.java	(revision 1366)
 +++ core/src/com/google/inject/name/NamedImpl.java	(working copy)
 @@ -38,12 +38,13 @@
    }
@@ -113,7 +113,7 @@ Index: core/src/com/google/inject/name/NamedImpl.java
    public String toString() {
 Index: core/src/com/google/inject/spi/ConvertedConstantBinding.java
 ===================================================================
---- core/src/com/google/inject/spi/ConvertedConstantBinding.java	(revision 1319)
+--- core/src/com/google/inject/spi/ConvertedConstantBinding.java	(revision 1366)
 +++ core/src/com/google/inject/spi/ConvertedConstantBinding.java	(working copy)
 @@ -35,6 +35,11 @@
    T getValue();
@@ -129,7 +129,7 @@ Index: core/src/com/google/inject/spi/ConvertedConstantBinding.java
     */
 Index: core/src/com/google/inject/spi/TypeConverterBinding.java
 ===================================================================
---- core/src/com/google/inject/spi/TypeConverterBinding.java	(revision 1319)
+--- core/src/com/google/inject/spi/TypeConverterBinding.java	(revision 1366)
 +++ core/src/com/google/inject/spi/TypeConverterBinding.java	(working copy)
 @@ -36,7 +36,7 @@
    private final Matcher<? super TypeLiteral<?>> typeMatcher;
@@ -152,7 +152,7 @@ Index: core/src/com/google/inject/spi/TypeConverterBinding.java
  }
 Index: core/src/com/google/inject/internal/BindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1319)
+--- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1366)
 +++ core/src/com/google/inject/internal/BindingProcessor.java	(working copy)
 @@ -51,6 +51,12 @@
   */
@@ -184,9 +184,9 @@ Index: core/src/com/google/inject/internal/BindingProcessor.java
    <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
 Index: core/src/com/google/inject/internal/Errors.java
 ===================================================================
---- core/src/com/google/inject/internal/Errors.java	(revision 1319)
+--- core/src/com/google/inject/internal/Errors.java	(revision 1366)
 +++ core/src/com/google/inject/internal/Errors.java	(working copy)
-@@ -33,6 +33,7 @@
+@@ -34,6 +34,7 @@
  import com.google.inject.spi.InjectionListener;
  import com.google.inject.spi.InjectionPoint;
  import com.google.inject.spi.Message;
@@ -194,7 +194,7 @@ Index: core/src/com/google/inject/internal/Errors.java
  import com.google.inject.spi.TypeListenerBinding;
  import java.io.PrintWriter;
  import java.io.Serializable;
-@@ -51,7 +52,7 @@
+@@ -52,7 +53,7 @@
  
  /**
   * A collection of error messages. If this type is passed as a method parameter, the method is
@@ -203,7 +203,7 @@ Index: core/src/com/google/inject/internal/Errors.java
   *
   * <p>Errors can be chained to provide additional context. To add context, call {@link #withSource}
   * to create a new Errors instance that contains additional context. All messages added to the
-@@ -135,30 +136,30 @@
+@@ -136,30 +137,30 @@
    }
  
    public Errors converterReturnedNull(String stringValue, Object source,
@@ -241,7 +241,7 @@ Index: core/src/com/google/inject/internal/Errors.java
      return addMessage("Multiple converters can convert '%s' (bound at %s) to %s:%n"
          + " %s and%n"
          + " %s.%n"
-@@ -608,7 +609,7 @@
+@@ -609,7 +610,7 @@
      }
  
      boolean appliesTo(Object o) {
@@ -252,9 +252,9 @@ Index: core/src/com/google/inject/internal/Errors.java
      String convert(Object o) {
 Index: core/src/com/google/inject/internal/InjectorImpl.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorImpl.java	(revision 1319)
+--- core/src/com/google/inject/internal/InjectorImpl.java	(revision 1366)
 +++ core/src/com/google/inject/internal/InjectorImpl.java	(working copy)
-@@ -45,6 +45,7 @@
+@@ -46,6 +46,7 @@
  import com.google.inject.spi.HasDependencies;
  import com.google.inject.spi.InjectionPoint;
  import com.google.inject.spi.ProviderBinding;
@@ -262,7 +262,7 @@ Index: core/src/com/google/inject/internal/InjectorImpl.java
  import com.google.inject.util.Providers;
  import java.lang.annotation.Annotation;
  import java.lang.reflect.GenericArrayType;
-@@ -376,9 +377,9 @@
+@@ -377,9 +378,9 @@
  
      // Find a matching type converter.
      TypeLiteral<T> type = key.getTypeLiteral();
@@ -274,7 +274,7 @@ Index: core/src/com/google/inject/internal/InjectorImpl.java
        // No converter can handle the given type.
        return null;
      }
-@@ -386,23 +387,24 @@
+@@ -387,23 +388,24 @@
      // Try to convert the string. A failed conversion results in an error.
      try {
        @SuppressWarnings("unchecked") // This cast is safe because we double check below.
@@ -304,7 +304,7 @@ Index: core/src/com/google/inject/internal/InjectorImpl.java
            .toException();
      }
    }
-@@ -412,14 +414,17 @@
+@@ -413,14 +415,17 @@
      final T value;
      final Provider<T> provider;
      final Binding<String> originalBinding;
@@ -323,7 +323,7 @@ Index: core/src/com/google/inject/internal/InjectorImpl.java
      }
  
      @Override public Provider<T> getProvider() {
-@@ -434,6 +439,10 @@
+@@ -435,6 +440,10 @@
        return value;
      }
  
@@ -334,7 +334,7 @@ Index: core/src/com/google/inject/internal/InjectorImpl.java
      public Key<String> getSourceKey() {
        return originalBinding.getKey();
      }
-@@ -828,9 +837,13 @@
+@@ -829,9 +838,13 @@
    }
  
    public Map<Class<? extends Annotation>, Scope> getScopeBindings() {
@@ -351,7 +351,7 @@ Index: core/src/com/google/inject/internal/InjectorImpl.java
  
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1319)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1366)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -229,6 +229,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -393,9 +393,70 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
    private static class RootModule implements Module {
      final Stage stage;
  
+Index: core/src/com/google/inject/internal/MatcherAndConverter.java
+===================================================================
+--- core/src/com/google/inject/internal/MatcherAndConverter.java	(revision 1366)
++++ core/src/com/google/inject/internal/MatcherAndConverter.java	(working copy)
+@@ -1,56 +0,0 @@
+-/*
+- * Copyright (C) 2007 Google Inc.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package com.google.inject.internal;
+-
+-import com.google.inject.TypeLiteral;
+-import static com.google.inject.internal.util.Preconditions.checkNotNull;
+-import com.google.inject.matcher.Matcher;
+-import com.google.inject.spi.TypeConverter;
+-
+-/**
+- * @author crazybob@google.com (Bob Lee)
+- */
+-final class MatcherAndConverter {
+-
+-  private final Matcher<? super TypeLiteral<?>> typeMatcher;
+-  private final TypeConverter typeConverter;
+-  private final Object source;
+-
+-  public MatcherAndConverter(Matcher<? super TypeLiteral<?>> typeMatcher,
+-      TypeConverter typeConverter, Object source) {
+-    this.typeMatcher = checkNotNull(typeMatcher, "type matcher");
+-    this.typeConverter = checkNotNull(typeConverter, "converter");
+-    this.source = source;
+-  }
+-
+-  public TypeConverter getTypeConverter() {
+-    return typeConverter;
+-  }
+-
+-  public Matcher<? super TypeLiteral<?>> getTypeMatcher() {
+-    return typeMatcher;
+-  }
+-
+-  public Object getSource() {
+-    return source;
+-  }
+-
+-  @Override public String toString() {
+-    return typeConverter + " which matches " + typeMatcher
+-        + " (bound at " + source + ")";
+-  }
+-}
 Index: core/src/com/google/inject/internal/InheritingState.java
 ===================================================================
---- core/src/com/google/inject/internal/InheritingState.java	(revision 1319)
+--- core/src/com/google/inject/internal/InheritingState.java	(revision 1366)
 +++ core/src/com/google/inject/internal/InheritingState.java	(working copy)
 @@ -24,6 +24,7 @@
  import com.google.inject.internal.util.Lists;
@@ -442,7 +503,7 @@ Index: core/src/com/google/inject/internal/InheritingState.java
              errors.ambiguousTypeConversion(stringValue, source, type, matchingConverter, converter);
 Index: core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/TypeConverterBindingProcessor.java	(revision 1319)
+--- core/src/com/google/inject/internal/TypeConverterBindingProcessor.java	(revision 1366)
 +++ core/src/com/google/inject/internal/TypeConverterBindingProcessor.java	(working copy)
 @@ -161,12 +161,12 @@
    private void internalConvertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
@@ -462,7 +523,7 @@ Index: core/src/com/google/inject/internal/TypeConverterBindingProcessor.java
  }
 Index: core/src/com/google/inject/internal/State.java
 ===================================================================
---- core/src/com/google/inject/internal/State.java	(revision 1319)
+--- core/src/com/google/inject/internal/State.java	(revision 1366)
 +++ core/src/com/google/inject/internal/State.java	(working copy)
 @@ -23,6 +23,7 @@
  import com.google.inject.internal.util.ImmutableList;
@@ -514,7 +575,7 @@ Index: core/src/com/google/inject/internal/State.java
    void addMethodAspect(MethodAspect methodAspect);
 Index: core/src/com/google/inject/internal/InternalInjectorCreator.java
 ===================================================================
---- core/src/com/google/inject/internal/InternalInjectorCreator.java	(revision 1319)
+--- core/src/com/google/inject/internal/InternalInjectorCreator.java	(revision 1366)
 +++ core/src/com/google/inject/internal/InternalInjectorCreator.java	(working copy)
 @@ -29,6 +29,7 @@
  import com.google.inject.internal.util.Iterables;
@@ -524,7 +585,7 @@ Index: core/src/com/google/inject/internal/InternalInjectorCreator.java
  import java.lang.annotation.Annotation;
  import java.util.Collection;
  import java.util.List;
-@@ -287,6 +288,9 @@
+@@ -286,6 +287,9 @@
      public Map<Class<? extends Annotation>, Scope> getScopeBindings() {
        return delegateInjector.getScopeBindings();
      }
@@ -536,7 +597,7 @@ Index: core/src/com/google/inject/internal/InternalInjectorCreator.java
          "Injector.getProvider(Key<T>) is not supported in Stage.TOOL");
 Index: core/src/com/google/inject/Injector.java
 ===================================================================
---- core/src/com/google/inject/Injector.java	(revision 1319)
+--- core/src/com/google/inject/Injector.java	(revision 1366)
 +++ core/src/com/google/inject/Injector.java	(working copy)
 @@ -20,6 +20,8 @@
  import java.util.List;
@@ -560,9 +621,370 @@ Index: core/src/com/google/inject/Injector.java
 +   */
 +  List<TypeConverterBinding> getTypeConverterBindings();
  }
+Index: core/src/com/google/inject/Scopes.java
+===================================================================
+--- core/src/com/google/inject/Scopes.java	(revision 1366)
++++ core/src/com/google/inject/Scopes.java	(working copy)
+@@ -17,7 +17,6 @@
+ package com.google.inject;
+ 
+ import com.google.inject.internal.CircularDependencyProxy;
+-import com.google.inject.internal.InternalInjectorCreator;
+ import com.google.inject.internal.LinkedBindingImpl;
+ import com.google.inject.spi.BindingScopingVisitor;
+ import com.google.inject.spi.ExposedBinding;
+@@ -53,14 +52,9 @@
+         public T get() {
+           if (instance == null) {
+             /*
+-             * Use a pretty coarse lock. We don't want to run into deadlocks
+-             * when two threads try to load circularly-dependent objects.
+-             * Maybe one of these days we will identify independent graphs of
+-             * objects and offer to load them in parallel.
+-             *
+              * This block is re-entrant for circular dependencies.
+              */
+-            synchronized (InternalInjectorCreator.class) {
++            synchronized (this) {
+               if (instance == null) {
+                 T provided = creator.get();
+ 
+Index: core/pom.xml
+===================================================================
+--- core/pom.xml	(revision 1366)
++++ core/pom.xml	(working copy)
+@@ -4,12 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>guice-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+ 
+-  <artifactId>guice</artifactId>
++  <groupId>org.sonatype.sisu</groupId>
++  <artifactId>sisu-guice</artifactId>
+ 
+   <name>Google Guice - Core Library</name>
+ 
+@@ -25,6 +26,12 @@
+       <version>1.0</version>
+     </dependency>
+     <dependency>
++      <groupId>org.slf4j</groupId>
++      <artifactId>slf4j-api</artifactId>
++      <version>1.6.1</version>
++      <optional>true</optional>
++    </dependency>
++    <dependency>
+       <groupId>javax.inject</groupId>
+       <artifactId>javax.inject-tck</artifactId>
+       <version>1</version>
+@@ -59,6 +66,9 @@
+       <plugin>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
++          <classpathDependencyExcludes>
++            <exclude>org.slf4j:slf4j-api</exclude>
++          </classpathDependencyExcludes>
+           <excludes>
+             <exclude>**/BytecodeGenTest*</exclude>
+             <exclude>**/OSGiContainerTest*</exclude>
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 1366)
++++ pom.xml	(working copy)
+@@ -18,14 +18,14 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google</groupId>
+-    <artifactId>google</artifactId>
+-    <version>5</version>
++    <groupId>org.sonatype.forge</groupId>
++    <artifactId>forge-parent</artifactId>
++    <version>6</version>
+   </parent>
+ 
+   <packaging>pom</packaging>
+ 
+-  <groupId>com.google.inject</groupId>
++  <groupId>org.sonatype.sisu.inject</groupId>
+   <artifactId>guice-parent</artifactId>
+   <version>3.0-SNAPSHOT</version>
+ 
+@@ -61,9 +61,9 @@
+   </mailingLists>
+ 
+   <scm>
+-    <connection>scm:svn:http://google-guice.googlecode.com/svn/trunk</connection>
+-    <developerConnection>scm:svn:https://google-guice.googlecode.com/svn/trunk</developerConnection>
+-    <url>http://code.google.com/p/google-guice/source/browse</url>
++    <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
++    <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
++    <url>http://github.com/sonatype/sisu-guice</url>
+   </scm>
+ 
+   <issueManagement>
+@@ -73,7 +73,7 @@
+ 
+   <ciManagement>
+     <system>Hudson</system>
+-    <url>https://grid.sonatype.org/ci/job/Google-Guice/</url>
++    <url>https://grid.sonatype.org/ci/job/sisu-guice/</url>
+   </ciManagement>
+ 
+   <licenses>
+@@ -92,6 +92,7 @@
+   <properties>
+     <guice.api.version>1.3</guice.api.version>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+     <guice.with.jarjar>true</guice.with.jarjar>
+     <guice.with.noaop>true</guice.with.noaop>
+   </properties>
+@@ -223,9 +224,12 @@
+         </plugin>
+         <plugin>
+           <artifactId>maven-surefire-plugin</artifactId>
+-          <version>2.5</version>
++          <version>2.6</version>
+           <configuration>
++<!--
++            off due to: http://jira.codehaus.org/browse/SUREFIRE-640
+             <redirectTestOutputToFile>true</redirectTestOutputToFile>
++-->
+           </configuration>
+         </plugin>
+         <plugin>
+@@ -234,17 +238,15 @@
+           <version>2.1.0</version>
+           <configuration>
+             <instructions>
+-              <module>com.google.inject</module>
+-              <_include>-${project.basedir}/build.properties</_include>
++              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
+               <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
+               <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
+               <Bundle-Name>${project.artifactId}</Bundle-Name>
+-              <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
+               <Bundle-RequiredExecutionEnvironment>
+                 J2SE-1.5,JavaSE-1.6
+               </Bundle-RequiredExecutionEnvironment>
+               <Import-Package>!com.google.inject.*,*</Import-Package>
+-              <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
++              <_exportcontents>!*.internal.*,com.google.inject.*;version=${guice.api.version}</_exportcontents>
+               <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+               <_nouses>true</_nouses>
+               <_removeheaders>
+Index: extensions/throwingproviders/pom.xml
+===================================================================
+--- extensions/throwingproviders/pom.xml	(revision 1366)
++++ extensions/throwingproviders/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+Index: extensions/service/pom.xml
+===================================================================
+--- extensions/service/pom.xml	(revision 1366)
++++ extensions/service/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+Index: extensions/spring/pom.xml
+===================================================================
+--- extensions/spring/pom.xml	(revision 1366)
++++ extensions/spring/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+Index: extensions/jndi/pom.xml
+===================================================================
+--- extensions/jndi/pom.xml	(revision 1366)
++++ extensions/jndi/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+Index: extensions/servlet/pom.xml
+===================================================================
+--- extensions/servlet/pom.xml	(revision 1366)
++++ extensions/servlet/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+Index: extensions/struts2/pom.xml
+===================================================================
+--- extensions/struts2/pom.xml	(revision 1366)
++++ extensions/struts2/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+@@ -15,7 +15,7 @@
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-servlet</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+Index: extensions/grapher/pom.xml
+===================================================================
+--- extensions/grapher/pom.xml	(revision 1366)
++++ extensions/grapher/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+@@ -15,12 +15,12 @@
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-assistedinject</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-multibindings</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+Index: extensions/multibindings/pom.xml
+===================================================================
+--- extensions/multibindings/pom.xml	(revision 1366)
++++ extensions/multibindings/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+Index: extensions/persist/pom.xml
+===================================================================
+--- extensions/persist/pom.xml	(revision 1366)
++++ extensions/persist/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+Index: extensions/pom.xml
+===================================================================
+--- extensions/pom.xml	(revision 1366)
++++ extensions/pom.xml	(working copy)
+@@ -4,14 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>guice-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+ 
+   <packaging>pom</packaging>
+ 
+-  <groupId>com.google.inject.extensions</groupId>
+   <artifactId>extensions-parent</artifactId>
+ 
+   <name>Google Guice - Extensions</name>
+@@ -35,13 +34,13 @@
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject</groupId>
+-      <artifactId>guice</artifactId>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guice</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+     <dependency>
+-      <groupId>com.google.inject</groupId>
+-      <artifactId>guice</artifactId>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guice</artifactId>
+       <version>${project.version}</version>
+       <classifier>tests</classifier>
+       <scope>test</scope>
+@@ -77,8 +76,8 @@
+       </activation>
+       <dependencies>
+         <dependency>
+-          <groupId>com.google.inject</groupId>
+-          <artifactId>guice</artifactId>
++          <groupId>org.sonatype.sisu</groupId>
++          <artifactId>sisu-guice</artifactId>
+           <version>${project.version}</version>
+           <classifier>nodeps</classifier>
+           <optional>true</optional>
+Index: extensions/assistedinject/pom.xml
+===================================================================
+--- extensions/assistedinject/pom.xml	(revision 1366)
++++ extensions/assistedinject/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
 Index: extensions/mini/src/com/google/inject/mini/MiniGuice.java
 ===================================================================
---- extensions/mini/src/com/google/inject/mini/MiniGuice.java	(revision 1319)
+--- extensions/mini/src/com/google/inject/mini/MiniGuice.java	(revision 1366)
 +++ extensions/mini/src/com/google/inject/mini/MiniGuice.java	(working copy)
 @@ -23,11 +23,11 @@
  import java.lang.reflect.Method;
@@ -586,3 +1008,29 @@ Index: extensions/mini/src/com/google/inject/mini/MiniGuice.java
    private final Set<Key> singletons = new HashSet<Key>();
  
    /**
+Index: extensions/mini/pom.xml
+===================================================================
+--- extensions/mini/pom.xml	(revision 1366)
++++ extensions/mini/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+Index: extensions/jmx/pom.xml
+===================================================================
+--- extensions/jmx/pom.xml	(revision 1366)
++++ extensions/jmx/pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
