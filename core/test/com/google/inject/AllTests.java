@@ -44,13 +44,12 @@ import com.googlecode.guice.GuiceTck;
 import java.util.Enumeration;
 import java.util.Set;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
  * @author crazybob@google.com (Bob Lee)
  */
-public class AllTests extends TestCase {
+public class AllTests {
 
   private static final Set<String> SUPPRESSED_TEST_NAMES = ImmutableSet.of(
       "testUnscopedProviderWorksOutsideOfRequestedScope(" + ScopesTest.class.getName() + ")",
@@ -146,7 +145,7 @@ public class AllTests extends TestCase {
 
     // googlecode.guice
     suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
-////suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
+    suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
     suite.addTestSuite(Jsr330Test.class);
 
     return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);

@@ -225,7 +225,6 @@ public class BytecodeGenTest extends TestCase {
     }
   }
   
-/*******************************************************************************
   public void testProxyClassUnloading() {
     Object testObject = Guice.createInjector(interceptorModule, testModule)
         .getInstance(proxyTestClass);
@@ -240,10 +239,10 @@ public class BytecodeGenTest extends TestCase {
     // null the proxy
     testObject = null;
 
-    |*
+    /*
      * this should be enough to queue the weak reference
      * unless something is holding onto it accidentally.
-     *|
+     */
     String[] buf;
     System.gc();
     buf = new String[8 * 1024 * 1024];
@@ -263,7 +262,6 @@ public class BytecodeGenTest extends TestCase {
     // If it fails, run the test again to make sure it's failing reliably.
     assertNull(clazzRef.get());
   }
-*******************************************************************************/
 
   public void testProxyingPackagePrivateMethods() {
     Injector injector = Guice.createInjector(interceptorModule);
