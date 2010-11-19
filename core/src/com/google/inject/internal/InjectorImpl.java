@@ -838,11 +838,11 @@ final class InjectorImpl implements Injector, Lookups {
   }
 
   public Map<Class<? extends Annotation>, Scope> getScopeBindings() {
-    return Collections.unmodifiableMap(state.getScopes());
+    return ImmutableMap.copyOf(state.getScopes());
   }
 
-  public List<TypeConverterBinding> getTypeConverterBindings() {
-    return Collections.unmodifiableList(state.getConvertersThisLevel());
+  public Set<TypeConverterBinding> getTypeConverterBindings() {
+    return ImmutableSet.copyOf(state.getConvertersThisLevel());
   }
 
   private static class BindingsMultimap {

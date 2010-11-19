@@ -16,19 +16,25 @@
 
 package com.google.inject.servlet;
 
-import javax.servlet.Filter;
-
-import com.google.inject.Key;
+import java.util.Map;
 
 /**
- * A linked binding to a filter. 
- *
- * @author sameb@google.com
+ * A binding created by {@link ServletModule}.
+ * 
+ * @author sameb@google.com (Sam Berlin)
  * @since 3.0
  */
-public interface LinkedFilterBinding extends ServletModuleBinding {
+public interface ServletModuleBinding {
 
-  /** Returns the key used to lookup the filter instance. */
-  Key<? extends Filter> getLinkedKey();
+  /** Returns the pattern type that this binding was created with. */
+  UriPatternType getUriPatternType();
 
+  /** Returns the pattern used to match against the binding. */
+  String getPattern();
+
+  /** Returns any context params supplied when creating the binding. */
+  Map<String, String> getInitParams();
+  
+  /** Returns true if the given URI will match this binding. */
+  boolean matchesUri(String uri);
 }

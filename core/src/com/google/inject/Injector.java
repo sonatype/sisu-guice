@@ -19,6 +19,7 @@ package com.google.inject;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.inject.spi.TypeConverterBinding;
 
@@ -251,10 +252,12 @@ public interface Injector {
   Map<Class<? extends Annotation>, Scope> getScopeBindings();
 
   /**
-   * Returns a list containing all type converter bindings in the injector. The returned list
-   * is immutable.
+   * Returns a set containing all type converter bindings in the injector. The returned set is
+   * immutable.
    *
    * <p>This method is part of the Guice SPI and is intended for use by tools and extensions.
+   * 
+   * @since 3.0
    */
-  List<TypeConverterBinding> getTypeConverterBindings();
+  Set<TypeConverterBinding> getTypeConverterBindings();
 }

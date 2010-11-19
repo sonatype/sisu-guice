@@ -16,8 +16,6 @@
 
 package com.google.inject.servlet;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServlet;
 
 /**
@@ -26,22 +24,7 @@ import javax.servlet.http.HttpServlet;
  * @author sameb@google.com
  * @since 3.0
  */
-public interface InstanceServletBinding {
-  
-  /**
-   * Returns the pattern type that this servlet binding was created with.
-   * This will be {@link UriPatternType#REGEX} if the binding was created with
-   * {@link ServletModule#serveRegex(String, String...)}, and 
-   * {@link UriPatternType#SERVLET} if it was created with
-   * {@link ServletModule#serve(String, String...)}.
-   */
-  UriPatternType getUriPatternType();
-
-  /** Returns the pattern used to match against the servlet. */
-  String getPattern();
-
-  /** Returns any init params supplied when creating the binding. */
-  Map<String, String> getInitParams();
+public interface InstanceServletBinding extends ServletModuleBinding {
 
   /** Returns the servlet instance that will be used. */
   HttpServlet getServletInstance();
