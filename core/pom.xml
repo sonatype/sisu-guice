@@ -14,6 +14,10 @@
 
   <name>Google Guice - Core Library</name>
 
+  <properties>
+    <cglib.version>2.2.1</cglib.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -25,11 +29,19 @@
       <artifactId>aopalliance</artifactId>
       <version>1.0</version>
     </dependency>
+    <!--
+     | Replace with official CGLIB artifact when it's released
+    -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.6.1</version>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu.inject</groupId>
+      <artifactId>cglib</artifactId>
+      <version>${cglib.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -177,6 +189,17 @@
           <value>!false</value>
         </property>
       </activation>
+      <dependencies>
+        <!--
+         | Mark as optional: embedded by JarJar
+        -->
+        <dependency>
+          <groupId>org.sonatype.sisu.inject</groupId>
+          <artifactId>cglib</artifactId>
+          <version>${cglib.version}</version>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>

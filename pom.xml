@@ -89,6 +89,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
     <module>extensions</module>
   </modules>
 
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
   <properties>
     <!--
      | The spec version of the public Guice API
@@ -100,7 +104,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
      | Use "-Dguice.with.jarjar=false" to build without jarjar
     -->
     <guice.with.jarjar>true</guice.with.jarjar>
-    <cglib.version>2.2.1</cglib.version>
     <!--
      | Use "-Dguice.with.noaop=false" to skip the no-AOP variant
     -->
@@ -108,14 +111,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
   </properties>
 
   <dependencies>
-    <!--
-     | Replace with official CGLIB artifact when it's released
-    -->
-    <dependency>
-      <groupId>org.sonatype.sisu.inject</groupId>
-      <artifactId>cglib</artifactId>
-      <version>${cglib.version}</version>
-    </dependency>
     <!--
      | Run tests with TestNG
     -->
@@ -338,26 +333,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
   </build>
 
   <profiles>
-    <profile>
-      <!--
-       | JarJar build profile: re-package ASM and CGLIB classes under the Guice namespace
-      -->
-      <id>guice.with.jarjar</id>
-      <activation>
-        <property>
-          <name>guice.with.jarjar</name>
-          <value>!false</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.sonatype.sisu.inject</groupId>
-          <artifactId>cglib</artifactId>
-          <version>${cglib.version}</version>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
     <profile>
       <!--
        | Deployment profile for the Sonatype Grid
