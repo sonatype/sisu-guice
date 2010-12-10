@@ -105,9 +105,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
     -->
     <guice.with.jarjar>true</guice.with.jarjar>
     <!--
-     | Use "-Dguice.with.noaop=false" to skip the no-AOP variant
+     | Use "-Dguice.with.no_aop=false" to skip the no-AOP variant
     -->
-    <guice.with.noaop>true</guice.with.noaop>
+    <guice.with.no_aop>true</guice.with.no_aop>
   </properties>
 
   <dependencies>
@@ -327,6 +327,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
           <configuration>
             <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.5</version>
         </plugin>
       </plugins>
     </pluginManagement>

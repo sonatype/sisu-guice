@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1425)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1456)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -366,7 +366,7 @@
      @Inject @NumericValue Date date;
@@ -20,7 +20,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
  }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1425)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1456)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -238,7 +238,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -42,7 +42,7 @@ Index: core/test/com/google/inject/ScopesTest.java
      try {
 Index: core/src/com/google/inject/internal/BindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1425)
+--- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1456)
 +++ core/src/com/google/inject/internal/BindingProcessor.java	(working copy)
 @@ -51,6 +51,12 @@
   */
@@ -74,7 +74,7 @@ Index: core/src/com/google/inject/internal/BindingProcessor.java
    <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1425)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1456)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -229,6 +229,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -118,7 +118,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
  
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1425)
+--- core/src/com/google/inject/Scopes.java	(revision 1456)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -146,7 +146,7 @@ Index: core/src/com/google/inject/Scopes.java
  
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1425)
+--- core/pom.xml	(revision 1456)
 +++ core/pom.xml	(working copy)
 @@ -4,12 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
@@ -214,7 +214,7 @@ Index: core/pom.xml
    </build>
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1425)
+--- pom.xml	(revision 1456)
 +++ pom.xml	(working copy)
 @@ -18,14 +18,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -287,7 +287,7 @@ Index: pom.xml
                <_removeheaders>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1425)
+--- extensions/throwingproviders/pom.xml	(revision 1456)
 +++ extensions/throwingproviders/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -302,7 +302,7 @@ Index: extensions/throwingproviders/pom.xml
  
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1425)
+--- extensions/service/pom.xml	(revision 1456)
 +++ extensions/service/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -317,7 +317,7 @@ Index: extensions/service/pom.xml
  
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1425)
+--- extensions/spring/pom.xml	(revision 1456)
 +++ extensions/spring/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -332,7 +332,7 @@ Index: extensions/spring/pom.xml
  
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1425)
+--- extensions/jndi/pom.xml	(revision 1456)
 +++ extensions/jndi/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -347,7 +347,7 @@ Index: extensions/jndi/pom.xml
  
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1425)
+--- extensions/servlet/pom.xml	(revision 1456)
 +++ extensions/servlet/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -360,9 +360,33 @@ Index: extensions/servlet/pom.xml
      <version>3.0-SNAPSHOT</version>
    </parent>
  
+Index: extensions/struts2/pom.xml
+===================================================================
+--- extensions/struts2/pom.xml	(revision 1456)
++++ extensions/struts2/pom.xml	(working copy)
+@@ -4,8 +4,8 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+ 
+@@ -15,7 +15,7 @@
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-servlet</artifactId>
+       <version>${project.version}</version>
+     </dependency>
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1425)
+--- extensions/grapher/pom.xml	(revision 1456)
 +++ extensions/grapher/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -392,7 +416,7 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1425)
+--- extensions/multibindings/pom.xml	(revision 1456)
 +++ extensions/multibindings/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -407,7 +431,7 @@ Index: extensions/multibindings/pom.xml
  
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1425)
+--- extensions/persist/pom.xml	(revision 1456)
 +++ extensions/persist/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -422,7 +446,7 @@ Index: extensions/persist/pom.xml
  
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1425)
+--- extensions/pom.xml	(revision 1456)
 +++ extensions/pom.xml	(working copy)
 @@ -4,15 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -442,7 +466,7 @@ Index: extensions/pom.xml
  
    <name>Google Guice - Extensions</name>
  
-@@ -39,16 +38,16 @@
+@@ -40,16 +39,16 @@
       | All extensions depend on the core
      -->
      <dependency>
@@ -463,7 +487,7 @@ Index: extensions/pom.xml
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
-@@ -72,7 +71,7 @@
+@@ -73,7 +72,7 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
            <instructions>
@@ -472,7 +496,7 @@ Index: extensions/pom.xml
            </instructions>
          </configuration>
        </plugin>
-@@ -97,8 +96,8 @@
+@@ -98,8 +97,8 @@
           | (optional dependency so it doesn't leak to client projects that depend on Guice artifacts)
          -->
          <dependency>
@@ -481,11 +505,11 @@ Index: extensions/pom.xml
 +          <groupId>org.sonatype.sisu</groupId>
 +          <artifactId>sisu-guice</artifactId>
            <version>${project.version}</version>
-           <classifier>nodeps</classifier>
+           <classifier>no_deps</classifier>
            <optional>true</optional>
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1425)
+--- extensions/assistedinject/pom.xml	(revision 1456)
 +++ extensions/assistedinject/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -500,7 +524,7 @@ Index: extensions/assistedinject/pom.xml
  
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1425)
+--- extensions/mini/pom.xml	(revision 1456)
 +++ extensions/mini/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -515,7 +539,7 @@ Index: extensions/mini/pom.xml
  
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1425)
+--- extensions/jmx/pom.xml	(revision 1456)
 +++ extensions/jmx/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>

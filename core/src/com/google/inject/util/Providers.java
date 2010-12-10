@@ -16,7 +16,18 @@
 
 package com.google.inject.util;
 
+import static com.google.inject.internal.util.Preconditions.checkNotNull;
+
+import java.util.Set;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
+import com.google.inject.internal.util.ImmutableSet;
+import com.google.inject.internal.util.Sets;
+import com.google.inject.spi.Dependency;
+import com.google.inject.spi.InjectionPoint;
+import com.google.inject.spi.ProviderWithDependencies;
 
 /**
  * Static utility methods for creating and working with instances of
@@ -48,5 +59,60 @@ public final class Providers {
         return "of(" + instance + ")";
       }
     };
+  }
+
+  /**
+   * Returns a Guice-friendly {@code com.google.inject.Provider} for the given
+   * JSR-330 {@code javax.inject.Provider}. The converse method is unnecessary,
+   * since Guice providers directly implement the JSR-330 interface.
+   * 
+   * @since 3.0
+   */
+  public static <T> Provider<T> guicify(javax.inject.Provider<T> provider) {
+    if (provider instanceof Provider) {
+      return (Provider<T>) provider;
+    }
+  
+    final javax.inject.Provider<T> delegate = checkNotNull(provider, "provider");
+    
+    // Ensure that we inject all injection points from the delegate provider.
+    Set<InjectionPoint> injectionPoints =
+        InjectionPoint.forInstanceMethodsAndFields(provider.getClass());
+    if(injectionPoints.isEmpty()) {
+      return new Provider<T>() {
+        public T get() {
+          return delegate.get();
+        }
+    
+        @Override public String toString() {
+          return "guicified(" + delegate + ")";
+        }
+      };
+    } else {
+      Set<Dependency<?>> mutableDeps = Sets.newHashSet();
+      for(InjectionPoint ip : injectionPoints) {
+        mutableDeps.addAll(ip.getDependencies());
+      }
+      final Set<Dependency<?>> dependencies = ImmutableSet.copyOf(mutableDeps);
+      return new ProviderWithDependencies<T>() {
+        @SuppressWarnings("unused")
+        @Inject
+        void initialize(Injector injector) {
+          injector.injectMembers(delegate);
+        }
+        
+        public Set<Dependency<?>> getDependencies() {
+          return dependencies;
+        }
+        
+        public T get() {
+          return delegate.get();
+        }
+    
+        @Override public String toString() {
+          return "guicified(" + delegate + ")";
+        }
+      };
+    }
   }
 }

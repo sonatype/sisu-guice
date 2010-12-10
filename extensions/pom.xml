@@ -24,6 +24,7 @@
     <module>persist</module>
     <module>servlet</module>
     <module>spring</module>
+    <module>struts2</module>
     <module>throwingproviders</module>
 <!--
  |  not yet promoted...
@@ -99,7 +100,7 @@
           <groupId>org.sonatype.sisu</groupId>
           <artifactId>sisu-guice</artifactId>
           <version>${project.version}</version>
-          <classifier>nodeps</classifier>
+          <classifier>no_deps</classifier>
           <optional>true</optional>
         </dependency>
       </dependencies>
