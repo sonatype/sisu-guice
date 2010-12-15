@@ -121,7 +121,7 @@ final class ConstructorBindingImpl<T> extends BindingImpl<T> implements Construc
 
   @SuppressWarnings("unchecked") // the result type always agrees with the ConstructorInjector type
   public void initialize(InjectorImpl injector, Errors errors) throws ErrorsException {
-    factory.allowCircularProxy = injector.options.allowCircularProxy;
+    factory.allowCircularProxy = !injector.options.disableCircularProxies;
     factory.constructorInjector
         = (ConstructorInjector<T>) injector.constructors.get(constructorInjectionPoint, errors);
   }
@@ -197,6 +197,7 @@ final class ConstructorBindingImpl<T> extends BindingImpl<T> implements Construc
         null, key, getSource(), factory, getScoping(), factory, constructorInjectionPoint);
   }
 
+  @SuppressWarnings("unchecked") // the raw constructor member and declaring type always agree
   public void applyTo(Binder binder) {
     InjectionPoint constructor = getConstructor();
     getScoping().applyTo(binder.withSource(getSource()).bind(getKey()).toConstructor(

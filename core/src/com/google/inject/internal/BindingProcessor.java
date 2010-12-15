@@ -282,7 +282,7 @@ if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
 
   /**
    * We tolerate duplicate bindings if one exposes the other or if the two bindings
-   * are considered duplicates (see {@link Bindings#areDuplicates(BindingImpl, BindingImpl)}. 
+   * are considered duplicates (see {@link Bindings#areDuplicates(BindingImpl, BindingImpl)}.
    *
    * @param original the binding in the parent injector (candidate for an exposing binding)
    * @param binding the binding to check (candidate for the exposed binding)
@@ -307,7 +307,7 @@ if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
   // It's unfortunate that we have to maintain a blacklist of specific
   // classes, but we can't easily block the whole package because of
   // all our unit tests.
-  private static final Set<Class<?>> FORBIDDEN_TYPES = ImmutableSet.of(
+  private static final Set<Class<?>> FORBIDDEN_TYPES = ImmutableSet.<Class<?>>of(
       AbstractModule.class,
       Binder.class,
       Binding.class,
