@@ -15,7 +15,7 @@
   <name>Google Guice - Core Library</name>
 
   <properties>
-    <cglib.version>2.2.1</cglib.version>
+    <cglib.version>2.2.1-v20090111</cglib.version>
   </properties>
 
   <dependencies>
@@ -72,6 +72,12 @@
   <build>
     <plugins>
       <!--
+       | Add standard LICENSE and NOTICE files
+      -->
+      <plugin>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+      </plugin>
+      <!--
        | Enable Java5 conformance checks
       -->
       <plugin>
@@ -106,6 +112,18 @@
           <instructions>
             <DynamicImport-Package>org.slf4j</DynamicImport-Package>
           </instructions>
+        </configuration>
+      </plugin>
+      <!--
+       | Remove duplicate jarjar'd LICENSE and NOTICE
+      -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>LICENSE</exclude>
+            <exclude>NOTICE</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
