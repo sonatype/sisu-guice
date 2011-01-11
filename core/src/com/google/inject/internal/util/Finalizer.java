@@ -21,6 +21,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +46,7 @@ import java.util.logging.Logger;
  * class loader from getting garbage collected, and this class can detect when
  * the main class loader has been garbage collected and stop itself.
  */
-public class Finalizer extends Thread {
+public class Finalizer implements Runnable {
 
   private static final Logger logger
       = Logger.getLogger(Finalizer.class.getName());
@@ -53,6 +54,34 @@ public class Finalizer extends Thread {
   /** Name of FinalizableReference.class. */
   private static final String FINALIZABLE_REFERENCE
       = "com.google.inject.internal.util.FinalizableReference";
+
+  /** Use "-Dguice.executor.class=Clazz" where Clazz implements java.util.concurrent.Executor. */
+  private static final Class<?> EXECUTOR_CLASS;
+
+  static {
+    Class<?> executorClass = null;
+    try {
+      String executorName = System.getProperty("guice.executor.class");
+      if (executorName == null) {
+        executorClass = SimpleExecutor.class;
+      } else if (executorName.length() > 0) {
+        executorClass = Finalizer.class.getClassLoader().loadClass(executorName);
+      }
+    } catch (Throwable t) {
+      logger.log(Level.WARNING, "Cannot load Executor class.", t);
+    }
+    EXECUTOR_CLASS = executorClass;
+  }
+
+  /* Simple Executor that just creates a new thread */
+  static final class SimpleExecutor implements Executor {
+    public void execute(Runnable command) {
+      Thread thread = new Thread(command, command.getClass().getName());
+      thread.setDaemon(true);
+      // TODO: Priority?
+      thread.start();
+    }
+  }
 
   /**
    * Starts the Finalizer thread. FinalizableReferenceQueue calls this method
@@ -79,8 +108,17 @@ public class Finalizer extends Thread {
     }
 
     Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
-    finalizer.start();
-    return finalizer.queue;
+
+    if (null != EXECUTOR_CLASS) {
+      try {
+        ((Executor)EXECUTOR_CLASS.newInstance()).execute(finalizer);
+        return finalizer.queue;
+      } catch (Throwable t) {
+        logger.log(Level.WARNING, "Cannot start Finalizer thread.", t);
+      }
+    }
+
+    return null;
   }
 
   private final WeakReference<Class<?>> finalizableReferenceClassReference;
@@ -89,17 +127,12 @@ public class Finalizer extends Thread {
 
   /** Constructs a new finalizer thread. */
   private Finalizer(Class<?> finalizableReferenceClass, Object frq) {
-    super(Finalizer.class.getName());
 
     this.finalizableReferenceClassReference
         = new WeakReference<Class<?>>(finalizableReferenceClass);
 
     // Keep track of the FRQ that started us so we know when to stop.
     this.frqReference = new PhantomReference<Object>(frq, queue);
-
-    setDaemon(true);
-
-    // TODO: Priority?
   }
 
   /**

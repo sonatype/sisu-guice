@@ -118,24 +118,27 @@ public class FinalizableReferenceQueue {
   @SuppressWarnings("unchecked")
   public FinalizableReferenceQueue() {
     // We could start the finalizer lazily, but I'd rather it blow up early.
-    ReferenceQueue<Object> queue;
-    boolean threadStarted = false;
+    ReferenceQueue<Object> queue = null;
     try {
       queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
           FinalizableReference.class, this);
-      threadStarted = true;
     } catch (IllegalAccessException e) {
       // Finalizer.startFinalizer() is public.
       throw new AssertionError(e);
     } catch (Throwable t) {
-      logger.log(Level.INFO, "Failed to start reference finalizer thread."
-          + " Reference cleanup will only occur when new references are"
-          + " created.", t);
-      queue = new ReferenceQueue<Object>();
+      logger.log(Level.WARNING, "Exception in startFinalizer method.", t);
     }
 
-    this.queue = queue;
-    this.threadStarted = threadStarted;
+    if (queue == null) {
+      logger.log(Level.INFO, "Reference Finalizer thread is not available."
+          + " Reference cleanup will only occur when new references are"
+          + " created.");
+      this.queue = new ReferenceQueue<Object>();
+      this.threadStarted = false;
+    } else {
+      this.queue = queue;
+      this.threadStarted = true;
+    }
   }
 
   /**

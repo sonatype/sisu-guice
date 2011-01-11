@@ -119,8 +119,7 @@ public final class BytecodeGen {
   end[NO_AOP]*/
 
   /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
-  private static final boolean CUSTOM_LOADER_ENABLED
-      = Boolean.parseBoolean(System.getProperty("guice.custom.loader", "true"));
+  private static final boolean CUSTOM_LOADER_ENABLED;
 
   /**
    * Weak cache of bridge class loaders that make the Guice implementation
@@ -129,6 +128,14 @@ public final class BytecodeGen {
   private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
 
   static {
+    boolean customLoaderEnabled;
+    try {
+      customLoaderEnabled = Boolean.parseBoolean(System.getProperty("guice.custom.loader", "true"));
+    } catch (Throwable e) {
+      customLoaderEnabled = false; // unlikely we'll also have permissions for custom loading
+    }
+    CUSTOM_LOADER_ENABLED = customLoaderEnabled;
+
     if (CUSTOM_LOADER_ENABLED) {
       CLASS_LOADER_CACHE = new MapMaker().weakKeys().weakValues().makeComputingMap(
           new Function<ClassLoader, ClassLoader>() {
