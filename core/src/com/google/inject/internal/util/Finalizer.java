@@ -56,31 +56,14 @@ public class Finalizer implements Runnable {
       = "com.google.inject.internal.util.FinalizableReference";
 
   /** Use "-Dguice.executor.class=Clazz" where Clazz implements java.util.concurrent.Executor. */
-  private static final Class<?> EXECUTOR_CLASS;
+  private static final String EXECUTOR_CLASS_NAME;
 
   static {
-    Class<?> executorClass = null;
+    String executorClassName = null;
     try {
-      String executorName = System.getProperty("guice.executor.class");
-      if (executorName == null) {
-        executorClass = SimpleExecutor.class;
-      } else if (executorName.length() > 0) {
-        executorClass = Finalizer.class.getClassLoader().loadClass(executorName);
-      }
-    } catch (Throwable t) {
-      logger.log(Level.WARNING, "Cannot load Executor class.", t);
-    }
-    EXECUTOR_CLASS = executorClass;
-  }
-
-  /* Simple Executor that just creates a new thread */
-  static final class SimpleExecutor implements Executor {
-    public void execute(Runnable command) {
-      Thread thread = new Thread(command, command.getClass().getName());
-      thread.setDaemon(true);
-      // TODO: Priority?
-      thread.start();
-    }
+      executorClassName = System.getProperty("guice.executor.class");
+    } catch (Throwable t) {}
+    EXECUTOR_CLASS_NAME = executorClassName;
   }
 
   /**
@@ -107,18 +90,28 @@ public class Finalizer implements Runnable {
           "Expected " + FINALIZABLE_REFERENCE + ".");
     }
 
-    Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
-
-    if (null != EXECUTOR_CLASS) {
-      try {
-        ((Executor)EXECUTOR_CLASS.newInstance()).execute(finalizer);
-        return finalizer.queue;
-      } catch (Throwable t) {
-        logger.log(Level.WARNING, "Cannot start Finalizer thread.", t);
-      }
+    if ("".equals(EXECUTOR_CLASS_NAME)) {
+      return null;
     }
 
-    return null;
+    Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
+
+    try {
+      if (EXECUTOR_CLASS_NAME == null) {
+        Thread thread = new Thread(finalizer, Finalizer.class.getName());
+        thread.setDaemon(true);
+        // TODO: Priority?
+        thread.start();
+      } else {
+        // use custom Executor supplied by an external container
+        Class<?> executorClass = Finalizer.class.getClassLoader().loadClass(EXECUTOR_CLASS_NAME);
+        ((Executor)executorClass.newInstance()).execute(finalizer);
+      }
+      return finalizer.queue;
+    } catch (Throwable t) {
+      logger.log(Level.WARNING, "Cannot start Finalizer thread.", t);
+      return null;
+    }
   }
 
   private final WeakReference<Class<?>> finalizableReferenceClassReference;
