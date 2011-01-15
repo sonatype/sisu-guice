@@ -90,14 +90,14 @@ public class Finalizer implements Runnable {
           "Expected " + FINALIZABLE_REFERENCE + ".");
     }
 
-    if ("".equals(EXECUTOR_CLASS_NAME)) {
+    if ("NONE".equalsIgnoreCase(EXECUTOR_CLASS_NAME)) {
       return null;
     }
 
     Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
 
     try {
-      if (EXECUTOR_CLASS_NAME == null) {
+      if (EXECUTOR_CLASS_NAME == null || EXECUTOR_CLASS_NAME.length() == 0) {
         Thread thread = new Thread(finalizer, Finalizer.class.getName());
         thread.setDaemon(true);
         // TODO: Priority?
@@ -132,7 +132,6 @@ public class Finalizer implements Runnable {
    * Loops continuously, pulling references off the queue and cleaning them up.
    */
   @SuppressWarnings("InfiniteLoopStatement")
-  @Override
   public void run() {
     try {
       while (true) {

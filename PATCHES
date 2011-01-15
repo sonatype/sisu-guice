@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1479)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1480)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -366,7 +366,7 @@
      @Inject @NumericValue Date date;
@@ -20,7 +20,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
  }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1479)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1480)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -238,7 +238,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -42,7 +42,7 @@ Index: core/test/com/google/inject/ScopesTest.java
      try {
 Index: core/src/com/google/inject/internal/BindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1479)
+--- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1480)
 +++ core/src/com/google/inject/internal/BindingProcessor.java	(working copy)
 @@ -51,6 +51,12 @@
   */
@@ -74,7 +74,7 @@ Index: core/src/com/google/inject/internal/BindingProcessor.java
    <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1479)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1480)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -239,6 +239,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -83,7 +83,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
 +
 +    try {
 +      Key<org.slf4j.Logger> slf4jKey = Key.get(org.slf4j.Logger.class);
-+      SLF4JLoggerFactory slf4jLoggerFactory = new SLF4JLoggerFactory();
++      SLF4JLoggerFactory slf4jLoggerFactory = new SLF4JLoggerFactory(injector);
 +      injector.state.putBinding(slf4jKey,
 +          new ProviderInstanceBindingImpl<org.slf4j.Logger>(injector, slf4jKey,
 +              SourceProvider.UNKNOWN_SOURCE, slf4jLoggerFactory, Scoping.UNSCOPED,
@@ -92,20 +92,40 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
    }
  
    private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
-@@ -258,6 +267,23 @@
+@@ -258,6 +267,43 @@
      }
    }
  
 +  private static class SLF4JLoggerFactory implements InternalFactory<org.slf4j.Logger>, Provider<org.slf4j.Logger> {
++    private final Injector injector;
++
++    private org.slf4j.ILoggerFactory loggerFactory;
++
++    SLF4JLoggerFactory(Injector injector) {
++      this.injector = injector;
++    }
++
++    org.slf4j.ILoggerFactory loggerFactory() {
++      if (loggerFactory == null) {
++        try {
++          loggerFactory = injector.getInstance(org.slf4j.ILoggerFactory.class);
++        } catch (Throwable e) {
++          loggerFactory = org.slf4j.LoggerFactory.getILoggerFactory();
++        }
++      }
++      return loggerFactory;
++    }
++
 +    public org.slf4j.Logger get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked) {
 +      InjectionPoint injectionPoint = dependency.getInjectionPoint();
-+      return injectionPoint == null
-+          ? org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
-+          : org.slf4j.LoggerFactory.getLogger(injectionPoint.getMember().getDeclaringClass());
++      if (injectionPoint != null) {
++        return loggerFactory().getLogger(injectionPoint.getMember().getDeclaringClass().getName());
++      }
++      return loggerFactory().getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 +    }
 +
 +    public org.slf4j.Logger get() {
-+      return org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
++      return loggerFactory().getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 +    }
 +
 +    public String toString() {
@@ -116,9 +136,174 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
    private static class RootModule implements Module {
      final Stage stage;
  
+Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
+===================================================================
+--- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1480)
++++ core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(working copy)
+@@ -118,24 +118,27 @@
+   @SuppressWarnings("unchecked")
+   public FinalizableReferenceQueue() {
+     // We could start the finalizer lazily, but I'd rather it blow up early.
+-    ReferenceQueue<Object> queue;
+-    boolean threadStarted = false;
++    ReferenceQueue<Object> queue = null;
+     try {
+       queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
+           FinalizableReference.class, this);
+-      threadStarted = true;
+     } catch (IllegalAccessException e) {
+       // Finalizer.startFinalizer() is public.
+       throw new AssertionError(e);
+     } catch (Throwable t) {
+-      logger.log(Level.INFO, "Failed to start reference finalizer thread."
++      logger.log(Level.WARNING, "Exception in startFinalizer method.", t);
++    }
++
++    if (queue == null) {
++      logger.log(Level.INFO, "Reference Finalizer thread is not available."
+           + " Reference cleanup will only occur when new references are"
+-          + " created.", t);
+-      queue = new ReferenceQueue<Object>();
++          + " created.");
++      this.queue = new ReferenceQueue<Object>();
++      this.threadStarted = false;
++    } else {
++      this.queue = queue;
++      this.threadStarted = true;
+     }
+-
+-    this.queue = queue;
+-    this.threadStarted = threadStarted;
+   }
+ 
+   /**
+Index: core/src/com/google/inject/internal/util/Finalizer.java
+===================================================================
+--- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1480)
++++ core/src/com/google/inject/internal/util/Finalizer.java	(working copy)
+@@ -21,6 +21,7 @@
+ import java.lang.ref.ReferenceQueue;
+ import java.lang.ref.WeakReference;
+ import java.lang.reflect.Method;
++import java.util.concurrent.Executor;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
+@@ -45,7 +46,7 @@
+  * class loader from getting garbage collected, and this class can detect when
+  * the main class loader has been garbage collected and stop itself.
+  */
+-public class Finalizer extends Thread {
++public class Finalizer implements Runnable {
+ 
+   private static final Logger logger
+       = Logger.getLogger(Finalizer.class.getName());
+@@ -54,6 +55,17 @@
+   private static final String FINALIZABLE_REFERENCE
+       = "com.google.inject.internal.util.FinalizableReference";
+ 
++  /** Use "-Dguice.executor.class=Clazz" where Clazz implements java.util.concurrent.Executor. */
++  private static final String EXECUTOR_CLASS_NAME;
++
++  static {
++    String executorClassName = null;
++    try {
++      executorClassName = System.getProperty("guice.executor.class");
++    } catch (Throwable t) {}
++    EXECUTOR_CLASS_NAME = executorClassName;
++  }
++
+   /**
+    * Starts the Finalizer thread. FinalizableReferenceQueue calls this method
+    * reflectively.
+@@ -78,9 +90,28 @@
+           "Expected " + FINALIZABLE_REFERENCE + ".");
+     }
+ 
++    if ("NONE".equalsIgnoreCase(EXECUTOR_CLASS_NAME)) {
++      return null;
++    }
++
+     Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
+-    finalizer.start();
+-    return finalizer.queue;
++
++    try {
++      if (EXECUTOR_CLASS_NAME == null || EXECUTOR_CLASS_NAME.length() == 0) {
++        Thread thread = new Thread(finalizer, Finalizer.class.getName());
++        thread.setDaemon(true);
++        // TODO: Priority?
++        thread.start();
++      } else {
++        // use custom Executor supplied by an external container
++        Class<?> executorClass = Finalizer.class.getClassLoader().loadClass(EXECUTOR_CLASS_NAME);
++        ((Executor)executorClass.newInstance()).execute(finalizer);
++      }
++      return finalizer.queue;
++    } catch (Throwable t) {
++      logger.log(Level.WARNING, "Cannot start Finalizer thread.", t);
++      return null;
++    }
+   }
+ 
+   private final WeakReference<Class<?>> finalizableReferenceClassReference;
+@@ -89,24 +120,18 @@
+ 
+   /** Constructs a new finalizer thread. */
+   private Finalizer(Class<?> finalizableReferenceClass, Object frq) {
+-    super(Finalizer.class.getName());
+ 
+     this.finalizableReferenceClassReference
+         = new WeakReference<Class<?>>(finalizableReferenceClass);
+ 
+     // Keep track of the FRQ that started us so we know when to stop.
+     this.frqReference = new PhantomReference<Object>(frq, queue);
+-
+-    setDaemon(true);
+-
+-    // TODO: Priority?
+   }
+ 
+   /**
+    * Loops continuously, pulling references off the queue and cleaning them up.
+    */
+   @SuppressWarnings("InfiniteLoopStatement")
+-  @Override
+   public void run() {
+     try {
+       while (true) {
+Index: core/src/com/google/inject/internal/BytecodeGen.java
+===================================================================
+--- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1480)
++++ core/src/com/google/inject/internal/BytecodeGen.java	(working copy)
+@@ -119,8 +119,7 @@
+   end[NO_AOP]*/
+ 
+   /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
+-  private static final boolean CUSTOM_LOADER_ENABLED
+-      = Boolean.parseBoolean(System.getProperty("guice.custom.loader", "true"));
++  private static final boolean CUSTOM_LOADER_ENABLED;
+ 
+   /**
+    * Weak cache of bridge class loaders that make the Guice implementation
+@@ -129,6 +128,14 @@
+   private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
+ 
+   static {
++    boolean customLoaderEnabled;
++    try {
++      customLoaderEnabled = Boolean.parseBoolean(System.getProperty("guice.custom.loader", "true"));
++    } catch (Throwable e) {
++      customLoaderEnabled = false; // unlikely we'll also have permissions for custom loading
++    }
++    CUSTOM_LOADER_ENABLED = customLoaderEnabled;
++
+     if (CUSTOM_LOADER_ENABLED) {
+       CLASS_LOADER_CACHE = new MapMaker().weakKeys().weakValues().makeComputingMap(
+           new Function<ClassLoader, ClassLoader>() {
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1479)
+--- core/src/com/google/inject/Scopes.java	(revision 1480)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -146,7 +331,7 @@ Index: core/src/com/google/inject/Scopes.java
  
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1479)
+--- core/pom.xml	(revision 1480)
 +++ core/pom.xml	(working copy)
 @@ -4,12 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
@@ -214,7 +399,7 @@ Index: core/pom.xml
         | Remove duplicate jarjar'd LICENSE and NOTICE
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1479)
+--- pom.xml	(revision 1480)
 +++ pom.xml	(working copy)
 @@ -18,14 +18,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -287,7 +472,7 @@ Index: pom.xml
                <_removeheaders>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1479)
+--- extensions/throwingproviders/pom.xml	(revision 1480)
 +++ extensions/throwingproviders/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -302,7 +487,7 @@ Index: extensions/throwingproviders/pom.xml
  
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1479)
+--- extensions/service/pom.xml	(revision 1480)
 +++ extensions/service/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -317,7 +502,7 @@ Index: extensions/service/pom.xml
  
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1479)
+--- extensions/spring/pom.xml	(revision 1480)
 +++ extensions/spring/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -332,7 +517,7 @@ Index: extensions/spring/pom.xml
  
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1479)
+--- extensions/jndi/pom.xml	(revision 1480)
 +++ extensions/jndi/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -347,7 +532,7 @@ Index: extensions/jndi/pom.xml
  
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1479)
+--- extensions/servlet/pom.xml	(revision 1480)
 +++ extensions/servlet/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -362,7 +547,7 @@ Index: extensions/servlet/pom.xml
  
 Index: extensions/struts2/pom.xml
 ===================================================================
---- extensions/struts2/pom.xml	(revision 1479)
+--- extensions/struts2/pom.xml	(revision 1480)
 +++ extensions/struts2/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -386,7 +571,7 @@ Index: extensions/struts2/pom.xml
      </dependency>
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1479)
+--- extensions/grapher/pom.xml	(revision 1480)
 +++ extensions/grapher/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -416,7 +601,7 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1479)
+--- extensions/multibindings/pom.xml	(revision 1480)
 +++ extensions/multibindings/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -431,7 +616,7 @@ Index: extensions/multibindings/pom.xml
  
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1479)
+--- extensions/persist/pom.xml	(revision 1480)
 +++ extensions/persist/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -446,7 +631,7 @@ Index: extensions/persist/pom.xml
  
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1479)
+--- extensions/pom.xml	(revision 1480)
 +++ extensions/pom.xml	(working copy)
 @@ -4,15 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -509,7 +694,7 @@ Index: extensions/pom.xml
            <optional>true</optional>
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1479)
+--- extensions/assistedinject/pom.xml	(revision 1480)
 +++ extensions/assistedinject/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -524,7 +709,7 @@ Index: extensions/assistedinject/pom.xml
  
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1479)
+--- extensions/mini/pom.xml	(revision 1480)
 +++ extensions/mini/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -539,7 +724,7 @@ Index: extensions/mini/pom.xml
  
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1479)
+--- extensions/jmx/pom.xml	(revision 1480)
 +++ extensions/jmx/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
