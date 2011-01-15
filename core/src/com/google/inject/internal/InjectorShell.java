@@ -242,7 +242,7 @@ final class InjectorShell {
 
     try {
       Key<org.slf4j.Logger> slf4jKey = Key.get(org.slf4j.Logger.class);
-      SLF4JLoggerFactory slf4jLoggerFactory = new SLF4JLoggerFactory();
+      SLF4JLoggerFactory slf4jLoggerFactory = new SLF4JLoggerFactory(injector);
       injector.state.putBinding(slf4jKey,
           new ProviderInstanceBindingImpl<org.slf4j.Logger>(injector, slf4jKey,
               SourceProvider.UNKNOWN_SOURCE, slf4jLoggerFactory, Scoping.UNSCOPED,
@@ -268,15 +268,35 @@ final class InjectorShell {
   }
 
   private static class SLF4JLoggerFactory implements InternalFactory<org.slf4j.Logger>, Provider<org.slf4j.Logger> {
+    private final Injector injector;
+
+    private org.slf4j.ILoggerFactory loggerFactory;
+
+    SLF4JLoggerFactory(Injector injector) {
+      this.injector = injector;
+    }
+
+    org.slf4j.ILoggerFactory loggerFactory() {
+      if (loggerFactory == null) {
+        try {
+          loggerFactory = injector.getInstance(org.slf4j.ILoggerFactory.class);
+        } catch (Throwable e) {
+          loggerFactory = org.slf4j.LoggerFactory.getILoggerFactory();
+        }
+      }
+      return loggerFactory;
+    }
+
     public org.slf4j.Logger get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked) {
       InjectionPoint injectionPoint = dependency.getInjectionPoint();
-      return injectionPoint == null
-          ? org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
-          : org.slf4j.LoggerFactory.getLogger(injectionPoint.getMember().getDeclaringClass());
+      if (injectionPoint != null) {
+        return loggerFactory().getLogger(injectionPoint.getMember().getDeclaringClass().getName());
+      }
+      return loggerFactory().getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
     }
 
     public org.slf4j.Logger get() {
-      return org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+      return loggerFactory().getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
     }
 
     public String toString() {
