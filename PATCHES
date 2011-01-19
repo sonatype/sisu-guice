@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1480)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1482)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -366,7 +366,7 @@
      @Inject @NumericValue Date date;
@@ -20,7 +20,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
  }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1480)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1482)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -238,7 +238,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -42,7 +42,7 @@ Index: core/test/com/google/inject/ScopesTest.java
      try {
 Index: core/src/com/google/inject/internal/BindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1480)
+--- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1482)
 +++ core/src/com/google/inject/internal/BindingProcessor.java	(working copy)
 @@ -51,6 +51,12 @@
   */
@@ -74,7 +74,7 @@ Index: core/src/com/google/inject/internal/BindingProcessor.java
    <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1480)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1482)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -239,6 +239,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -138,7 +138,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
  
 Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 ===================================================================
---- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1480)
+--- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1482)
 +++ core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(working copy)
 @@ -118,24 +118,27 @@
    @SuppressWarnings("unchecked")
@@ -179,7 +179,7 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
    /**
 Index: core/src/com/google/inject/internal/util/Finalizer.java
 ===================================================================
---- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1480)
+--- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1482)
 +++ core/src/com/google/inject/internal/util/Finalizer.java	(working copy)
 @@ -21,6 +21,7 @@
  import java.lang.ref.ReferenceQueue;
@@ -216,7 +216,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
    /**
     * Starts the Finalizer thread. FinalizableReferenceQueue calls this method
     * reflectively.
-@@ -78,9 +90,28 @@
+@@ -78,9 +90,34 @@
            "Expected " + FINALIZABLE_REFERENCE + ".");
      }
  
@@ -235,8 +235,14 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
 +        // TODO: Priority?
 +        thread.start();
 +      } else {
++        Class<?> executorClass;
++        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
++        if (tccl != null) {
++          executorClass = tccl.loadClass(EXECUTOR_CLASS_NAME);
++        } else {
++          executorClass = Class.forName(EXECUTOR_CLASS_NAME);
++        }
 +        // use custom Executor supplied by an external container
-+        Class<?> executorClass = Finalizer.class.getClassLoader().loadClass(EXECUTOR_CLASS_NAME);
 +        ((Executor)executorClass.newInstance()).execute(finalizer);
 +      }
 +      return finalizer.queue;
@@ -247,7 +253,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
    }
  
    private final WeakReference<Class<?>> finalizableReferenceClassReference;
-@@ -89,24 +120,18 @@
+@@ -89,24 +126,18 @@
  
    /** Constructs a new finalizer thread. */
    private Finalizer(Class<?> finalizableReferenceClass, Object frq) {
@@ -274,7 +280,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
        while (true) {
 Index: core/src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
---- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1480)
+--- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1482)
 +++ core/src/com/google/inject/internal/BytecodeGen.java	(working copy)
 @@ -119,8 +119,7 @@
    end[NO_AOP]*/
@@ -303,7 +309,7 @@ Index: core/src/com/google/inject/internal/BytecodeGen.java
            new Function<ClassLoader, ClassLoader>() {
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1480)
+--- core/src/com/google/inject/Scopes.java	(revision 1482)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -331,7 +337,7 @@ Index: core/src/com/google/inject/Scopes.java
  
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1480)
+--- core/pom.xml	(revision 1482)
 +++ core/pom.xml	(working copy)
 @@ -4,12 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
@@ -399,7 +405,7 @@ Index: core/pom.xml
         | Remove duplicate jarjar'd LICENSE and NOTICE
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1480)
+--- pom.xml	(revision 1482)
 +++ pom.xml	(working copy)
 @@ -18,14 +18,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -472,7 +478,7 @@ Index: pom.xml
                <_removeheaders>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1480)
+--- extensions/throwingproviders/pom.xml	(revision 1482)
 +++ extensions/throwingproviders/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -487,7 +493,7 @@ Index: extensions/throwingproviders/pom.xml
  
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1480)
+--- extensions/service/pom.xml	(revision 1482)
 +++ extensions/service/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -502,7 +508,7 @@ Index: extensions/service/pom.xml
  
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1480)
+--- extensions/spring/pom.xml	(revision 1482)
 +++ extensions/spring/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -517,7 +523,7 @@ Index: extensions/spring/pom.xml
  
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1480)
+--- extensions/jndi/pom.xml	(revision 1482)
 +++ extensions/jndi/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -532,7 +538,7 @@ Index: extensions/jndi/pom.xml
  
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1480)
+--- extensions/servlet/pom.xml	(revision 1482)
 +++ extensions/servlet/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -547,7 +553,7 @@ Index: extensions/servlet/pom.xml
  
 Index: extensions/struts2/pom.xml
 ===================================================================
---- extensions/struts2/pom.xml	(revision 1480)
+--- extensions/struts2/pom.xml	(revision 1482)
 +++ extensions/struts2/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -571,7 +577,7 @@ Index: extensions/struts2/pom.xml
      </dependency>
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1480)
+--- extensions/grapher/pom.xml	(revision 1482)
 +++ extensions/grapher/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -601,7 +607,7 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1480)
+--- extensions/multibindings/pom.xml	(revision 1482)
 +++ extensions/multibindings/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -616,7 +622,7 @@ Index: extensions/multibindings/pom.xml
  
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1480)
+--- extensions/persist/pom.xml	(revision 1482)
 +++ extensions/persist/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -631,7 +637,7 @@ Index: extensions/persist/pom.xml
  
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1480)
+--- extensions/pom.xml	(revision 1482)
 +++ extensions/pom.xml	(working copy)
 @@ -4,15 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -694,7 +700,7 @@ Index: extensions/pom.xml
            <optional>true</optional>
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1480)
+--- extensions/assistedinject/pom.xml	(revision 1482)
 +++ extensions/assistedinject/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -709,7 +715,7 @@ Index: extensions/assistedinject/pom.xml
  
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1480)
+--- extensions/mini/pom.xml	(revision 1482)
 +++ extensions/mini/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -724,7 +730,7 @@ Index: extensions/mini/pom.xml
  
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1480)
+--- extensions/jmx/pom.xml	(revision 1482)
 +++ extensions/jmx/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>

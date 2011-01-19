@@ -103,8 +103,14 @@ public class Finalizer implements Runnable {
         // TODO: Priority?
         thread.start();
       } else {
+        Class<?> executorClass;
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        if (tccl != null) {
+          executorClass = tccl.loadClass(EXECUTOR_CLASS_NAME);
+        } else {
+          executorClass = Class.forName(EXECUTOR_CLASS_NAME);
+        }
         // use custom Executor supplied by an external container
-        Class<?> executorClass = Finalizer.class.getClassLoader().loadClass(EXECUTOR_CLASS_NAME);
         ((Executor)executorClass.newInstance()).execute(finalizer);
       }
       return finalizer.queue;

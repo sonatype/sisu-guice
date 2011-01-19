@@ -23,6 +23,7 @@ import com.google.inject.matcher.Matchers;
 import static com.google.inject.matcher.Matchers.only;
 import com.google.inject.spi.ConstructorBinding;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,53 +38,56 @@ public class MethodInterceptionTest extends TestCase {
 
   private AtomicInteger count = new AtomicInteger();
 
-  private final MethodInterceptor countingInterceptor = new MethodInterceptor() {
+  private final class CountingInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
       count.incrementAndGet();
       return methodInvocation.proceed();
     }
-  };
+  }
 
-  private final MethodInterceptor returnNullInterceptor = new MethodInterceptor() {
+  private final class ReturnNullInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
       return null;
     }
-  };
+  }
+  
+  private final class NoOpInterceptor implements MethodInterceptor {
+    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+      return methodInvocation.proceed();
+    }
+  }
 
   public void testSharedProxyClasses() {
     Injector injector = Guice.createInjector(new AbstractModule() {
       protected void configure() {
         bindInterceptor(Matchers.any(), Matchers.returns(only(Foo.class)),
-            returnNullInterceptor);
+            new ReturnNullInterceptor());
       }
     });
 
-    Injector nullFoosInjector = injector.createChildInjector(new AbstractModule() {
+    Injector childOne = injector.createChildInjector(new AbstractModule() {
       protected void configure() {
         bind(Interceptable.class);
       }
     });
 
-    Interceptable nullFoos = nullFoosInjector.getInstance(Interceptable.class);
-    assertNotNull(nullFoos.bar());
-    assertNull(nullFoos.foo());
+    Interceptable nullFoosOne = childOne.getInstance(Interceptable.class);
+    assertNotNull(nullFoosOne.bar());
+    assertNull(nullFoosOne.foo());
 
-    Injector nullFoosAndBarsInjector = injector.createChildInjector(new AbstractModule() {
+    Injector childTwo = injector.createChildInjector(new AbstractModule() {
       protected void configure() {
         bind(Interceptable.class);
-        bindInterceptor(Matchers.any(), Matchers.returns(only(Bar.class)),
-            returnNullInterceptor);
       }
     });
 
-    Interceptable bothNull = nullFoosAndBarsInjector.getInstance(Interceptable.class);
-    assertNull(bothNull.bar());
-    assertNull(bothNull.foo());
-    
+    Interceptable nullFoosTwo = childTwo.getInstance(Interceptable.class);
+    assertNull(nullFoosTwo.foo());
+
     assertSame("Child injectors should share proxy classes, otherwise memory leaks!",
-        nullFoos.getClass(), bothNull.getClass());
+        nullFoosOne.getClass(), nullFoosTwo.getClass());
   }
-  
+
   public void testGetThis() {
     final AtomicReference<Object> lastTarget = new AtomicReference<Object>();
 
@@ -125,9 +129,11 @@ public class MethodInterceptionTest extends TestCase {
   }
 
   public void testSpiAccessToInterceptors() throws NoSuchMethodException {
+    final MethodInterceptor countingInterceptor = new CountingInterceptor();
+    final MethodInterceptor returnNullInterceptor = new ReturnNullInterceptor();
     Injector injector = Guice.createInjector(new AbstractModule() {
       protected void configure() {
-        bindInterceptor(Matchers.any(), Matchers.returns(only(Foo.class)),
+        bindInterceptor(Matchers.any(),Matchers.returns(only(Foo.class)),
             countingInterceptor);
         bindInterceptor(Matchers.any(), Matchers.returns(only(Foo.class).or(only(Bar.class))),
             returnNullInterceptor);
@@ -152,17 +158,77 @@ public class MethodInterceptionTest extends TestCase {
     assertEquals("expected counting interceptor to be invoked first", 1, count.get());
   }
 
+  public void testInterceptedMethodThrows() throws Exception {
+    Injector injector = Guice.createInjector(new AbstractModule() {
+      protected void configure() {
+        bindInterceptor(Matchers.any(), Matchers.any(), new CountingInterceptor());
+        bindInterceptor(Matchers.any(), Matchers.any(), new CountingInterceptor());
+      }
+    });
+
+    Interceptable interceptable = injector.getInstance(Interceptable.class);
+    try {
+      interceptable.explode();
+      fail();
+    } catch (Exception e) {
+      StackTraceElement[] stackTraceElement = e.getStackTrace();
+      assertEquals("explode", stackTraceElement[0].getMethodName());
+      assertEquals("invoke", stackTraceElement[1].getMethodName());
+      assertEquals("invoke", stackTraceElement[2].getMethodName());
+      assertEquals("testInterceptedMethodThrows", stackTraceElement[3].getMethodName());
+    }
+  }
+  
+  public void testNotInterceptedMethodsInInterceptedClassDontAddFrames() {
+    Injector injector = Guice.createInjector(new AbstractModule() {
+      protected void configure() {
+        bindInterceptor(Matchers.any(), Matchers.returns(only(Foo.class)),
+            new NoOpInterceptor());
+      }
+    });
+
+    Interceptable interceptable = injector.getInstance(Interceptable.class);
+    assertNull(interceptable.lastElements);
+    interceptable.foo();
+    boolean cglibFound = false;
+    for (int i = 0; i < interceptable.lastElements.length; i++) {
+      if (interceptable.lastElements[i].toString().contains("cglib")) {
+        cglibFound = true;
+        break;
+      }
+    }
+    assertTrue(Arrays.asList(interceptable.lastElements).toString(), cglibFound);
+    cglibFound = false;
+    
+    interceptable.bar();
+    for (int i = 0; i < interceptable.lastElements.length; i++) {
+      if (interceptable.lastElements[i].toString().contains("cglib")) {
+        cglibFound = true;
+        break;
+      }
+    }
+    assertFalse(Arrays.asList(interceptable.lastElements).toString(), cglibFound);
+  }
+
   static class Foo {}
   static class Bar {}
 
   public static class Interceptable {
+    StackTraceElement[] lastElements; 
+    
     public Foo foo() {
+      lastElements = Thread.currentThread().getStackTrace();
       return new Foo() {};
     }
     public Bar bar() {
+      lastElements = Thread.currentThread().getStackTrace();
       return new Bar() {};
     }
+    public String explode() throws Exception {
+      lastElements = Thread.currentThread().getStackTrace();
+      throw new Exception("kaboom!");
+    }
   }
-  
+
   public static final class NotInterceptable {}
 }
