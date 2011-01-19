@@ -104,10 +104,9 @@ public class Finalizer implements Runnable {
         thread.start();
       } else {
         Class<?> executorClass;
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        if (tccl != null) {
-          executorClass = tccl.loadClass(EXECUTOR_CLASS_NAME);
-        } else {
+        try {
+          executorClass = Thread.currentThread().getContextClassLoader().loadClass(EXECUTOR_CLASS_NAME);
+        } catch (Throwable ignore) {
           executorClass = Class.forName(EXECUTOR_CLASS_NAME);
         }
         // use custom Executor supplied by an external container

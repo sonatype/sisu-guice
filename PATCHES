@@ -216,7 +216,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
    /**
     * Starts the Finalizer thread. FinalizableReferenceQueue calls this method
     * reflectively.
-@@ -78,9 +90,34 @@
+@@ -78,9 +90,33 @@
            "Expected " + FINALIZABLE_REFERENCE + ".");
      }
  
@@ -236,10 +236,9 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
 +        thread.start();
 +      } else {
 +        Class<?> executorClass;
-+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-+        if (tccl != null) {
-+          executorClass = tccl.loadClass(EXECUTOR_CLASS_NAME);
-+        } else {
++        try {
++          executorClass = Thread.currentThread().getContextClassLoader().loadClass(EXECUTOR_CLASS_NAME);
++        } catch (Throwable ignore) {
 +          executorClass = Class.forName(EXECUTOR_CLASS_NAME);
 +        }
 +        // use custom Executor supplied by an external container
@@ -253,7 +252,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
    }
  
    private final WeakReference<Class<?>> finalizableReferenceClassReference;
-@@ -89,24 +126,18 @@
+@@ -89,24 +125,18 @@
  
    /** Constructs a new finalizer thread. */
    private Finalizer(Class<?> finalizableReferenceClass, Object frq) {
