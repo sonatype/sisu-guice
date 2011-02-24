@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1491)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1506)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -366,7 +366,7 @@
      @Inject @NumericValue Date date;
@@ -18,76 +18,9 @@ Index: core/test/com/google/inject/TypeConversionTest.java
 -  }
 +  }*/
  }
-Index: core/test/com/google/inject/internal/util/LineNumbersTest.java
-===================================================================
---- core/test/com/google/inject/internal/util/LineNumbersTest.java	(revision 1491)
-+++ core/test/com/google/inject/internal/util/LineNumbersTest.java	(working copy)
-@@ -22,7 +22,12 @@
- import com.google.inject.Guice;
- import com.google.inject.Inject;
- import com.google.inject.matcher.Matchers;
-+import java.lang.reflect.Modifier;
- import junit.framework.TestCase;
-+import org.objectweb.asm.ClassWriter;
-+import org.objectweb.asm.MethodVisitor;
-+import org.objectweb.asm.Opcodes;
-+import org.objectweb.asm.Type;
- 
- /**
-  * @author jessewilson@google.com (Jesse Wilson)
-@@ -75,4 +80,49 @@
-   }
-   interface B {}
- 
-+  static class GeneratingClassLoader extends ClassLoader {
-+    static String name = "__generated";
-+
-+    GeneratingClassLoader() {
-+      super(B.class.getClassLoader());
-+    }
-+
-+    Class generate() {
-+      ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-+      cw.visit(Opcodes.V1_5, Modifier.PUBLIC, name, null, Type.getInternalName(Object.class), null);
-+
-+      String sig = "("+Type.getDescriptor(B.class)+")V";
-+
-+      MethodVisitor mv = cw.visitMethod(Modifier.PUBLIC, "<init>", sig, null, null);
-+
-+      mv.visitAnnotation(Type.getDescriptor(Inject.class), true);
-+      mv.visitCode();
-+      mv.visitVarInsn(Opcodes.ALOAD, 0);
-+      mv.visitMethodInsn( Opcodes.INVOKESPECIAL, Type.getInternalName(Object.class), "<init>", "()V" );
-+      mv.visitInsn(Opcodes.RETURN);
-+      mv.visitMaxs(0, 0);
-+      mv.visitEnd();
-+      cw.visitEnd();
-+
-+      byte[] buf = cw.toByteArray();
-+
-+      return defineClass(name.replace('/', '.'), buf, 0, buf.length);
-+    }
-+  }
-+
-+  public void testIgnoreClassesWithUnavailableByteCode() {
-+    try {
-+      Guice.createInjector(new AbstractModule() {
-+        protected void configure() {
-+          bind(new GeneratingClassLoader().generate());
-+        }
-+      });
-+      fail();
-+    } catch (CreationException expected) {
-+      assertContains(expected.getMessage(),
-+          "1) No implementation for " + B.class.getName() + " was bound.",
-+          "for parameter 0 at " + GeneratingClassLoader.name + ".<init>(Unknown Source)",
-+          "at " + LineNumbersTest.class.getName(), ".configure(LineNumbersTest.java:");
-+    }
-+  }
- }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1491)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1506)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -238,7 +238,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -109,7 +42,7 @@ Index: core/test/com/google/inject/ScopesTest.java
      try {
 Index: core/src/com/google/inject/internal/BindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1491)
+--- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1506)
 +++ core/src/com/google/inject/internal/BindingProcessor.java	(working copy)
 @@ -51,6 +51,12 @@
   */
@@ -141,7 +74,7 @@ Index: core/src/com/google/inject/internal/BindingProcessor.java
    <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1491)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1506)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -239,6 +239,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -205,7 +138,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
  
 Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 ===================================================================
---- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1491)
+--- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1506)
 +++ core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(working copy)
 @@ -118,24 +118,27 @@
    @SuppressWarnings("unchecked")
@@ -244,25 +177,9 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
    }
  
    /**
-Index: core/src/com/google/inject/internal/util/LineNumbers.java
-===================================================================
---- core/src/com/google/inject/internal/util/LineNumbers.java	(revision 1491)
-+++ core/src/com/google/inject/internal/util/LineNumbers.java	(working copy)
-@@ -58,8 +58,9 @@
- 
-     if (!type.isArray()) {
-       InputStream in = type.getResourceAsStream("/" + type.getName().replace('.', '/') + ".class");
--      Preconditions.checkArgument(in != null, "Cannot find bytecode for %s", type);
--      new ClassReader(in).accept(new LineNumberReader(), ClassReader.SKIP_FRAMES);
-+      if (in != null) {
-+        new ClassReader(in).accept(new LineNumberReader(), ClassReader.SKIP_FRAMES);
-+      }
-     }
-   }
- 
 Index: core/src/com/google/inject/internal/util/Finalizer.java
 ===================================================================
---- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1491)
+--- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1506)
 +++ core/src/com/google/inject/internal/util/Finalizer.java	(working copy)
 @@ -21,6 +21,7 @@
  import java.lang.ref.ReferenceQueue;
@@ -362,7 +279,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
        while (true) {
 Index: core/src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
---- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1491)
+--- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1506)
 +++ core/src/com/google/inject/internal/BytecodeGen.java	(working copy)
 @@ -119,8 +119,7 @@
    end[NO_AOP]*/
@@ -391,7 +308,7 @@ Index: core/src/com/google/inject/internal/BytecodeGen.java
            new Function<ClassLoader, ClassLoader>() {
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1491)
+--- core/src/com/google/inject/Scopes.java	(revision 1506)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -419,9 +336,9 @@ Index: core/src/com/google/inject/Scopes.java
  
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1491)
+--- core/pom.xml	(revision 1506)
 +++ core/pom.xml	(working copy)
-@@ -4,12 +4,13 @@
+@@ -4,17 +4,18 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -437,6 +354,12 @@ Index: core/pom.xml
  
    <name>Google Guice - Core Library</name>
  
+   <properties>
+-    <cglib.version>2.2.1-v20090111</cglib.version>
++    <cglib.version>2.2.2</cglib.version>
+   </properties>
+ 
+   <dependencies>
 @@ -32,6 +33,12 @@
       | Replace with official CGLIB artifact when it's released
      -->
@@ -450,11 +373,17 @@ Index: core/pom.xml
        <groupId>org.sonatype.sisu.inject</groupId>
        <artifactId>cglib</artifactId>
        <version>${cglib.version}</version>
-@@ -79,14 +86,19 @@
-       </plugin>
-       <plugin>
+@@ -57,7 +64,7 @@
+     <dependency>
+       <groupId>org.apache.felix</groupId>
+       <artifactId>org.apache.felix.framework</artifactId>
+-      <version>3.0.5</version>
++      <version>3.0.8</version>
+       <scope>test</scope>
+     </dependency>
+   </dependencies>
+@@ -81,12 +88,16 @@
          <artifactId>maven-surefire-plugin</artifactId>
-+        <version>2.6</version>
          <configuration>
            <!--
 -           | Temporarily excluded tests
@@ -473,7 +402,7 @@ Index: core/pom.xml
            </excludes>
          </configuration>
        </plugin>
-@@ -96,6 +108,11 @@
+@@ -96,6 +107,11 @@
        <plugin>
          <groupId>org.apache.felix</groupId>
          <artifactId>maven-bundle-plugin</artifactId>
@@ -487,7 +416,7 @@ Index: core/pom.xml
         | Remove duplicate jarjar'd LICENSE and NOTICE
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1491)
+--- pom.xml	(revision 1506)
 +++ pom.xml	(working copy)
 @@ -18,14 +18,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -538,6 +467,15 @@ Index: pom.xml
      <!--
       | Use "-Dguice.with.jarjar=false" to build without jarjar
      -->
+@@ -201,7 +202,7 @@
+         <plugin>
+           <groupId>org.sonatype.plugins</groupId>
+           <artifactId>jarjar-maven-plugin</artifactId>
+-          <version>1.3</version>
++          <version>1.4</version>
+           <configuration>
+             <rules>
+               <rule>
 @@ -264,7 +265,7 @@
          </plugin>
          <plugin>
@@ -547,8 +485,12 @@ Index: pom.xml
            <configuration>
              <redirectTestOutputToFile>true</redirectTestOutputToFile>
            </configuration>
-@@ -278,17 +279,15 @@
-           <version>2.1.0</version>
+@@ -275,20 +276,18 @@
+         <plugin>
+           <groupId>org.apache.felix</groupId>
+           <artifactId>maven-bundle-plugin</artifactId>
+-          <version>2.1.0</version>
++          <version>2.3.4</version>
            <configuration>
              <instructions>
 -              <module>com.google.inject</module>
@@ -569,7 +511,7 @@ Index: pom.xml
                <_removeheaders>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1491)
+--- extensions/throwingproviders/pom.xml	(revision 1506)
 +++ extensions/throwingproviders/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -584,7 +526,7 @@ Index: extensions/throwingproviders/pom.xml
  
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1491)
+--- extensions/service/pom.xml	(revision 1506)
 +++ extensions/service/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -599,7 +541,7 @@ Index: extensions/service/pom.xml
  
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1491)
+--- extensions/spring/pom.xml	(revision 1506)
 +++ extensions/spring/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -614,7 +556,7 @@ Index: extensions/spring/pom.xml
  
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1491)
+--- extensions/jndi/pom.xml	(revision 1506)
 +++ extensions/jndi/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -629,7 +571,7 @@ Index: extensions/jndi/pom.xml
  
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1491)
+--- extensions/servlet/pom.xml	(revision 1506)
 +++ extensions/servlet/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -644,7 +586,7 @@ Index: extensions/servlet/pom.xml
  
 Index: extensions/struts2/pom.xml
 ===================================================================
---- extensions/struts2/pom.xml	(revision 1491)
+--- extensions/struts2/pom.xml	(revision 1506)
 +++ extensions/struts2/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -666,9 +608,18 @@ Index: extensions/struts2/pom.xml
        <artifactId>guice-servlet</artifactId>
        <version>${project.version}</version>
      </dependency>
+@@ -28,7 +28,7 @@
+     <dependency>
+       <groupId>org.apache.struts</groupId>
+       <artifactId>struts2-core</artifactId>
+-      <version>2.2.1</version>
++      <version>2.2.1.1</version>
+       <scope>provided</scope>
+     </dependency>
+   </dependencies>
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1491)
+--- extensions/grapher/pom.xml	(revision 1506)
 +++ extensions/grapher/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -698,7 +649,7 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1491)
+--- extensions/multibindings/pom.xml	(revision 1506)
 +++ extensions/multibindings/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -713,7 +664,7 @@ Index: extensions/multibindings/pom.xml
  
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1491)
+--- extensions/persist/pom.xml	(revision 1506)
 +++ extensions/persist/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -728,7 +679,7 @@ Index: extensions/persist/pom.xml
  
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1491)
+--- extensions/pom.xml	(revision 1506)
 +++ extensions/pom.xml	(working copy)
 @@ -4,15 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -791,7 +742,7 @@ Index: extensions/pom.xml
            <optional>true</optional>
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1491)
+--- extensions/assistedinject/pom.xml	(revision 1506)
 +++ extensions/assistedinject/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -806,7 +757,7 @@ Index: extensions/assistedinject/pom.xml
  
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1491)
+--- extensions/mini/pom.xml	(revision 1506)
 +++ extensions/mini/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -821,7 +772,7 @@ Index: extensions/mini/pom.xml
  
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1491)
+--- extensions/jmx/pom.xml	(revision 1506)
 +++ extensions/jmx/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>

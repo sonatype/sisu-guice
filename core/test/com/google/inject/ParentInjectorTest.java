@@ -18,6 +18,7 @@ package com.google.inject;
 
 import static com.google.inject.Asserts.assertContains;
 import com.google.inject.internal.util.ImmutableList;
+import com.google.inject.internal.util.Iterables;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.spi.TypeConverter;
@@ -52,9 +53,21 @@ public class ParentInjectorTest extends TestCase {
       parent.getInstance(A.class);
       fail("Created a just-in-time binding on the parent that's the same as a child's binding");
     } catch (ConfigurationException e) {
-      assertContains(e.getMessage(), "A binding to ", A.class.getName(),
-          " already exists on a child injector.");
+      assertContains(e.getMessage(),
+          "A binding to " + A.class.getName() + " was already configured at " + bindsA.getClass().getName());
     }
+  }
+  
+  public void testChildCannotBindToAParentJitBinding() {
+    Injector parent = Guice.createInjector();
+    parent.getInstance(A.class);
+    try {
+      parent.createChildInjector(bindsA);
+      fail();
+    } catch(CreationException ce) {
+      assertContains(Iterables.getOnlyElement(ce.getErrorMessages()).getMessage(),
+          "A just-in-time binding to " + A.class.getName() + " was already configured on a parent injector.");
+    }    
   }
 
   public void testJustInTimeBindingsAreSharedWithParentIfPossible() {

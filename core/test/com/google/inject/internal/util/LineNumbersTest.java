@@ -21,6 +21,7 @@ import static com.google.inject.Asserts.assertContains;
 import com.google.inject.CreationException;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.matcher.Matchers;
 import java.lang.reflect.Modifier;
 import junit.framework.TestCase;
@@ -78,7 +79,7 @@ public class LineNumbersTest extends TestCase {
   static class A {
     @Inject A(B b) {}
   }
-  interface B {}
+  public interface B {}
 
   static class GeneratingClassLoader extends ClassLoader {
     static String name = "__generated";
@@ -87,7 +88,7 @@ public class LineNumbersTest extends TestCase {
       super(B.class.getClassLoader());
     }
 
-    Class generate() {
+    Class<?> generate() {
       ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
       cw.visit(Opcodes.V1_5, Modifier.PUBLIC, name, null, Type.getInternalName(Object.class), null);
 
@@ -110,7 +111,7 @@ public class LineNumbersTest extends TestCase {
     }
   }
 
-  public void testIgnoreClassesWithUnavailableByteCode() {
+  public void testUnavailableByteCodeShowsUnknownSource() {
     try {
       Guice.createInjector(new AbstractModule() {
         protected void configure() {
@@ -124,5 +125,17 @@ public class LineNumbersTest extends TestCase {
           "for parameter 0 at " + GeneratingClassLoader.name + ".<init>(Unknown Source)",
           "at " + LineNumbersTest.class.getName(), ".configure(LineNumbersTest.java:");
     }
+  }
+  
+  public void testGeneratedClassesCanSucceed() {
+    final Class<?> generated = new GeneratingClassLoader().generate();
+    Injector injector = Guice.createInjector(new AbstractModule() {
+      protected void configure() {
+        bind(generated);
+        bind(B.class).toInstance(new B() {});
+      }
+    });
+    Object instance = injector.getInstance(generated);
+    assertEquals(instance.getClass(), generated);
   }
 }

@@ -262,21 +262,29 @@ if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
       return;
     }
 
-    BindingImpl<?> original = injector.state.getExplicitBinding(key);
+    BindingImpl<?> original = injector.getExistingBinding(key);
     if (original != null) {
-      try {
-        if(!isOkayDuplicate(original, binding, injector.state)) {
-          errors.bindingAlreadySet(key, original.getSource());
+      // If it failed because of an explicit duplicate binding...
+      if (injector.state.getExplicitBinding(key) != null) {
+        try {
+          if(!isOkayDuplicate(original, binding, injector.state)) {
+            errors.bindingAlreadySet(key, original.getSource());
+            return;
+          }
+        } catch(Throwable t) {
+          errors.errorCheckingDuplicateBinding(key, original.getSource(), t);
           return;
         }
-      } catch(Throwable t) {
-        errors.errorCheckingDuplicateBinding(key, original.getSource(), t);
+      } else {
+        // Otherwise, it failed because of a duplicate JIT binding
+        // in the parent
+        errors.jitBindingAlreadySet(key);
         return;
       }
     }
 
     // prevent the parent from creating a JIT binding for this key
-    injector.state.parent().blacklist(key);
+    injector.state.parent().blacklist(key, binding.getSource());
     injector.state.putBinding(key, binding);
   }
 
