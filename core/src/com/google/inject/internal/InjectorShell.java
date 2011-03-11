@@ -50,10 +50,8 @@ final class InjectorShell {
 
   private final List<Element> elements;
   private final InjectorImpl injector;
-  private final PrivateElements privateElements;
 
   private InjectorShell(Builder builder, List<Element> elements, InjectorImpl injector) {
-    this.privateElements = builder.privateElements;
     this.elements = elements;
     this.injector = injector;
   }
@@ -119,8 +117,11 @@ final class InjectorShell {
      * returned if any modules contain {@link Binder#newPrivateBinder private environments}. The
      * primary injector will be first in the returned list.
      */
-    List<InjectorShell> build(BindingProcessor bindingProcessor,
-        Stopwatch stopwatch, Errors errors) {
+    List<InjectorShell> build(
+        Initializer initializer,
+        ProcessedBindingData bindingData,
+        Stopwatch stopwatch,
+        Errors errors) {
       checkState(stage != null, "Stage not initialized");
       checkState(privateElements == null || parent != null, "PrivateElements with no parent");
       checkState(state != null, "no state. Did you remember to lock() ?");
@@ -169,7 +170,12 @@ final class InjectorShell {
 
       bindInjector(injector);
       bindLogger(injector);
-      bindingProcessor.process(injector, elements);
+      
+      // Process all normal bindings, then UntargettedBindings.
+      // This is necessary because UntargettedBindings can create JIT bindings
+      // and need all their other dependencies set up ahead of time.
+      new BindingProcessor(errors, initializer, bindingData).process(injector, elements);
+      new UntargettedBindingProcessor(errors, bindingData).process(injector, elements);
       stopwatch.resetAndLog("Binding creation");
 
       List<InjectorShell> injectorShells = Lists.newArrayList();
@@ -179,7 +185,7 @@ final class InjectorShell {
       PrivateElementProcessor processor = new PrivateElementProcessor(errors);
       processor.process(injector, elements);
       for (Builder builder : processor.getInjectorShellBuilders()) {
-        injectorShells.addAll(builder.build(bindingProcessor, stopwatch, errors));
+        injectorShells.addAll(builder.build(initializer, bindingData, stopwatch, errors));
       }
       stopwatch.resetAndLog("Private environment creation");
 

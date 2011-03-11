@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1525)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1527)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -399,7 +399,7 @@
      @Inject @NumericValue Date date;
@@ -20,7 +20,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
  }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1525)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1527)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -238,7 +238,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -40,43 +40,11 @@ Index: core/test/com/google/inject/ScopesTest.java
  
    public void testScopeAnnotationWithoutRuntimeRetention() {
      try {
-Index: core/src/com/google/inject/internal/BindingProcessor.java
-===================================================================
---- core/src/com/google/inject/internal/BindingProcessor.java	(revision 1525)
-+++ core/src/com/google/inject/internal/BindingProcessor.java	(working copy)
-@@ -51,6 +51,12 @@
-  */
- final class BindingProcessor extends AbstractProcessor {
- 
-+//------------------------------------------------------------------------------
-+  private static final boolean DISABLE_MISPLACED_ANNOTATION_CHECK
-+      = Boolean.parseBoolean(System.getProperty(
-+          "guice.disable.misplaced.annotation.check", "false"));
-+//------------------------------------------------------------------------------
-+
-   private final List<CreationListener> creationListeners = Lists.newArrayList();
-   private final Initializer initializer;
-   private final List<Runnable> uninitializedBindings = Lists.newArrayList();
-@@ -221,8 +227,14 @@
-   }
- 
-   private <T> void validateKey(Object source, Key<T> key) {
-+//------------------------------------------------------------------------------
-+if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
-+//------------------------------------------------------------------------------
-     Annotations.checkForMisplacedScopeAnnotations(
-         key.getTypeLiteral().getRawType(), source, errors);
-+//------------------------------------------------------------------------------
-+}
-+//------------------------------------------------------------------------------
-   }
- 
-   <T> UntargettedBindingImpl<T> invalidBinding(InjectorImpl injector, Key<T> key, Object source) {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1525)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1527)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
-@@ -239,6 +239,15 @@
+@@ -245,6 +245,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
              SourceProvider.UNKNOWN_SOURCE, loggerFactory, Scoping.UNSCOPED,
              loggerFactory, ImmutableSet.<InjectionPoint>of()));
@@ -92,7 +60,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
    }
  
    private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
-@@ -258,6 +267,43 @@
+@@ -264,6 +273,43 @@
      }
    }
  
@@ -138,7 +106,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
  
 Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 ===================================================================
---- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1525)
+--- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1527)
 +++ core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(working copy)
 @@ -118,24 +118,27 @@
    @SuppressWarnings("unchecked")
@@ -179,7 +147,7 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
    /**
 Index: core/src/com/google/inject/internal/util/Finalizer.java
 ===================================================================
---- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1525)
+--- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1527)
 +++ core/src/com/google/inject/internal/util/Finalizer.java	(working copy)
 @@ -21,6 +21,7 @@
  import java.lang.ref.ReferenceQueue;
@@ -279,7 +247,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
        while (true) {
 Index: core/src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
---- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1525)
+--- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1527)
 +++ core/src/com/google/inject/internal/BytecodeGen.java	(working copy)
 @@ -119,8 +119,7 @@
    end[NO_AOP]*/
@@ -306,9 +274,41 @@ Index: core/src/com/google/inject/internal/BytecodeGen.java
      if (CUSTOM_LOADER_ENABLED) {
        CLASS_LOADER_CACHE = new MapMaker().weakKeys().weakValues().makeComputingMap(
            new Function<ClassLoader, ClassLoader>() {
+Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
+===================================================================
+--- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1527)
++++ core/src/com/google/inject/internal/AbstractBindingProcessor.java	(working copy)
+@@ -38,6 +38,12 @@
+  */
+ abstract class AbstractBindingProcessor extends AbstractProcessor {
+ 
++//------------------------------------------------------------------------------
++  private static final boolean DISABLE_MISPLACED_ANNOTATION_CHECK
++      = Boolean.parseBoolean(System.getProperty(
++          "guice.disable.misplaced.annotation.check", "false"));
++//------------------------------------------------------------------------------
++
+   // It's unfortunate that we have to maintain a blacklist of specific
+   // classes, but we can't easily block the whole package because of
+   // all our unit tests.
+@@ -126,8 +132,14 @@
+   }
+   
+   private <T> void validateKey(Object source, Key<T> key) {
++//------------------------------------------------------------------------------
++if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
++//------------------------------------------------------------------------------
+     Annotations.checkForMisplacedScopeAnnotations(
+         key.getTypeLiteral().getRawType(), source, errors);
++//------------------------------------------------------------------------------
++}
++//------------------------------------------------------------------------------
+   }
+   
+   /** 
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1525)
+--- core/src/com/google/inject/Scopes.java	(revision 1527)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -336,7 +336,7 @@ Index: core/src/com/google/inject/Scopes.java
  
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1525)
+--- core/pom.xml	(revision 1527)
 +++ core/pom.xml	(working copy)
 @@ -4,12 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
@@ -410,7 +410,7 @@ Index: core/pom.xml
         | Remove duplicate jarjar'd LICENSE and NOTICE
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1525)
+--- pom.xml	(revision 1527)
 +++ pom.xml	(working copy)
 @@ -18,14 +18,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -501,7 +501,7 @@ Index: pom.xml
                <_removeheaders>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1525)
+--- extensions/throwingproviders/pom.xml	(revision 1527)
 +++ extensions/throwingproviders/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -516,7 +516,7 @@ Index: extensions/throwingproviders/pom.xml
  
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1525)
+--- extensions/service/pom.xml	(revision 1527)
 +++ extensions/service/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -531,7 +531,7 @@ Index: extensions/service/pom.xml
  
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1525)
+--- extensions/spring/pom.xml	(revision 1527)
 +++ extensions/spring/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -546,7 +546,7 @@ Index: extensions/spring/pom.xml
  
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1525)
+--- extensions/jndi/pom.xml	(revision 1527)
 +++ extensions/jndi/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -561,7 +561,7 @@ Index: extensions/jndi/pom.xml
  
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1525)
+--- extensions/servlet/pom.xml	(revision 1527)
 +++ extensions/servlet/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -576,7 +576,7 @@ Index: extensions/servlet/pom.xml
  
 Index: extensions/struts2/pom.xml
 ===================================================================
---- extensions/struts2/pom.xml	(revision 1525)
+--- extensions/struts2/pom.xml	(revision 1527)
 +++ extensions/struts2/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -609,7 +609,7 @@ Index: extensions/struts2/pom.xml
    </dependencies>
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1525)
+--- extensions/grapher/pom.xml	(revision 1527)
 +++ extensions/grapher/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -639,7 +639,7 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1525)
+--- extensions/multibindings/pom.xml	(revision 1527)
 +++ extensions/multibindings/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -654,7 +654,7 @@ Index: extensions/multibindings/pom.xml
  
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1525)
+--- extensions/persist/pom.xml	(revision 1527)
 +++ extensions/persist/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -669,7 +669,7 @@ Index: extensions/persist/pom.xml
  
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1525)
+--- extensions/pom.xml	(revision 1527)
 +++ extensions/pom.xml	(working copy)
 @@ -4,15 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -732,7 +732,7 @@ Index: extensions/pom.xml
            <optional>true</optional>
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1525)
+--- extensions/assistedinject/pom.xml	(revision 1527)
 +++ extensions/assistedinject/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -747,7 +747,7 @@ Index: extensions/assistedinject/pom.xml
  
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1525)
+--- extensions/mini/pom.xml	(revision 1527)
 +++ extensions/mini/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -762,7 +762,7 @@ Index: extensions/mini/pom.xml
  
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1525)
+--- extensions/jmx/pom.xml	(revision 1527)
 +++ extensions/jmx/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
