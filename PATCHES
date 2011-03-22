@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1527)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1528)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -399,7 +399,7 @@
      @Inject @NumericValue Date date;
@@ -20,7 +20,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
  }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1527)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1528)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -238,7 +238,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -42,7 +42,7 @@ Index: core/test/com/google/inject/ScopesTest.java
      try {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1527)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1528)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -245,6 +245,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -106,7 +106,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
  
 Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 ===================================================================
---- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1527)
+--- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1528)
 +++ core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(working copy)
 @@ -118,24 +118,27 @@
    @SuppressWarnings("unchecked")
@@ -147,7 +147,7 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
    /**
 Index: core/src/com/google/inject/internal/util/Finalizer.java
 ===================================================================
---- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1527)
+--- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1528)
 +++ core/src/com/google/inject/internal/util/Finalizer.java	(working copy)
 @@ -21,6 +21,7 @@
  import java.lang.ref.ReferenceQueue;
@@ -247,7 +247,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
        while (true) {
 Index: core/src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
---- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1527)
+--- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1528)
 +++ core/src/com/google/inject/internal/BytecodeGen.java	(working copy)
 @@ -119,8 +119,7 @@
    end[NO_AOP]*/
@@ -276,7 +276,7 @@ Index: core/src/com/google/inject/internal/BytecodeGen.java
            new Function<ClassLoader, ClassLoader>() {
 Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1527)
+--- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1528)
 +++ core/src/com/google/inject/internal/AbstractBindingProcessor.java	(working copy)
 @@ -38,6 +38,12 @@
   */
@@ -308,7 +308,7 @@ Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
    /** 
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1527)
+--- core/src/com/google/inject/Scopes.java	(revision 1528)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -336,7 +336,7 @@ Index: core/src/com/google/inject/Scopes.java
  
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1527)
+--- core/pom.xml	(revision 1528)
 +++ core/pom.xml	(working copy)
 @@ -4,12 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
@@ -410,7 +410,7 @@ Index: core/pom.xml
         | Remove duplicate jarjar'd LICENSE and NOTICE
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1527)
+--- pom.xml	(revision 1528)
 +++ pom.xml	(working copy)
 @@ -18,14 +18,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -501,7 +501,7 @@ Index: pom.xml
                <_removeheaders>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1527)
+--- extensions/throwingproviders/pom.xml	(revision 1528)
 +++ extensions/throwingproviders/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -516,7 +516,7 @@ Index: extensions/throwingproviders/pom.xml
  
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1527)
+--- extensions/service/pom.xml	(revision 1528)
 +++ extensions/service/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -531,7 +531,7 @@ Index: extensions/service/pom.xml
  
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1527)
+--- extensions/spring/pom.xml	(revision 1528)
 +++ extensions/spring/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -546,7 +546,7 @@ Index: extensions/spring/pom.xml
  
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1527)
+--- extensions/jndi/pom.xml	(revision 1528)
 +++ extensions/jndi/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -559,9 +559,449 @@ Index: extensions/jndi/pom.xml
      <version>3.0-SNAPSHOT</version>
    </parent>
  
+Index: extensions/servlet/test/com/google/inject/servlet/VarargsFilterDispatchIntegrationTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/VarargsFilterDispatchIntegrationTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/VarargsFilterDispatchIntegrationTest.java	(working copy)
+@@ -62,9 +62,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+             .andReturn("/index.html")
+             .anyTimes();
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -98,9 +101,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+             .andReturn("/index.xhtml")
+             .anyTimes();
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -135,9 +141,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+             .andReturn("/index")
+             .anyTimes();
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -168,4 +177,4 @@
+       destroys++;
+     }
+   }
+-}
+\ No newline at end of file
++}
+Index: extensions/servlet/test/com/google/inject/servlet/ServletDispatchIntegrationTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/ServletDispatchIntegrationTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/ServletDispatchIntegrationTest.java	(working copy)
+@@ -81,9 +81,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+         .andReturn("/index.html")
+         .times(1);
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -125,9 +128,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+         .andReturn("/index.html")
+         .times(2);
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -233,9 +239,12 @@
+ 
+     final HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+     HttpServletResponse responseMock = createMock(HttpServletResponse.class);
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+         .andReturn("/")
+         .anyTimes();
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     requestMock.setAttribute(REQUEST_DISPATCHER_REQUEST, true);
+     expect(requestMock.getAttribute(REQUEST_DISPATCHER_REQUEST)).andReturn(true);
+@@ -253,4 +262,4 @@
+     assertEquals("Incorrect number of forwards", 1, ForwardedServlet.forwardedTo);
+     verify(requestMock, responseMock);
+   }
+-}
+\ No newline at end of file
++}
+Index: extensions/servlet/test/com/google/inject/servlet/FilterDispatchIntegrationTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/FilterDispatchIntegrationTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/FilterDispatchIntegrationTest.java	(working copy)
+@@ -72,12 +72,12 @@
+     // create ourselves a mock request with test URI
+     HttpServletRequest requestMock = control.createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
+-            .andReturn("/index.html")
+-            .anyTimes();
+     expect(requestMock.getRequestURI())
+             .andReturn("/index.html")
+             .anyTimes();
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     requestMock.setAttribute(REQUEST_DISPATCHER_REQUEST, true);
+     requestMock.removeAttribute(REQUEST_DISPATCHER_REQUEST);
+@@ -128,9 +128,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = control.createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+             .andReturn("/index.xhtml")
+             .anyTimes();
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     FilterChain filterChain = control.createMock(FilterChain.class);
+@@ -166,9 +169,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = control.createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+             .andReturn("/index")
+             .anyTimes();
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     // dispatch request
+     FilterChain filterChain = control.createMock(FilterChain.class);
+@@ -211,7 +217,7 @@
+         throws ServletException, IOException {
+       String requestUri = httpServletRequest.getRequestURI();
+       processedUris.add(requestUri);
+-      
++
+       // If the client is requesting /index.html then we forward to /forwarded.html
+       if (FORWARD_FROM.equals(requestUri)) {
+         httpServletRequest.getRequestDispatcher(FORWARD_TO)
+Index: extensions/servlet/test/com/google/inject/servlet/FilterPipelineTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/FilterPipelineTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/FilterPipelineTest.java	(working copy)
+@@ -70,9 +70,12 @@
+         .andReturn(servletContext)
+         .once();
+ 
+-    expect(request.getServletPath())
++    expect(request.getRequestURI())
+         .andReturn("/public/login.jsp")
+         .anyTimes();
++    expect(request.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //at the end, proceed down webapp's normal filter chain
+     proceedingFilterChain.doFilter(isA(HttpServletRequest.class), (ServletResponse) isNull());
+Index: extensions/servlet/test/com/google/inject/servlet/InjectedFilterPipelineTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/InjectedFilterPipelineTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/InjectedFilterPipelineTest.java	(working copy)
+@@ -85,9 +85,12 @@
+         .andReturn(servletContext)
+         .once();
+ 
+-    expect(request.getServletPath())
++    expect(request.getRequestURI())
+         .andReturn("/non-jsp/login.html") // use a path that will fail in injector2
+         .anyTimes();
++    expect(request.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //at the end, proceed down webapp's normal filter chain
+     proceedingFilterChain.doFilter(isA(HttpServletRequest.class), (ServletResponse) isNull());
+@@ -109,7 +112,7 @@
+ 
+ 
+ 
+-    
++
+     // reset mocks and run them against the other injector
+     reset(filterConfig, servletContext, request, proceedingFilterChain);
+ 
+@@ -121,14 +124,17 @@
+     expect(filterConfig.getServletContext())
+         .andReturn(servletContext)
+         .once();
+-    expect(request.getServletPath())
++    expect(request.getRequestURI())
+             .andReturn("/public/login/login.jsp") // use a path that will fail in injector1
+             .anyTimes();
++    expect(request.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //at the end, proceed down webapp's normal filter chain
+     proceedingFilterChain2.doFilter(isA(HttpServletRequest.class), (ServletResponse) isNull());
+     expectLastCall().once();
+-    
++
+     // Never fire on this pipeline
+     replay(filterConfig, servletContext, request, proceedingFilterChain2, proceedingFilterChain);
+ 
+@@ -169,4 +175,4 @@
+     public void destroy() {
+     }
+   }
+-}
+\ No newline at end of file
++}
+Index: extensions/servlet/test/com/google/inject/servlet/MultiModuleDispatchIntegrationTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/MultiModuleDispatchIntegrationTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/MultiModuleDispatchIntegrationTest.java	(working copy)
+@@ -72,9 +72,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+             .andReturn("/index.html")
+             .anyTimes();
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -105,4 +108,4 @@
+       destroys++;
+     }
+   }
+-}
+\ No newline at end of file
++}
+Index: extensions/servlet/test/com/google/inject/servlet/ContinuingRequestIntegrationTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/ContinuingRequestIntegrationTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/ContinuingRequestIntegrationTest.java	(working copy)
+@@ -118,7 +118,10 @@
+ 
+     HttpServletRequest request = createMock(HttpServletRequest.class);
+ 
+-    expect(request.getServletPath()).andReturn("/");
++    expect(request.getRequestURI()).andReturn("/");
++    expect(request.getContextPath())
++        .andReturn("")
++        .anyTimes();
+     expect(request.getMethod()).andReturn("GET");
+ 
+     FilterChain filterChain = createMock(FilterChain.class);
+@@ -157,7 +160,11 @@
+ 
+     HttpServletRequest request = createMock(HttpServletRequest.class);
+ 
+-    expect(request.getServletPath()).andReturn("/");
++    expect(request.getRequestURI()).andReturn("/");
++    expect(request.getContextPath())
++        .andReturn("")
++        .anyTimes();
++
+     expect(request.getMethod()).andReturn("GET");
+     FilterChain filterChain = createMock(FilterChain.class);
+     
+Index: extensions/servlet/test/com/google/inject/servlet/VarargsServletDispatchIntegrationTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/VarargsServletDispatchIntegrationTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/VarargsServletDispatchIntegrationTest.java	(working copy)
+@@ -75,9 +75,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+         .andReturn("/index.html")
+         .times(1);
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -112,9 +115,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+         .andReturn("/index.html")
+         .times(3);
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -152,9 +158,12 @@
+     //create ourselves a mock request with test URI
+     HttpServletRequest requestMock = createMock(HttpServletRequest.class);
+ 
+-    expect(requestMock.getServletPath())
++    expect(requestMock.getRequestURI())
+         .andReturn("/index.html")
+         .times(2);
++    expect(requestMock.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     //dispatch request
+     replay(requestMock);
+@@ -218,4 +227,4 @@
+       destroys++;
+     }
+   }
+-}
+\ No newline at end of file
++}
+Index: extensions/servlet/test/com/google/inject/servlet/FilterDefinitionTest.java
+===================================================================
+--- extensions/servlet/test/com/google/inject/servlet/FilterDefinitionTest.java	(revision 1528)
++++ extensions/servlet/test/com/google/inject/servlet/FilterDefinitionTest.java	(working copy)
+@@ -106,7 +106,10 @@
+         .andReturn(mockFilter)
+         .anyTimes();
+ 
+-    expect(request.getServletPath()).andReturn("/index.html");
++    expect(request.getRequestURI()).andReturn("/index.html");
++    expect(request.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     replay(injector, binding, request);
+ 
+@@ -163,7 +166,10 @@
+         .andReturn(mockFilter)
+         .anyTimes();
+ 
+-    expect(request.getServletPath()).andReturn("/index.html");
++    expect(request.getRequestURI()).andReturn("/index.html");
++    expect(request.getContextPath())
++        .andReturn("")
++        .anyTimes();
+ 
+     replay(injector, binding, request);
+ 
+Index: extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
+===================================================================
+--- extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(revision 1528)
++++ extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(working copy)
+@@ -37,7 +37,7 @@
+  * @author dhanji@gmail.com (Dhanji R. Prasanna)
+  */
+ @ImplementedBy(DefaultFilterPipeline.class)
+-interface FilterPipeline {
++public interface FilterPipeline {
+   void initPipeline(ServletContext context) throws ServletException;
+   void destroyPipeline();
+ 
+Index: extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
+===================================================================
+--- extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java	(revision 1528)
++++ extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java	(working copy)
+@@ -168,8 +168,11 @@
+   public boolean service(ServletRequest servletRequest,
+       ServletResponse servletResponse) throws IOException, ServletException {
+ 
+-    final boolean serve = shouldServe(((HttpServletRequest) servletRequest).getServletPath());
++    final HttpServletRequest request = (HttpServletRequest) servletRequest;
++    final String path = request.getRequestURI().substring(request.getContextPath().length());
+ 
++    final boolean serve = shouldServe(path);
++
+     //invocations of the chain end at the first matched servlet
+     if (serve) {
+       doService(servletRequest, servletResponse);
+Index: extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java
+===================================================================
+--- extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java	(revision 1528)
++++ extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java	(working copy)
+@@ -156,7 +156,8 @@
+       ServletResponse servletResponse, FilterChainInvocation filterChainInvocation)
+       throws IOException, ServletException {
+ 
+-    final String path = ((HttpServletRequest) servletRequest).getServletPath();
++    final HttpServletRequest request = (HttpServletRequest) servletRequest;
++    final String path = request.getRequestURI().substring(request.getContextPath().length());
+ 
+     if (shouldFilter(path)) {
+       filter.get()
+Index: extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
+===================================================================
+--- extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(revision 1528)
++++ extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(working copy)
+@@ -62,8 +62,7 @@
+   /**
+    * We allow both the static and dynamic versions of the pipeline to exist.
+    */
+-  @Inject
+-  private final FilterPipeline injectedPipeline = null;
++  private FilterPipeline injectedPipeline = null;
+ 
+   /** Used to inject the servlets configured via {@link ServletModule} */
+   static volatile WeakReference<ServletContext> servletContext =
+@@ -96,6 +95,11 @@
+     pipeline = new DefaultFilterPipeline();
+   }
+ 
++  @Inject
++  protected void setInjectedPipeline(FilterPipeline pipeline) {
++    injectedPipeline = pipeline;
++  }
++
+   public void doFilter(ServletRequest servletRequest,
+       ServletResponse servletResponse, FilterChain filterChain)
+       throws IOException, ServletException {
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1527)
+--- extensions/servlet/pom.xml	(revision 1528)
 +++ extensions/servlet/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -576,7 +1016,7 @@ Index: extensions/servlet/pom.xml
  
 Index: extensions/struts2/pom.xml
 ===================================================================
---- extensions/struts2/pom.xml	(revision 1527)
+--- extensions/struts2/pom.xml	(revision 1528)
 +++ extensions/struts2/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -609,7 +1049,7 @@ Index: extensions/struts2/pom.xml
    </dependencies>
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1527)
+--- extensions/grapher/pom.xml	(revision 1528)
 +++ extensions/grapher/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -639,7 +1079,7 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1527)
+--- extensions/multibindings/pom.xml	(revision 1528)
 +++ extensions/multibindings/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -654,7 +1094,7 @@ Index: extensions/multibindings/pom.xml
  
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1527)
+--- extensions/persist/pom.xml	(revision 1528)
 +++ extensions/persist/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -669,7 +1109,7 @@ Index: extensions/persist/pom.xml
  
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1527)
+--- extensions/pom.xml	(revision 1528)
 +++ extensions/pom.xml	(working copy)
 @@ -4,15 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -732,7 +1172,7 @@ Index: extensions/pom.xml
            <optional>true</optional>
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1527)
+--- extensions/assistedinject/pom.xml	(revision 1528)
 +++ extensions/assistedinject/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -747,7 +1187,7 @@ Index: extensions/assistedinject/pom.xml
  
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1527)
+--- extensions/mini/pom.xml	(revision 1528)
 +++ extensions/mini/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -762,7 +1202,7 @@ Index: extensions/mini/pom.xml
  
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1527)
+--- extensions/jmx/pom.xml	(revision 1528)
 +++ extensions/jmx/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
