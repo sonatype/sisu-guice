@@ -62,8 +62,7 @@ public class GuiceFilter implements Filter {
   /**
    * We allow both the static and dynamic versions of the pipeline to exist.
    */
-  @Inject
-  private final FilterPipeline injectedPipeline = null;
+  private FilterPipeline injectedPipeline = null;
 
   /** Used to inject the servlets configured via {@link ServletModule} */
   static volatile WeakReference<ServletContext> servletContext =
@@ -94,6 +93,11 @@ public class GuiceFilter implements Filter {
   //VisibleForTesting
   static void reset() {
     pipeline = new DefaultFilterPipeline();
+  }
+
+  @Inject
+  protected void setInjectedPipeline(FilterPipeline pipeline) {
+    injectedPipeline = pipeline;
   }
 
   public void doFilter(ServletRequest servletRequest,

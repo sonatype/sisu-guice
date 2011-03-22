@@ -37,7 +37,7 @@ import java.io.IOException;
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
 @ImplementedBy(DefaultFilterPipeline.class)
-interface FilterPipeline {
+public interface FilterPipeline {
   void initPipeline(ServletContext context) throws ServletException;
   void destroyPipeline();
 
