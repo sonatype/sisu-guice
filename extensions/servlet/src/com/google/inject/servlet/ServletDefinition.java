@@ -168,7 +168,10 @@ class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinitio
   public boolean service(ServletRequest servletRequest,
       ServletResponse servletResponse) throws IOException, ServletException {
 
-    final boolean serve = shouldServe(((HttpServletRequest) servletRequest).getServletPath());
+    final HttpServletRequest request = (HttpServletRequest) servletRequest;
+    final String path = request.getRequestURI().substring(request.getContextPath().length());
+
+    final boolean serve = shouldServe(path);
 
     //invocations of the chain end at the first matched servlet
     if (serve) {
