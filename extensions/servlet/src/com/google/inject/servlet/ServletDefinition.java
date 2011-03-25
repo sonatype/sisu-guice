@@ -189,7 +189,6 @@ class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinitio
    * We need to suppress deprecation coz we use HttpServletRequestWrapper, which implements
    * deprecated API for backwards compatibility.
    */
-  @SuppressWarnings({ "JavaDoc", "deprecation" })
   void doService(final ServletRequest servletRequest, ServletResponse servletResponse)
       throws ServletException, IOException {
 
