@@ -21,6 +21,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -144,13 +145,13 @@ public class Finalizer implements Runnable {
           cleanUp(queue.remove());
         } catch (InterruptedException e) { /* ignore */ }
       }
-    } catch (ShutDown shutDown) { /* ignore */ }
+    } catch (CancellationException shutDown) { /* ignore */ }
   }
 
   /**
    * Cleans up a single reference. Catches and logs all throwables.
    */
-  private void cleanUp(Reference<?> reference) throws ShutDown {
+  private void cleanUp(Reference<?> reference) {
     Method finalizeReferentMethod = getFinalizeReferentMethod();
     do {
       /*
@@ -164,7 +165,7 @@ public class Finalizer implements Runnable {
          * The client no longer has a reference to the
          * FinalizableReferenceQueue. We can stop.
          */
-        throw new ShutDown();
+        throw new CancellationException();
       }
 
       try {
@@ -183,7 +184,7 @@ public class Finalizer implements Runnable {
   /**
    * Looks up FinalizableReference.finalizeReferent() method.
    */
-  private Method getFinalizeReferentMethod() throws ShutDown {
+  private Method getFinalizeReferentMethod() {
     Class<?> finalizableReferenceClass
         = finalizableReferenceClassReference.get();
     if (finalizableReferenceClass == null) {
@@ -195,7 +196,7 @@ public class Finalizer implements Runnable {
        * much just shut down and make sure we don't keep it alive any longer
        * than necessary.
        */
-      throw new ShutDown();
+      throw new CancellationException();
     }
     try {
       return finalizableReferenceClass.getMethod("finalizeReferent");
@@ -203,8 +204,4 @@ public class Finalizer implements Runnable {
       throw new AssertionError(e);
     }
   }
-
-  /** Indicates that it's time to shut down the Finalizer. */
-  @SuppressWarnings("serial") // Never serialized or thrown out of this class.
-  private static class ShutDown extends Exception { }
 }
