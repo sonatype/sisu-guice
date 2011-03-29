@@ -145,6 +145,17 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
    }
  
    /**
+@@ -306,8 +309,8 @@
+   static Method getStartFinalizer(Class<?> finalizer) {
+     try {
+       return finalizer.getMethod("startFinalizer", Class.class, Object.class);
+-    } catch (NoSuchMethodException e) {
+-      throw new AssertionError(e);
++    } catch (Throwable e) {
++      return null;
+     }
+   }
+ }
 Index: core/src/com/google/inject/internal/util/Finalizer.java
 ===================================================================
 --- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1539)
