@@ -309,6 +309,8 @@ public class FinalizableReferenceQueue {
   static Method getStartFinalizer(Class<?> finalizer) {
     try {
       return finalizer.getMethod("startFinalizer", Class.class, Object.class);
+    } catch (NoSuchMethodException e) {
+      throw new AssertionError(e);
     } catch (Throwable e) {
       return null;
     }
