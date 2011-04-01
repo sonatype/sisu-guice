@@ -407,7 +407,8 @@ Index: core/pom.xml
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
-     <version>3.0-SNAPSHOT</version>
+-    <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
 -  <artifactId>guice</artifactId>
@@ -474,7 +475,7 @@ Index: pom.xml
 ===================================================================
 --- pom.xml	(revision 1539)
 +++ pom.xml	(working copy)
-@@ -18,14 +18,14 @@
+@@ -18,16 +18,16 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -491,7 +492,10 @@ Index: pom.xml
 -  <groupId>com.google.inject</groupId>
 +  <groupId>org.sonatype.sisu.inject</groupId>
    <artifactId>guice-parent</artifactId>
-   <version>3.0-SNAPSHOT</version>
+-  <version>3.0-SNAPSHOT</version>
++  <version>3.0.1-SNAPSHOT</version>
+ 
+   <name>Google Guice</name>
  
 @@ -61,9 +61,9 @@
    </mailingLists>
@@ -561,21 +565,54 @@ Index: pom.xml
                <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
                <_nouses>true</_nouses>
                <_removeheaders>
+@@ -334,6 +333,30 @@
+         <plugin>
+           <artifactId>maven-javadoc-plugin</artifactId>
+           <version>2.7</version>
++          <configuration>
++            <doclet>com.google.doclava.Doclava</doclet>
++            <docletPath>
++              ${project.basedir}/../lib/doclava.jar:
++              ${project.basedir}/../../lib/doclava.jar
++            </docletPath>
++            <!--
++             | bootclasspath required by Sun's JVM 
++            -->
++            <bootclasspath>${sun.boot.class.path}</bootclasspath>
++            <excludePackageNames>*.internal</excludePackageNames>
++            <additionalparam>
++              -quiet
++              -federate JDK http://download.oracle.com/javase/6/docs/api/index.html?
++              -federationxml JDK http://doclava.googlecode.com/svn/static/api/openjdk-6.xml
++              -hdf project.name "${project.name}"
++              -d ${project.build.directory}/apidocs
++            </additionalparam>
++            <useStandardDocletOptions>false</useStandardDocletOptions>
++            <!--
++             | Apple's JVM sometimes requires more memory
++            -->
++            <additionalJOption>-J-Xmx1024m</additionalJOption>
++          </configuration>
+         </plugin>
+         <plugin>
+           <artifactId>maven-source-plugin</artifactId>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
 --- extensions/throwingproviders/pom.xml	(revision 1539)
 +++ extensions/throwingproviders/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-throwingproviders</artifactId>
 Index: extensions/service/pom.xml
 ===================================================================
 --- extensions/service/pom.xml	(revision 1539)
@@ -595,32 +632,36 @@ Index: extensions/spring/pom.xml
 ===================================================================
 --- extensions/spring/pom.xml	(revision 1539)
 +++ extensions/spring/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-spring</artifactId>
 Index: extensions/jndi/pom.xml
 ===================================================================
 --- extensions/jndi/pom.xml	(revision 1539)
 +++ extensions/jndi/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-jndi</artifactId>
 Index: extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
 ===================================================================
 --- extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(revision 1539)
@@ -664,32 +705,36 @@ Index: extensions/servlet/pom.xml
 ===================================================================
 --- extensions/servlet/pom.xml	(revision 1539)
 +++ extensions/servlet/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-servlet</artifactId>
 Index: extensions/struts2/pom.xml
 ===================================================================
 --- extensions/struts2/pom.xml	(revision 1539)
 +++ extensions/struts2/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-struts2</artifactId>
 @@ -15,7 +15,7 @@
  
    <dependencies>
@@ -712,17 +757,19 @@ Index: extensions/grapher/pom.xml
 ===================================================================
 --- extensions/grapher/pom.xml	(revision 1539)
 +++ extensions/grapher/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-grapher</artifactId>
 @@ -15,12 +15,12 @@
  
    <dependencies>
@@ -742,32 +789,36 @@ Index: extensions/multibindings/pom.xml
 ===================================================================
 --- extensions/multibindings/pom.xml	(revision 1539)
 +++ extensions/multibindings/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-multibindings</artifactId>
 Index: extensions/persist/pom.xml
 ===================================================================
 --- extensions/persist/pom.xml	(revision 1539)
 +++ extensions/persist/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-persist</artifactId>
 Index: extensions/pom.xml
 ===================================================================
 --- extensions/pom.xml	(revision 1539)
@@ -779,7 +830,8 @@ Index: extensions/pom.xml
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
-     <version>3.0-SNAPSHOT</version>
+-    <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
    <packaging>pom</packaging>
@@ -835,17 +887,19 @@ Index: extensions/assistedinject/pom.xml
 ===================================================================
 --- extensions/assistedinject/pom.xml	(revision 1539)
 +++ extensions/assistedinject/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-assistedinject</artifactId>
 Index: extensions/mini/pom.xml
 ===================================================================
 --- extensions/mini/pom.xml	(revision 1539)
@@ -865,14 +919,16 @@ Index: extensions/jmx/pom.xml
 ===================================================================
 --- extensions/jmx/pom.xml	(revision 1539)
 +++ extensions/jmx/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
++    <version>3.0.1-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-jmx</artifactId>
