@@ -60,7 +60,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
    }
  
    private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
-@@ -264,6 +273,43 @@
+@@ -264,6 +273,44 @@
      }
    }
  
@@ -77,7 +77,8 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
 +      if (loggerFactory == null) {
 +        try {
 +          loggerFactory = injector.getInstance(org.slf4j.ILoggerFactory.class);
-+        } catch (Throwable e) {
++        } catch (Throwable e) {}
++        if (loggerFactory == null) {
 +          loggerFactory = org.slf4j.LoggerFactory.getILoggerFactory();
 +        }
 +      }

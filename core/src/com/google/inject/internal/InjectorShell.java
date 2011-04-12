@@ -286,7 +286,8 @@ final class InjectorShell {
       if (loggerFactory == null) {
         try {
           loggerFactory = injector.getInstance(org.slf4j.ILoggerFactory.class);
-        } catch (Throwable e) {
+        } catch (Throwable e) {}
+        if (loggerFactory == null) {
           loggerFactory = org.slf4j.LoggerFactory.getILoggerFactory();
         }
       }
