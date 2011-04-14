@@ -26,6 +26,8 @@ import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.inject.util.GuiceRuntime;
+
 /**
  * A reference queue with an associated background thread that dequeues
  * references and invokes {@link FinalizableReference#finalizeReferent()} on
@@ -121,7 +123,7 @@ public class FinalizableReferenceQueue {
     ReferenceQueue<Object> queue = null;
     try {
       queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
-          FinalizableReference.class, this);
+          FinalizableReference.class, this, GuiceRuntime.getExecutorClassName());
     } catch (IllegalAccessException e) {
       // Finalizer.startFinalizer() is public.
       throw new AssertionError(e);
@@ -130,7 +132,7 @@ public class FinalizableReferenceQueue {
     }
 
     if (queue == null) {
-      logger.log(Level.INFO, "Reference Finalizer thread is not available."
+      logger.log(Level.FINE, "Reference Finalizer thread is not available."
           + " Reference cleanup will only occur when new references are"
           + " created.");
       this.queue = new ReferenceQueue<Object>();
@@ -308,7 +310,7 @@ public class FinalizableReferenceQueue {
    */
   static Method getStartFinalizer(Class<?> finalizer) {
     try {
-      return finalizer.getMethod("startFinalizer", Class.class, Object.class);
+      return finalizer.getMethod("startFinalizer", Class.class, Object.class, String.class);
     } catch (NoSuchMethodException e) {
       throw new AssertionError(e);
     } catch (Throwable e) {

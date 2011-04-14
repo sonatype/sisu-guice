@@ -56,17 +56,6 @@ public class Finalizer implements Runnable {
   private static final String FINALIZABLE_REFERENCE
       = "com.google.inject.internal.util.FinalizableReference";
 
-  /** Use "-Dguice.executor.class=Clazz" where Clazz implements java.util.concurrent.Executor. */
-  private static final String EXECUTOR_CLASS_NAME;
-
-  static {
-    String executorClassName = null;
-    try {
-      executorClassName = System.getProperty("guice.executor.class");
-    } catch (Throwable t) {}
-    EXECUTOR_CLASS_NAME = executorClassName;
-  }
-
   /**
    * Starts the Finalizer thread. FinalizableReferenceQueue calls this method
    * reflectively.
@@ -74,10 +63,11 @@ public class Finalizer implements Runnable {
    * @param finalizableReferenceClass FinalizableReference.class
    * @param frq reference to instance of FinalizableReferenceQueue that started
    *  this thread
+   * @param executorClassName name of the optional Executor class
    * @return ReferenceQueue which Finalizer will poll
    */
   public static ReferenceQueue<Object> startFinalizer(
-      Class<?> finalizableReferenceClass, Object frq) {
+      Class<?> finalizableReferenceClass, Object frq, String executorClassName) {
     /*
      * We use FinalizableReference.class for two things:
      *
@@ -91,14 +81,14 @@ public class Finalizer implements Runnable {
           "Expected " + FINALIZABLE_REFERENCE + ".");
     }
 
-    if ("NONE".equalsIgnoreCase(EXECUTOR_CLASS_NAME)) {
+    if ("NONE".equalsIgnoreCase(executorClassName)) {
       return null;
     }
 
     Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
 
     try {
-      if (EXECUTOR_CLASS_NAME == null || EXECUTOR_CLASS_NAME.length() == 0) {
+      if (executorClassName == null || executorClassName.length() == 0) {
         Thread thread = new Thread(finalizer, Finalizer.class.getName());
         thread.setDaemon(true);
         // TODO: Priority?
@@ -106,9 +96,9 @@ public class Finalizer implements Runnable {
       } else {
         Class<?> executorClass;
         try {
-          executorClass = Thread.currentThread().getContextClassLoader().loadClass(EXECUTOR_CLASS_NAME);
+          executorClass = Thread.currentThread().getContextClassLoader().loadClass(executorClassName);
         } catch (Throwable ignore) {
-          executorClass = Class.forName(EXECUTOR_CLASS_NAME);
+          executorClass = Class.forName(executorClassName);
         }
         // use custom Executor supplied by an external container
         ((Executor)executorClass.newInstance()).execute(finalizer);
