@@ -109,7 +109,16 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 ===================================================================
 --- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1539)
 +++ core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(working copy)
-@@ -118,24 +118,27 @@
+@@ -26,6 +26,8 @@
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
++import com.google.inject.util.GuiceRuntime;
++
+ /**
+  * A reference queue with an associated background thread that dequeues
+  * references and invokes {@link FinalizableReference#finalizeReferent()} on
+@@ -118,24 +120,27 @@
    @SuppressWarnings("unchecked")
    public FinalizableReferenceQueue() {
      // We could start the finalizer lazily, but I'd rather it blow up early.
@@ -118,8 +127,9 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 +    ReferenceQueue<Object> queue = null;
      try {
        queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
-           FinalizableReference.class, this);
+-          FinalizableReference.class, this);
 -      threadStarted = true;
++          FinalizableReference.class, this, GuiceRuntime.getExecutorClassName());
      } catch (IllegalAccessException e) {
        // Finalizer.startFinalizer() is public.
        throw new AssertionError(e);
@@ -129,7 +139,7 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 +    }
 +
 +    if (queue == null) {
-+      logger.log(Level.INFO, "Reference Finalizer thread is not available."
++      logger.log(Level.FINE, "Reference Finalizer thread is not available."
            + " Reference cleanup will only occur when new references are"
 -          + " created.", t);
 -      queue = new ReferenceQueue<Object>();
@@ -146,8 +156,12 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
    }
  
    /**
-@@ -308,6 +311,8 @@
-       return finalizer.getMethod("startFinalizer", Class.class, Object.class);
+@@ -305,9 +310,11 @@
+    */
+   static Method getStartFinalizer(Class<?> finalizer) {
+     try {
+-      return finalizer.getMethod("startFinalizer", Class.class, Object.class);
++      return finalizer.getMethod("startFinalizer", Class.class, Object.class, String.class);
      } catch (NoSuchMethodException e) {
        throw new AssertionError(e);
 +    } catch (Throwable e) {
@@ -177,29 +191,24 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
  
    private static final Logger logger
        = Logger.getLogger(Finalizer.class.getName());
-@@ -54,6 +56,17 @@
-   private static final String FINALIZABLE_REFERENCE
-       = "com.google.inject.internal.util.FinalizableReference";
- 
-+  /** Use "-Dguice.executor.class=Clazz" where Clazz implements java.util.concurrent.Executor. */
-+  private static final String EXECUTOR_CLASS_NAME;
-+
-+  static {
-+    String executorClassName = null;
-+    try {
-+      executorClassName = System.getProperty("guice.executor.class");
-+    } catch (Throwable t) {}
-+    EXECUTOR_CLASS_NAME = executorClassName;
-+  }
-+
-   /**
-    * Starts the Finalizer thread. FinalizableReferenceQueue calls this method
-    * reflectively.
-@@ -78,9 +91,33 @@
+@@ -61,10 +63,11 @@
+    * @param finalizableReferenceClass FinalizableReference.class
+    * @param frq reference to instance of FinalizableReferenceQueue that started
+    *  this thread
++   * @param executorClassName name of the optional Executor class
+    * @return ReferenceQueue which Finalizer will poll
+    */
+   public static ReferenceQueue<Object> startFinalizer(
+-      Class<?> finalizableReferenceClass, Object frq) {
++      Class<?> finalizableReferenceClass, Object frq, String executorClassName) {
+     /*
+      * We use FinalizableReference.class for two things:
+      *
+@@ -78,9 +81,33 @@
            "Expected " + FINALIZABLE_REFERENCE + ".");
      }
  
-+    if ("NONE".equalsIgnoreCase(EXECUTOR_CLASS_NAME)) {
++    if ("NONE".equalsIgnoreCase(executorClassName)) {
 +      return null;
 +    }
 +
@@ -208,7 +217,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
 -    return finalizer.queue;
 +
 +    try {
-+      if (EXECUTOR_CLASS_NAME == null || EXECUTOR_CLASS_NAME.length() == 0) {
++      if (executorClassName == null || executorClassName.length() == 0) {
 +        Thread thread = new Thread(finalizer, Finalizer.class.getName());
 +        thread.setDaemon(true);
 +        // TODO: Priority?
@@ -216,9 +225,9 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
 +      } else {
 +        Class<?> executorClass;
 +        try {
-+          executorClass = Thread.currentThread().getContextClassLoader().loadClass(EXECUTOR_CLASS_NAME);
++          executorClass = Thread.currentThread().getContextClassLoader().loadClass(executorClassName);
 +        } catch (Throwable ignore) {
-+          executorClass = Class.forName(EXECUTOR_CLASS_NAME);
++          executorClass = Class.forName(executorClassName);
 +        }
 +        // use custom Executor supplied by an external container
 +        ((Executor)executorClass.newInstance()).execute(finalizer);
@@ -231,7 +240,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
    }
  
    private final WeakReference<Class<?>> finalizableReferenceClassReference;
-@@ -89,24 +126,18 @@
+@@ -89,24 +116,18 @@
  
    /** Constructs a new finalizer thread. */
    private Finalizer(Class<?> finalizableReferenceClass, Object frq) {
@@ -256,7 +265,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
    public void run() {
      try {
        while (true) {
-@@ -114,13 +145,13 @@
+@@ -114,13 +135,13 @@
            cleanUp(queue.remove());
          } catch (InterruptedException e) { /* ignore */ }
        }
@@ -272,7 +281,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      Method finalizeReferentMethod = getFinalizeReferentMethod();
      do {
        /*
-@@ -134,7 +165,7 @@
+@@ -134,7 +155,7 @@
           * The client no longer has a reference to the
           * FinalizableReferenceQueue. We can stop.
           */
@@ -281,7 +290,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
        }
  
        try {
-@@ -153,7 +184,7 @@
+@@ -153,7 +174,7 @@
    /**
     * Looks up FinalizableReference.finalizeReferent() method.
     */
@@ -290,7 +299,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      Class<?> finalizableReferenceClass
          = finalizableReferenceClassReference.get();
      if (finalizableReferenceClass == null) {
-@@ -165,7 +196,7 @@
+@@ -165,7 +186,7 @@
         * much just shut down and make sure we don't keep it alive any longer
         * than necessary.
         */
@@ -299,7 +308,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      }
      try {
        return finalizableReferenceClass.getMethod("finalizeReferent");
-@@ -173,8 +204,4 @@
+@@ -173,8 +194,4 @@
        throw new AssertionError(e);
      }
    }
@@ -397,6 +406,72 @@ Index: core/src/com/google/inject/Scopes.java
                if (instance == null) {
                  T provided = creator.get();
  
+Index: core/src/com/google/inject/util/GuiceRuntime.java
+===================================================================
+--- core/src/com/google/inject/util/GuiceRuntime.java	(revision 0)
++++ core/src/com/google/inject/util/GuiceRuntime.java	(revision 0)
+@@ -0,0 +1,53 @@
++/**
++ * Copyright (C) 2011 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject.util;
++
++/**
++ * Use "-Dguice.executor.class=Clazz" where Clazz implements java.util.concurrent.Executor.
++ */
++@Deprecated
++public final class GuiceRuntime {
++
++  private static String executorClassName;
++
++  private static boolean canSetExecutor = true;
++
++  static {
++    String name = null;
++    try {
++      name = System.getProperty("guice.executor.class");
++    } catch (Throwable t) {}
++    executorClassName = name;
++  }
++
++  private GuiceRuntime() {}
++
++  @Deprecated
++  public static synchronized void setExecutorClassName(String name) {
++    if (canSetExecutor) {
++      executorClassName = name;
++    } else {
++      throw new IllegalStateException("Cannot set 'guice.executor.class' after it has been used.");
++    }
++  }
++
++  @Deprecated
++  public static synchronized String getExecutorClassName() {
++    canSetExecutor = false;
++    return executorClassName;
++  }
++}
+
+Property changes on: core/src/com/google/inject/util/GuiceRuntime.java
+___________________________________________________________________
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
 Index: core/pom.xml
 ===================================================================
 --- core/pom.xml	(revision 1539)
