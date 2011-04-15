@@ -110,6 +110,11 @@ public class Finalizer implements Runnable {
     }
   }
 
+  public static ReferenceQueue<Object> startFinalizer(
+      Class<?> finalizableReferenceClass, Object frq) {
+    return startFinalizer(finalizableReferenceClass, frq, null);
+  }
+
   private final WeakReference<Class<?>> finalizableReferenceClassReference;
   private final PhantomReference<Object> frqReference;
   private final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();

@@ -156,19 +156,21 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
    }
  
    /**
-@@ -305,9 +310,11 @@
+@@ -305,10 +310,11 @@
     */
    static Method getStartFinalizer(Class<?> finalizer) {
      try {
 -      return finalizer.getMethod("startFinalizer", Class.class, Object.class);
 +      return finalizer.getMethod("startFinalizer", Class.class, Object.class, String.class);
      } catch (NoSuchMethodException e) {
-       throw new AssertionError(e);
-+    } catch (Throwable e) {
-+      return null;
-     }
+-      throw new AssertionError(e);
+-    }
++      logger.log(Level.WARNING, "Cannot find startFinalizer method.", e);
++    } catch (Throwable e) {}
++    return null;
    }
  }
+ 
 Index: core/src/com/google/inject/internal/util/Finalizer.java
 ===================================================================
 --- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1539)
@@ -204,7 +206,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      /*
       * We use FinalizableReference.class for two things:
       *
-@@ -78,9 +81,33 @@
+@@ -78,35 +81,58 @@
            "Expected " + FINALIZABLE_REFERENCE + ".");
      }
  
@@ -239,8 +241,14 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
 +    }
    }
  
++  public static ReferenceQueue<Object> startFinalizer(
++      Class<?> finalizableReferenceClass, Object frq) {
++    return startFinalizer(finalizableReferenceClass, frq, null);
++  }
++
    private final WeakReference<Class<?>> finalizableReferenceClassReference;
-@@ -89,24 +116,18 @@
+   private final PhantomReference<Object> frqReference;
+   private final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
  
    /** Constructs a new finalizer thread. */
    private Finalizer(Class<?> finalizableReferenceClass, Object frq) {
@@ -265,7 +273,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
    public void run() {
      try {
        while (true) {
-@@ -114,13 +135,13 @@
+@@ -114,13 +140,13 @@
            cleanUp(queue.remove());
          } catch (InterruptedException e) { /* ignore */ }
        }
@@ -281,7 +289,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      Method finalizeReferentMethod = getFinalizeReferentMethod();
      do {
        /*
-@@ -134,7 +155,7 @@
+@@ -134,7 +160,7 @@
           * The client no longer has a reference to the
           * FinalizableReferenceQueue. We can stop.
           */
@@ -290,7 +298,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
        }
  
        try {
-@@ -153,7 +174,7 @@
+@@ -153,7 +179,7 @@
    /**
     * Looks up FinalizableReference.finalizeReferent() method.
     */
@@ -299,7 +307,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      Class<?> finalizableReferenceClass
          = finalizableReferenceClassReference.get();
      if (finalizableReferenceClass == null) {
-@@ -165,7 +186,7 @@
+@@ -165,7 +191,7 @@
         * much just shut down and make sure we don't keep it alive any longer
         * than necessary.
         */
@@ -308,7 +316,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      }
      try {
        return finalizableReferenceClass.getMethod("finalizeReferent");
-@@ -173,8 +194,4 @@
+@@ -173,8 +199,4 @@
        throw new AssertionError(e);
      }
    }

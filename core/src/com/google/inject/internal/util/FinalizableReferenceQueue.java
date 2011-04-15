@@ -312,10 +312,9 @@ public class FinalizableReferenceQueue {
     try {
       return finalizer.getMethod("startFinalizer", Class.class, Object.class, String.class);
     } catch (NoSuchMethodException e) {
-      throw new AssertionError(e);
-    } catch (Throwable e) {
-      return null;
-    }
+      logger.log(Level.WARNING, "Cannot find startFinalizer method.", e);
+    } catch (Throwable e) {}
+    return null;
   }
 }
 
