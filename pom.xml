@@ -29,7 +29,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
   <artifactId>guice-parent</artifactId>
   <version>3.0.3-SNAPSHOT</version>
 
-  <name>Google Guice</name>
+  <name>Sisu Guice</name>
 
   <description>
     Guice is a lightweight dependency injection framework for Java 5 and above
