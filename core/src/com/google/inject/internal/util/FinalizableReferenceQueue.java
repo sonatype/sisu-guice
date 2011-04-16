@@ -122,19 +122,26 @@ public class FinalizableReferenceQueue {
     // We could start the finalizer lazily, but I'd rather it blow up early.
     ReferenceQueue<Object> queue = null;
     try {
-      queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
-          FinalizableReference.class, this, GuiceRuntime.getExecutorClassName());
+      String executorClassName = GuiceRuntime.getExecutorClassName();
+      if (null == executorClassName) {
+        // create the decoupled background worker thread
+        queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
+            FinalizableReference.class, this);
+      } else {
+        // custom executor -> no need to decouple thread
+        queue = Finalizer.startFinalizer(
+            FinalizableReference.class, this, executorClassName);
+      }
     } catch (IllegalAccessException e) {
       // Finalizer.startFinalizer() is public.
       throw new AssertionError(e);
     } catch (Throwable t) {
-      logger.log(Level.WARNING, "Exception in startFinalizer method.", t);
+      logger.log(Level.INFO, "Failed to start reference finalizer thread."
+          + " Reference cleanup will only occur when new references are"
+          + " created.", t);
     }
 
     if (queue == null) {
-      logger.log(Level.FINE, "Reference Finalizer thread is not available."
-          + " Reference cleanup will only occur when new references are"
-          + " created.");
       this.queue = new ReferenceQueue<Object>();
       this.threadStarted = false;
     } else {
@@ -310,7 +317,7 @@ public class FinalizableReferenceQueue {
    */
   static Method getStartFinalizer(Class<?> finalizer) {
     try {
-      return finalizer.getMethod("startFinalizer", Class.class, Object.class, String.class);
+      return finalizer.getMethod("startFinalizer", Class.class, Object.class);
     } catch (NoSuchMethodException e) {
       logger.log(Level.WARNING, "Cannot find startFinalizer method.", e);
     } catch (Throwable e) {}

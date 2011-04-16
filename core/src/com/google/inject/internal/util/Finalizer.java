@@ -67,7 +67,8 @@ public class Finalizer implements Runnable {
    * @return ReferenceQueue which Finalizer will poll
    */
   public static ReferenceQueue<Object> startFinalizer(
-      Class<?> finalizableReferenceClass, Object frq, String executorClassName) {
+      Class<?> finalizableReferenceClass, Object frq,
+      String executorClassName) throws Exception {
     /*
      * We use FinalizableReference.class for two things:
      *
@@ -87,31 +88,27 @@ public class Finalizer implements Runnable {
 
     Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
 
-    try {
-      if (executorClassName == null || executorClassName.length() == 0) {
-        Thread thread = new Thread(finalizer, Finalizer.class.getName());
-        thread.setDaemon(true);
-        // TODO: Priority?
-        thread.start();
-      } else {
-        Class<?> executorClass;
-        try {
-          executorClass = Thread.currentThread().getContextClassLoader().loadClass(executorClassName);
-        } catch (Throwable ignore) {
-          executorClass = Class.forName(executorClassName);
-        }
-        // use custom Executor supplied by an external container
-        ((Executor)executorClass.newInstance()).execute(finalizer);
+    if (executorClassName == null || executorClassName.length() == 0) {
+      Thread thread = new Thread(finalizer, Finalizer.class.getName());
+      thread.setDaemon(true);
+      // TODO: Priority?
+      thread.start();
+    } else {
+      Class<?> executorClass;
+      try {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        executorClass = tccl.loadClass(executorClassName);
+      } catch (Throwable ignore) {
+        executorClass = Class.forName(executorClassName);
       }
-      return finalizer.queue;
-    } catch (Throwable t) {
-      logger.log(Level.WARNING, "Cannot start Finalizer thread.", t);
-      return null;
+      // use custom Executor supplied by an external container
+      ((Executor)executorClass.newInstance()).execute(finalizer);
     }
+    return finalizer.queue;
   }
 
   public static ReferenceQueue<Object> startFinalizer(
-      Class<?> finalizableReferenceClass, Object frq) {
+      Class<?> finalizableReferenceClass, Object frq) throws Exception {
     return startFinalizer(finalizableReferenceClass, frq, null);
   }
 
