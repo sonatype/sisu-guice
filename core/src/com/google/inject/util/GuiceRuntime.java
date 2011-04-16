@@ -26,14 +26,6 @@ public final class GuiceRuntime {
 
   private static boolean canSetExecutor = true;
 
-  static {
-    String name = null;
-    try {
-      name = System.getProperty("guice.executor.class");
-    } catch (Throwable t) {}
-    executorClassName = name;
-  }
-
   private GuiceRuntime() {}
 
   @Deprecated

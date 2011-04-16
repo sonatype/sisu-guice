@@ -109,7 +109,13 @@ public class Finalizer implements Runnable {
 
   public static ReferenceQueue<Object> startFinalizer(
       Class<?> finalizableReferenceClass, Object frq) throws Exception {
-    return startFinalizer(finalizableReferenceClass, frq, null);
+
+    String executorClassName = null;
+    try {
+      executorClassName = System.getProperty("guice.executor.class");
+    } catch (Throwable t) {}
+
+    return startFinalizer(finalizableReferenceClass, frq, executorClassName);
   }
 
   private final WeakReference<Class<?>> finalizableReferenceClassReference;
