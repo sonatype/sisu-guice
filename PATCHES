@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1539)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1540)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -399,7 +399,7 @@
      @Inject @NumericValue Date date;
@@ -20,7 +20,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
  }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1539)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1540)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -238,7 +238,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -42,7 +42,7 @@ Index: core/test/com/google/inject/ScopesTest.java
      try {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1539)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1540)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -245,6 +245,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -107,7 +107,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
  
 Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 ===================================================================
---- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1539)
+--- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1540)
 +++ core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(working copy)
 @@ -26,6 +26,8 @@
  import java.util.logging.Level;
@@ -118,7 +118,7 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
  /**
   * A reference queue with an associated background thread that dequeues
   * references and invokes {@link FinalizableReference#finalizeReferent()} on
-@@ -118,24 +120,27 @@
+@@ -118,12 +120,18 @@
    @SuppressWarnings("unchecked")
    public FinalizableReferenceQueue() {
      // We could start the finalizer lazily, but I'd rather it blow up early.
@@ -126,42 +126,44 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
 -    boolean threadStarted = false;
 +    ReferenceQueue<Object> queue = null;
      try {
-       queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
+-      queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
 -          FinalizableReference.class, this);
 -      threadStarted = true;
-+          FinalizableReference.class, this, GuiceRuntime.getExecutorClassName());
++      String executorClassName = GuiceRuntime.getExecutorClassName();
++      if (null == executorClassName) {
++        // create the decoupled background worker thread
++        queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
++            FinalizableReference.class, this);
++      } else {
++        // custom executor -> no need to decouple thread
++        queue = Finalizer.startFinalizer(
++            FinalizableReference.class, this, executorClassName);
++      }
      } catch (IllegalAccessException e) {
        // Finalizer.startFinalizer() is public.
        throw new AssertionError(e);
-     } catch (Throwable t) {
--      logger.log(Level.INFO, "Failed to start reference finalizer thread."
-+      logger.log(Level.WARNING, "Exception in startFinalizer method.", t);
-+    }
-+
-+    if (queue == null) {
-+      logger.log(Level.FINE, "Reference Finalizer thread is not available."
+@@ -131,11 +139,15 @@
+       logger.log(Level.INFO, "Failed to start reference finalizer thread."
            + " Reference cleanup will only occur when new references are"
--          + " created.", t);
+           + " created.", t);
 -      queue = new ReferenceQueue<Object>();
-+          + " created.");
+     }
+ 
+-    this.queue = queue;
+-    this.threadStarted = threadStarted;
++    if (queue == null) {
 +      this.queue = new ReferenceQueue<Object>();
 +      this.threadStarted = false;
 +    } else {
 +      this.queue = queue;
 +      this.threadStarted = true;
-     }
--
--    this.queue = queue;
--    this.threadStarted = threadStarted;
++    }
    }
  
    /**
-@@ -305,10 +310,11 @@
-    */
-   static Method getStartFinalizer(Class<?> finalizer) {
+@@ -307,8 +319,9 @@
      try {
--      return finalizer.getMethod("startFinalizer", Class.class, Object.class);
-+      return finalizer.getMethod("startFinalizer", Class.class, Object.class, String.class);
+       return finalizer.getMethod("startFinalizer", Class.class, Object.class);
      } catch (NoSuchMethodException e) {
 -      throw new AssertionError(e);
 -    }
@@ -173,7 +175,7 @@ Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
  
 Index: core/src/com/google/inject/internal/util/Finalizer.java
 ===================================================================
---- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1539)
+--- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1540)
 +++ core/src/com/google/inject/internal/util/Finalizer.java	(working copy)
 @@ -21,6 +21,8 @@
  import java.lang.ref.ReferenceQueue;
@@ -193,7 +195,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
  
    private static final Logger logger
        = Logger.getLogger(Finalizer.class.getName());
-@@ -61,10 +63,11 @@
+@@ -61,10 +63,12 @@
     * @param finalizableReferenceClass FinalizableReference.class
     * @param frq reference to instance of FinalizableReferenceQueue that started
     *  this thread
@@ -202,11 +204,12 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
     */
    public static ReferenceQueue<Object> startFinalizer(
 -      Class<?> finalizableReferenceClass, Object frq) {
-+      Class<?> finalizableReferenceClass, Object frq, String executorClassName) {
++      Class<?> finalizableReferenceClass, Object frq,
++      String executorClassName) throws Exception {
      /*
       * We use FinalizableReference.class for two things:
       *
-@@ -78,35 +81,58 @@
+@@ -78,35 +82,60 @@
            "Expected " + FINALIZABLE_REFERENCE + ".");
      }
  
@@ -216,34 +219,35 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
 +
      Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
 -    finalizer.start();
--    return finalizer.queue;
 +
-+    try {
-+      if (executorClassName == null || executorClassName.length() == 0) {
-+        Thread thread = new Thread(finalizer, Finalizer.class.getName());
-+        thread.setDaemon(true);
-+        // TODO: Priority?
-+        thread.start();
-+      } else {
-+        Class<?> executorClass;
-+        try {
-+          executorClass = Thread.currentThread().getContextClassLoader().loadClass(executorClassName);
-+        } catch (Throwable ignore) {
-+          executorClass = Class.forName(executorClassName);
-+        }
-+        // use custom Executor supplied by an external container
-+        ((Executor)executorClass.newInstance()).execute(finalizer);
++    if (executorClassName == null || executorClassName.length() == 0) {
++      Thread thread = new Thread(finalizer, Finalizer.class.getName());
++      thread.setDaemon(true);
++      // TODO: Priority?
++      thread.start();
++    } else {
++      Class<?> executorClass;
++      try {
++        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
++        executorClass = tccl.loadClass(executorClassName);
++      } catch (Throwable ignore) {
++        executorClass = Class.forName(executorClassName);
 +      }
-+      return finalizer.queue;
-+    } catch (Throwable t) {
-+      logger.log(Level.WARNING, "Cannot start Finalizer thread.", t);
-+      return null;
++      // use custom Executor supplied by an external container
++      ((Executor)executorClass.newInstance()).execute(finalizer);
 +    }
+     return finalizer.queue;
    }
  
 +  public static ReferenceQueue<Object> startFinalizer(
-+      Class<?> finalizableReferenceClass, Object frq) {
-+    return startFinalizer(finalizableReferenceClass, frq, null);
++      Class<?> finalizableReferenceClass, Object frq) throws Exception {
++
++    String executorClassName = null;
++    try {
++      executorClassName = System.getProperty("guice.executor.class");
++    } catch (Throwable t) {}
++
++    return startFinalizer(finalizableReferenceClass, frq, executorClassName);
 +  }
 +
    private final WeakReference<Class<?>> finalizableReferenceClassReference;
@@ -273,7 +277,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
    public void run() {
      try {
        while (true) {
-@@ -114,13 +140,13 @@
+@@ -114,13 +143,13 @@
            cleanUp(queue.remove());
          } catch (InterruptedException e) { /* ignore */ }
        }
@@ -289,7 +293,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      Method finalizeReferentMethod = getFinalizeReferentMethod();
      do {
        /*
-@@ -134,7 +160,7 @@
+@@ -134,7 +163,7 @@
           * The client no longer has a reference to the
           * FinalizableReferenceQueue. We can stop.
           */
@@ -298,7 +302,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
        }
  
        try {
-@@ -153,7 +179,7 @@
+@@ -153,7 +182,7 @@
    /**
     * Looks up FinalizableReference.finalizeReferent() method.
     */
@@ -307,7 +311,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      Class<?> finalizableReferenceClass
          = finalizableReferenceClassReference.get();
      if (finalizableReferenceClass == null) {
-@@ -165,7 +191,7 @@
+@@ -165,7 +194,7 @@
         * much just shut down and make sure we don't keep it alive any longer
         * than necessary.
         */
@@ -316,7 +320,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
      }
      try {
        return finalizableReferenceClass.getMethod("finalizeReferent");
-@@ -173,8 +199,4 @@
+@@ -173,8 +202,4 @@
        throw new AssertionError(e);
      }
    }
@@ -327,7 +331,7 @@ Index: core/src/com/google/inject/internal/util/Finalizer.java
  }
 Index: core/src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
---- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1539)
+--- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1540)
 +++ core/src/com/google/inject/internal/BytecodeGen.java	(working copy)
 @@ -119,8 +119,7 @@
    end[NO_AOP]*/
@@ -356,7 +360,7 @@ Index: core/src/com/google/inject/internal/BytecodeGen.java
            new Function<ClassLoader, ClassLoader>() {
 Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1539)
+--- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1540)
 +++ core/src/com/google/inject/internal/AbstractBindingProcessor.java	(working copy)
 @@ -38,6 +38,12 @@
   */
@@ -388,7 +392,7 @@ Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
    /** 
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1539)
+--- core/src/com/google/inject/Scopes.java	(revision 1540)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -418,7 +422,7 @@ Index: core/src/com/google/inject/util/GuiceRuntime.java
 ===================================================================
 --- core/src/com/google/inject/util/GuiceRuntime.java	(revision 0)
 +++ core/src/com/google/inject/util/GuiceRuntime.java	(revision 0)
-@@ -0,0 +1,53 @@
+@@ -0,0 +1,45 @@
 +/**
 + * Copyright (C) 2011 Google Inc.
 + *
@@ -447,14 +451,6 @@ Index: core/src/com/google/inject/util/GuiceRuntime.java
 +
 +  private static boolean canSetExecutor = true;
 +
-+  static {
-+    String name = null;
-+    try {
-+      name = System.getProperty("guice.executor.class");
-+    } catch (Throwable t) {}
-+    executorClassName = name;
-+  }
-+
 +  private GuiceRuntime() {}
 +
 +  @Deprecated
@@ -482,9 +478,9 @@ Added: svn:eol-style
 
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1539)
+--- core/pom.xml	(revision 1540)
 +++ core/pom.xml	(working copy)
-@@ -4,12 +4,13 @@
+@@ -4,17 +4,18 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -501,6 +497,12 @@ Index: core/pom.xml
  
    <name>Google Guice - Core Library</name>
  
+   <properties>
+-    <cglib.version>2.2.1-v20090111</cglib.version>
++    <cglib.version>2.2.2</cglib.version>
+   </properties>
+ 
+   <dependencies>
 @@ -32,6 +33,12 @@
       | Replace with official CGLIB artifact when it's released
      -->
@@ -557,9 +559,9 @@ Index: core/pom.xml
         | Remove duplicate jarjar'd LICENSE and NOTICE
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1539)
+--- pom.xml	(revision 1540)
 +++ pom.xml	(working copy)
-@@ -18,16 +18,16 @@
+@@ -18,18 +18,18 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -579,8 +581,11 @@ Index: pom.xml
 -  <version>3.0-SNAPSHOT</version>
 +  <version>3.0.1-SNAPSHOT</version>
  
-   <name>Google Guice</name>
+-  <name>Google Guice</name>
++  <name>Sisu Guice</name>
  
+   <description>
+     Guice is a lightweight dependency injection framework for Java 5 and above
 @@ -61,9 +61,9 @@
    </mailingLists>
  
@@ -599,7 +604,7 @@ Index: pom.xml
    <ciManagement>
      <system>Hudson</system>
 -    <url>https://grid.sonatype.org/ci/job/Google-Guice/</url>
-+    <url>https://grid.sonatype.org/ci/job/sisu-guice/</url>
++    <url>https://builds.sonatype.org/job/sisu-guice/</url>
    </ciManagement>
  
    <licenses>
@@ -620,6 +625,15 @@ Index: pom.xml
            <executions>
              <execution>
                <goals>
+@@ -201,7 +202,7 @@
+         <plugin>
+           <groupId>org.sonatype.plugins</groupId>
+           <artifactId>jarjar-maven-plugin</artifactId>
+-          <version>1.3</version>
++          <version>1.4</version>
+           <configuration>
+             <rules>
+               <rule>
 @@ -264,7 +265,7 @@
          </plugin>
          <plugin>
@@ -682,7 +696,7 @@ Index: pom.xml
            <artifactId>maven-source-plugin</artifactId>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1539)
+--- extensions/throwingproviders/pom.xml	(revision 1540)
 +++ extensions/throwingproviders/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -699,7 +713,7 @@ Index: extensions/throwingproviders/pom.xml
    <artifactId>guice-throwingproviders</artifactId>
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1539)
+--- extensions/service/pom.xml	(revision 1540)
 +++ extensions/service/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -714,7 +728,7 @@ Index: extensions/service/pom.xml
  
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1539)
+--- extensions/spring/pom.xml	(revision 1540)
 +++ extensions/spring/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -731,7 +745,7 @@ Index: extensions/spring/pom.xml
    <artifactId>guice-spring</artifactId>
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1539)
+--- extensions/jndi/pom.xml	(revision 1540)
 +++ extensions/jndi/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -748,7 +762,7 @@ Index: extensions/jndi/pom.xml
    <artifactId>guice-jndi</artifactId>
 Index: extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
 ===================================================================
---- extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(revision 1539)
+--- extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(revision 1540)
 +++ extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(working copy)
 @@ -37,7 +37,7 @@
   * @author dhanji@gmail.com (Dhanji R. Prasanna)
@@ -761,7 +775,7 @@ Index: extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
  
 Index: extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
 ===================================================================
---- extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(revision 1539)
+--- extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(revision 1540)
 +++ extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(working copy)
 @@ -62,8 +62,7 @@
    /**
@@ -787,7 +801,7 @@ Index: extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
        throws IOException, ServletException {
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1539)
+--- extensions/servlet/pom.xml	(revision 1540)
 +++ extensions/servlet/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -804,7 +818,7 @@ Index: extensions/servlet/pom.xml
    <artifactId>guice-servlet</artifactId>
 Index: extensions/struts2/pom.xml
 ===================================================================
---- extensions/struts2/pom.xml	(revision 1539)
+--- extensions/struts2/pom.xml	(revision 1540)
 +++ extensions/struts2/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -839,7 +853,7 @@ Index: extensions/struts2/pom.xml
    </dependencies>
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1539)
+--- extensions/grapher/pom.xml	(revision 1540)
 +++ extensions/grapher/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -871,7 +885,7 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1539)
+--- extensions/multibindings/pom.xml	(revision 1540)
 +++ extensions/multibindings/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -888,7 +902,7 @@ Index: extensions/multibindings/pom.xml
    <artifactId>guice-multibindings</artifactId>
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1539)
+--- extensions/persist/pom.xml	(revision 1540)
 +++ extensions/persist/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -905,7 +919,7 @@ Index: extensions/persist/pom.xml
    <artifactId>guice-persist</artifactId>
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1539)
+--- extensions/pom.xml	(revision 1540)
 +++ extensions/pom.xml	(working copy)
 @@ -4,15 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -969,7 +983,7 @@ Index: extensions/pom.xml
            <optional>true</optional>
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1539)
+--- extensions/assistedinject/pom.xml	(revision 1540)
 +++ extensions/assistedinject/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -986,7 +1000,7 @@ Index: extensions/assistedinject/pom.xml
    <artifactId>guice-assistedinject</artifactId>
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1539)
+--- extensions/mini/pom.xml	(revision 1540)
 +++ extensions/mini/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -1001,7 +1015,7 @@ Index: extensions/mini/pom.xml
  
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1539)
+--- extensions/jmx/pom.xml	(revision 1540)
 +++ extensions/jmx/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
