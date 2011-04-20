@@ -73,7 +73,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
 
   <ciManagement>
     <system>Hudson</system>
-    <url>https://grid.sonatype.org/ci/job/sisu-guice/</url>
+    <url>https://builds.sonatype.org/job/sisu-guice/</url>
   </ciManagement>
 
   <licenses>
