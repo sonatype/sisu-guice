@@ -23,20 +23,20 @@ import com.google.inject.spi.Dependency;
 /**
  * Delegates to a custom factory which is also bound in the injector.
  */
-final class BoundProviderFactory<T> extends ProviderInternalFactory<T> implements CreationListener {
+final class BoundProviderFactory<T> implements InternalFactory<T>, CreationListener {
 
   private final InjectorImpl injector;
   final Key<? extends javax.inject.Provider<? extends T>> providerKey;
+  final Object source;
   private InternalFactory<? extends javax.inject.Provider<? extends T>> providerFactory;
 
   BoundProviderFactory(
       InjectorImpl injector,
       Key<? extends javax.inject.Provider<? extends T>> providerKey,
-      Object source,
-      boolean allowProxy) {
-    super(source, allowProxy);
+      Object source) {
     this.injector = injector;
     this.providerKey = providerKey;
+    this.source = source;
   }
 
   public void notify(Errors errors) {
@@ -52,10 +52,10 @@ final class BoundProviderFactory<T> extends ProviderInternalFactory<T> implement
     errors = errors.withSource(providerKey);
     javax.inject.Provider<? extends T> provider = providerFactory.get(errors, context, dependency, true);
     try {
-      return circularGet(provider, errors, context, dependency, linked);
+      return errors.checkForNull(provider.get(), source, dependency);
     } catch(RuntimeException userException) {
       throw errors.errorInProvider(userException).toException();
-    } 
+    }
   }
 
   @Override public String toString() {

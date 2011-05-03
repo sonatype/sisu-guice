@@ -25,24 +25,25 @@ import com.google.inject.spi.Dependency;
 */
 final class InternalFactoryToProviderAdapter<T> implements InternalFactory<T> {
 
-  private final Provider<? extends T> provider;
+  private final Initializable<Provider<? extends T>> initializable;
   private final Object source;
 
-  public InternalFactoryToProviderAdapter(Provider<? extends T> provider, Object source) {
-    this.provider = checkNotNull(provider, "provider");
+  public InternalFactoryToProviderAdapter(
+      Initializable<Provider<? extends T>> initializable, Object source) {
+    this.initializable = checkNotNull(initializable, "provider");
     this.source = checkNotNull(source, "source");
   }
 
   public T get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked)
       throws ErrorsException {
     try {
-      return errors.checkForNull(provider.get(), source, dependency);
+      return errors.checkForNull(initializable.get(errors).get(), source, dependency);
     } catch (RuntimeException userException) {
       throw errors.withSource(source).errorInProvider(userException).toException();
     }
   }
 
   @Override public String toString() {
-    return provider.toString();
+    return initializable.toString();
   }
 }

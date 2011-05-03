@@ -38,8 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-final class ConstructorBindingImpl<T> extends BindingImpl<T>
-    implements ConstructorBinding<T>, DelayedInitialize {
+final class ConstructorBindingImpl<T> extends BindingImpl<T> implements ConstructorBinding<T> {
 
   private final Factory<T> factory;
   private final InjectionPoint constructorInjectionPoint;

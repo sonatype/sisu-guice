@@ -28,15 +28,12 @@ class DelegatingInvocationHandler<T> implements InvocationHandler {
       throws Throwable {
     if (delegate == null) {
       throw new IllegalStateException("This is a proxy used to support"
-          + " circular references. The object we're"
+          + " circular references involving constructors. The object we're"
           + " proxying is not constructed yet. Please wait until after"
           + " injection has completed to use this object.");
     }
 
     try {
-      // TODO: method.setAccessible(true); ?
-      // this would fix visibility errors when we proxy a
-      // non-public interface.
       return method.invoke(delegate, args);
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
