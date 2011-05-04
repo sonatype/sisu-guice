@@ -16,6 +16,17 @@
 
 package com.google.inject;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.google.inject.matcher.Matchers;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
+
 import junit.framework.TestCase;
 import static com.google.inject.Asserts.assertContains;
 
@@ -81,6 +92,119 @@ public class CircularDependencyTest extends TestCase {
           "Tried proxying " + C.class.getName() + " to support a circular dependency, ",
           "but it is not an interface.");
     }
+  }
+
+  static class ACountingImpl implements A {
+    static int[] counters = new int[3];
+    B b;
+    ACountingImpl() {
+      synchronized(counters){counters[0]++;}
+    }
+    public void setB(B b) {
+      synchronized(counters){counters[1]++;}
+      this.b = b;
+    }
+    public B getB() {
+      synchronized(counters){counters[2]++;}
+      return b;
+    }
+    public int id() {
+      return counters[0];
+    }
+  }
+
+  static class BCountingImpl implements B {
+    static int[] counters = new int[3];
+    A a;
+    BCountingImpl() {
+      synchronized(counters){counters[0]++;}
+    }
+    public void setA(A a) {
+      synchronized(counters){counters[1]++;}
+      this.a = a;
+    }
+    public A getA() {
+      synchronized(counters){counters[2]++;}
+      return a;
+    }
+    public int id() {
+      return counters[0];
+    }
+  }
+  
+  public void testCircularDependenciesAndInjectionListeners() {
+    Guice.createInjector(new AbstractModule() {
+
+        @Provides
+        @Singleton
+        A provideA(ACountingImpl o) {
+          return o;
+        }
+
+        @Provides
+        @Singleton
+        B provideB(BCountingImpl o) {
+          return o;
+        }
+
+        @Override
+        protected void configure() {
+
+          final AtomicBoolean isInjecting = new AtomicBoolean();
+
+          final Provider<A> providerA = getProvider(A.class);
+          final Provider<B> providerB = getProvider(B.class);
+          
+          final MembersInjector<?> beanInjector = new MembersInjector<Object>() {
+              public void injectMembers(Object instance) {
+                boolean wasInjecting = isInjecting.getAndSet(true); // begin custom injection
+                try{
+                  for (Method m : instance.getClass().getMethods()) { // process setter methods
+                    if (m.getName().equals("setA")) {
+                      m.invoke(instance, providerA.get());
+                    } else if (m.getName().equals("setB")) {
+                      m.invoke(instance, providerB.get());
+                    }
+                  }
+                } catch (Throwable e) {
+                  throw new ProvisionException("Error in MembersInjector", e);
+                } finally {
+                  isInjecting.set(wasInjecting); // end custom injection
+                }
+              }
+            };
+
+          final InjectionListener<?> beanListener = new InjectionListener<Object>() {
+              List<Object> instances = new ArrayList<Object>();
+              public void afterInjection(Object injectee) {
+                instances.add(injectee);
+                if (!isInjecting.get()) { // wait until onion is fully injected :)
+                  for (Object o : instances) {
+                    if (o instanceof A) {
+                      assertNotNull(((A)o).getB().getA().getB());
+                    }
+                    if (o instanceof B) {
+                      assertNotNull(((B)o).getA().getB().getA());
+                    }
+                  }
+                  instances.clear();
+                }
+              }
+            };
+
+          bindListener(Matchers.any(), new TypeListener() {
+            public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+              encounter.register((MembersInjector<I>)beanInjector);
+              encounter.register((InjectionListener<I>)beanListener);
+            }
+          });
+        }
+
+    }).getInstance(A.class).getB().getA().getB().getA();
+
+    // expect to see: constructed once, set once, got five times
+    assertTrue(Arrays.equals(new int[]{1, 1, 5}, ACountingImpl.counters));
+    assertTrue(Arrays.equals(new int[]{1, 1, 5}, BCountingImpl.counters));
   }
 
   static class C {
