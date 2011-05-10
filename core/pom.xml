@@ -110,6 +110,7 @@
         <configuration>
           <instructions>
             <DynamicImport-Package>org.slf4j</DynamicImport-Package>
+            <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
           </instructions>
         </configuration>
       </plugin>
