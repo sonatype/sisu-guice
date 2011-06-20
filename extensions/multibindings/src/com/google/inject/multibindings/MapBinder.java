@@ -565,6 +565,15 @@ public abstract class MapBinder<K, V> {
           }
         });
       }
+
+      @Override public int hashCode() {
+        return multimapKey.hashCode();
+      }
+
+      @Override public boolean equals(Object o) {
+        return o instanceof MultimapBinder 
+            && ((MultimapBinder<?, ?>) o).multimapKey.equals(multimapKey);
+      }
     }
 
     private static final class MapEntry<K, V> implements Map.Entry<K, V> {

@@ -16,6 +16,8 @@
 
 package com.google.inject.internal;
 
+import javax.inject.Provider;
+
 import com.google.inject.Key;
 import com.google.inject.internal.InjectorImpl.JitLimitation;
 import com.google.inject.spi.Dependency;
@@ -23,20 +25,21 @@ import com.google.inject.spi.Dependency;
 /**
  * Delegates to a custom factory which is also bound in the injector.
  */
-final class BoundProviderFactory<T> implements InternalFactory<T>, CreationListener {
+final class BoundProviderFactory<T> extends ProviderInternalFactory<T> implements CreationListener {
 
   private final InjectorImpl injector;
   final Key<? extends javax.inject.Provider<? extends T>> providerKey;
-  final Object source;
   private InternalFactory<? extends javax.inject.Provider<? extends T>> providerFactory;
 
   BoundProviderFactory(
       InjectorImpl injector,
       Key<? extends javax.inject.Provider<? extends T>> providerKey,
-      Object source) {
+      Object source,
+      boolean allowProxy,
+      ProvisionListenerStackCallback<T> provisionCallback) {
+    super(source, allowProxy, provisionCallback);
     this.injector = injector;
     this.providerKey = providerKey;
-    this.source = source;
   }
 
   public void notify(Errors errors) {
@@ -49,13 +52,24 @@ final class BoundProviderFactory<T> implements InternalFactory<T>, CreationListe
 
   public T get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked)
       throws ErrorsException {
-    errors = errors.withSource(providerKey);
-    javax.inject.Provider<? extends T> provider = providerFactory.get(errors, context, dependency, true);
+    context.pushState(providerKey, source);
     try {
-      return errors.checkForNull(provider.get(), source, dependency);
+      errors = errors.withSource(providerKey);
+      javax.inject.Provider<? extends T> provider = providerFactory.get(errors, context, dependency, true);
+      return circularGet(provider, errors, context, dependency, linked);
+    } finally {
+      context.popState();
+    }
+  }
+  
+  @Override
+  protected T provision(Provider<? extends T> provider, Errors errors, Dependency<?> dependency,
+      ConstructionContext<T> constructionContext) throws ErrorsException {
+    try {
+      return super.provision(provider, errors, dependency, constructionContext);
     } catch(RuntimeException userException) {
       throw errors.errorInProvider(userException).toException();
-    }
+    } 
   }
 
   @Override public String toString() {
