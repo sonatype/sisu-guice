@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1556)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1571)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -399,7 +399,7 @@
      @Inject @NumericValue Date date;
@@ -20,7 +20,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
  }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1556)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1571)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -238,7 +238,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -42,7 +42,7 @@ Index: core/test/com/google/inject/ScopesTest.java
      try {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1556)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1571)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -249,6 +249,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -105,235 +105,11 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
    private static class RootModule implements Module {
      final Stage stage;
  
-Index: core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java
-===================================================================
---- core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(revision 1556)
-+++ core/src/com/google/inject/internal/util/FinalizableReferenceQueue.java	(working copy)
-@@ -26,6 +26,8 @@
- import java.util.logging.Level;
- import java.util.logging.Logger;
- 
-+import com.google.inject.util.GuiceRuntime;
-+
- /**
-  * A reference queue with an associated background thread that dequeues
-  * references and invokes {@link FinalizableReference#finalizeReferent()} on
-@@ -118,12 +120,18 @@
-   @SuppressWarnings("unchecked")
-   public FinalizableReferenceQueue() {
-     // We could start the finalizer lazily, but I'd rather it blow up early.
--    ReferenceQueue<Object> queue;
--    boolean threadStarted = false;
-+    ReferenceQueue<Object> queue = null;
-     try {
--      queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
--          FinalizableReference.class, this);
--      threadStarted = true;
-+      String executorClassName = GuiceRuntime.getExecutorClassName();
-+      if (null == executorClassName) {
-+        // create the decoupled background worker thread
-+        queue = (ReferenceQueue<Object>) startFinalizer.invoke(null,
-+            FinalizableReference.class, this);
-+      } else {
-+        // custom executor -> no need to decouple thread
-+        queue = Finalizer.startFinalizer(
-+            FinalizableReference.class, this, executorClassName);
-+      }
-     } catch (IllegalAccessException e) {
-       // Finalizer.startFinalizer() is public.
-       throw new AssertionError(e);
-@@ -131,11 +139,15 @@
-       logger.log(Level.INFO, "Failed to start reference finalizer thread."
-           + " Reference cleanup will only occur when new references are"
-           + " created.", t);
--      queue = new ReferenceQueue<Object>();
-     }
- 
--    this.queue = queue;
--    this.threadStarted = threadStarted;
-+    if (queue == null) {
-+      this.queue = new ReferenceQueue<Object>();
-+      this.threadStarted = false;
-+    } else {
-+      this.queue = queue;
-+      this.threadStarted = true;
-+    }
-   }
- 
-   /**
-@@ -307,8 +319,9 @@
-     try {
-       return finalizer.getMethod("startFinalizer", Class.class, Object.class);
-     } catch (NoSuchMethodException e) {
--      throw new AssertionError(e);
--    }
-+      logger.log(Level.WARNING, "Cannot find startFinalizer method.", e);
-+    } catch (Throwable e) {}
-+    return null;
-   }
- }
- 
-Index: core/src/com/google/inject/internal/util/Finalizer.java
-===================================================================
---- core/src/com/google/inject/internal/util/Finalizer.java	(revision 1556)
-+++ core/src/com/google/inject/internal/util/Finalizer.java	(working copy)
-@@ -21,6 +21,8 @@
- import java.lang.ref.ReferenceQueue;
- import java.lang.ref.WeakReference;
- import java.lang.reflect.Method;
-+import java.util.concurrent.CancellationException;
-+import java.util.concurrent.Executor;
- import java.util.logging.Level;
- import java.util.logging.Logger;
- 
-@@ -45,7 +47,7 @@
-  * class loader from getting garbage collected, and this class can detect when
-  * the main class loader has been garbage collected and stop itself.
-  */
--public class Finalizer extends Thread {
-+public class Finalizer implements Runnable {
- 
-   private static final Logger logger
-       = Logger.getLogger(Finalizer.class.getName());
-@@ -61,10 +63,12 @@
-    * @param finalizableReferenceClass FinalizableReference.class
-    * @param frq reference to instance of FinalizableReferenceQueue that started
-    *  this thread
-+   * @param executorClassName name of the optional Executor class
-    * @return ReferenceQueue which Finalizer will poll
-    */
-   public static ReferenceQueue<Object> startFinalizer(
--      Class<?> finalizableReferenceClass, Object frq) {
-+      Class<?> finalizableReferenceClass, Object frq,
-+      String executorClassName) throws Exception {
-     /*
-      * We use FinalizableReference.class for two things:
-      *
-@@ -78,35 +82,60 @@
-           "Expected " + FINALIZABLE_REFERENCE + ".");
-     }
- 
-+    if ("NONE".equalsIgnoreCase(executorClassName)) {
-+      return null;
-+    }
-+
-     Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
--    finalizer.start();
-+
-+    if (executorClassName == null || executorClassName.length() == 0) {
-+      Thread thread = new Thread(finalizer, Finalizer.class.getName());
-+      thread.setDaemon(true);
-+      // TODO: Priority?
-+      thread.start();
-+    } else {
-+      Class<?> executorClass;
-+      try {
-+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-+        executorClass = tccl.loadClass(executorClassName);
-+      } catch (Throwable ignore) {
-+        executorClass = Class.forName(executorClassName);
-+      }
-+      // use custom Executor supplied by an external container
-+      ((Executor)executorClass.newInstance()).execute(finalizer);
-+    }
-     return finalizer.queue;
-   }
- 
-+  public static ReferenceQueue<Object> startFinalizer(
-+      Class<?> finalizableReferenceClass, Object frq) throws Exception {
-+
-+    String executorClassName = null;
-+    try {
-+      executorClassName = System.getProperty("guice.executor.class");
-+    } catch (Throwable t) {}
-+
-+    return startFinalizer(finalizableReferenceClass, frq, executorClassName);
-+  }
-+
-   private final WeakReference<Class<?>> finalizableReferenceClassReference;
-   private final PhantomReference<Object> frqReference;
-   private final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
- 
-   /** Constructs a new finalizer thread. */
-   private Finalizer(Class<?> finalizableReferenceClass, Object frq) {
--    super(Finalizer.class.getName());
- 
-     this.finalizableReferenceClassReference
-         = new WeakReference<Class<?>>(finalizableReferenceClass);
- 
-     // Keep track of the FRQ that started us so we know when to stop.
-     this.frqReference = new PhantomReference<Object>(frq, queue);
--
--    setDaemon(true);
--
--    // TODO: Priority?
-   }
- 
-   /**
-    * Loops continuously, pulling references off the queue and cleaning them up.
-    */
-   @SuppressWarnings("InfiniteLoopStatement")
--  @Override
-   public void run() {
-     try {
-       while (true) {
-@@ -114,13 +143,13 @@
-           cleanUp(queue.remove());
-         } catch (InterruptedException e) { /* ignore */ }
-       }
--    } catch (ShutDown shutDown) { /* ignore */ }
-+    } catch (CancellationException shutDown) { /* ignore */ }
-   }
- 
-   /**
-    * Cleans up a single reference. Catches and logs all throwables.
-    */
--  private void cleanUp(Reference<?> reference) throws ShutDown {
-+  private void cleanUp(Reference<?> reference) {
-     Method finalizeReferentMethod = getFinalizeReferentMethod();
-     do {
-       /*
-@@ -134,7 +163,7 @@
-          * The client no longer has a reference to the
-          * FinalizableReferenceQueue. We can stop.
-          */
--        throw new ShutDown();
-+        throw new CancellationException();
-       }
- 
-       try {
-@@ -153,7 +182,7 @@
-   /**
-    * Looks up FinalizableReference.finalizeReferent() method.
-    */
--  private Method getFinalizeReferentMethod() throws ShutDown {
-+  private Method getFinalizeReferentMethod() {
-     Class<?> finalizableReferenceClass
-         = finalizableReferenceClassReference.get();
-     if (finalizableReferenceClass == null) {
-@@ -165,7 +194,7 @@
-        * much just shut down and make sure we don't keep it alive any longer
-        * than necessary.
-        */
--      throw new ShutDown();
-+      throw new CancellationException();
-     }
-     try {
-       return finalizableReferenceClass.getMethod("finalizeReferent");
-@@ -173,8 +202,4 @@
-       throw new AssertionError(e);
-     }
-   }
--
--  /** Indicates that it's time to shut down the Finalizer. */
--  @SuppressWarnings("serial") // Never serialized or thrown out of this class.
--  private static class ShutDown extends Exception { }
- }
 Index: core/src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
---- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1556)
+--- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1571)
 +++ core/src/com/google/inject/internal/BytecodeGen.java	(working copy)
-@@ -119,8 +119,7 @@
+@@ -118,8 +118,7 @@
    end[NO_AOP]*/
  
    /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
@@ -343,7 +119,7 @@ Index: core/src/com/google/inject/internal/BytecodeGen.java
  
    /**
     * Weak cache of bridge class loaders that make the Guice implementation
-@@ -129,6 +128,14 @@
+@@ -128,6 +127,14 @@
    private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
  
    static {
@@ -360,7 +136,7 @@ Index: core/src/com/google/inject/internal/BytecodeGen.java
            new Function<ClassLoader, ClassLoader>() {
 Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1556)
+--- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1571)
 +++ core/src/com/google/inject/internal/AbstractBindingProcessor.java	(working copy)
 @@ -38,6 +38,12 @@
   */
@@ -392,7 +168,7 @@ Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
    /** 
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1556)
+--- core/src/com/google/inject/Scopes.java	(revision 1571)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -418,67 +194,9 @@ Index: core/src/com/google/inject/Scopes.java
                if (instance == null) {
                  T provided = creator.get();
  
-Index: core/src/com/google/inject/util/GuiceRuntime.java
-===================================================================
---- core/src/com/google/inject/util/GuiceRuntime.java	(revision 0)
-+++ core/src/com/google/inject/util/GuiceRuntime.java	(revision 0)
-@@ -0,0 +1,45 @@
-+/**
-+ * Copyright (C) 2011 Google Inc.
-+ *
-+ * Licensed under the Apache License, Version 2.0 (the "License");
-+ * you may not use this file except in compliance with the License.
-+ * You may obtain a copy of the License at
-+ *
-+ * http://www.apache.org/licenses/LICENSE-2.0
-+ *
-+ * Unless required by applicable law or agreed to in writing, software
-+ * distributed under the License is distributed on an "AS IS" BASIS,
-+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-+ * See the License for the specific language governing permissions and
-+ * limitations under the License.
-+ */
-+
-+package com.google.inject.util;
-+
-+/**
-+ * Use "-Dguice.executor.class=Clazz" where Clazz implements java.util.concurrent.Executor.
-+ */
-+@Deprecated
-+public final class GuiceRuntime {
-+
-+  private static String executorClassName;
-+
-+  private static boolean canSetExecutor = true;
-+
-+  private GuiceRuntime() {}
-+
-+  @Deprecated
-+  public static synchronized void setExecutorClassName(String name) {
-+    if (canSetExecutor) {
-+      executorClassName = name;
-+    } else {
-+      throw new IllegalStateException("Cannot set 'guice.executor.class' after it has been used.");
-+    }
-+  }
-+
-+  @Deprecated
-+  public static synchronized String getExecutorClassName() {
-+    canSetExecutor = false;
-+    return executorClassName;
-+  }
-+}
-
-Property changes on: core/src/com/google/inject/util/GuiceRuntime.java
-___________________________________________________________________
-Added: svn:keywords
-   + Author Date Id Revision
-Added: svn:eol-style
-   + native
-
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1556)
+--- core/pom.xml	(revision 1571)
 +++ core/pom.xml	(working copy)
 @@ -4,12 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
@@ -488,7 +206,7 @@ Index: core/pom.xml
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
 -    <version>3.0-SNAPSHOT</version>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
 -  <artifactId>guice</artifactId>
@@ -507,10 +225,10 @@ Index: core/pom.xml
 +      <optional>true</optional>
 +    </dependency>
 +    <dependency>
-       <groupId>cglib</groupId>
-       <artifactId>cglib</artifactId>
-       <version>${cglib.version}</version>
-@@ -54,7 +61,7 @@
+       <groupId>com.google.guava</groupId>
+       <artifactId>guava</artifactId>
+       <version>r09</version>
+@@ -59,7 +66,7 @@
      <dependency>
        <groupId>org.apache.felix</groupId>
        <artifactId>org.apache.felix.framework</artifactId>
@@ -519,7 +237,7 @@ Index: core/pom.xml
        <scope>test</scope>
      </dependency>
    </dependencies>
-@@ -78,12 +85,16 @@
+@@ -83,12 +90,16 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <!--
@@ -539,7 +257,7 @@ Index: core/pom.xml
            </excludes>
          </configuration>
        </plugin>
-@@ -93,6 +104,12 @@
+@@ -98,6 +109,12 @@
        <plugin>
          <groupId>org.apache.felix</groupId>
          <artifactId>maven-bundle-plugin</artifactId>
@@ -554,7 +272,7 @@ Index: core/pom.xml
         | Remove duplicate jarjar'd LICENSE and NOTICE
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1556)
+--- pom.xml	(revision 1571)
 +++ pom.xml	(working copy)
 @@ -18,18 +18,18 @@
    <modelVersion>4.0.0</modelVersion>
@@ -574,7 +292,7 @@ Index: pom.xml
 +  <groupId>org.sonatype.sisu.inject</groupId>
    <artifactId>guice-parent</artifactId>
 -  <version>3.0-SNAPSHOT</version>
-+  <version>3.0.1-SNAPSHOT</version>
++  <version>3.0.4-SNAPSHOT</version>
  
 -  <name>Google Guice</name>
 +  <name>Sisu Guice</name>
@@ -716,7 +434,7 @@ Index: pom.xml
      </pluginManagement>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1556)
+--- extensions/throwingproviders/pom.xml	(revision 1571)
 +++ extensions/throwingproviders/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -727,13 +445,13 @@ Index: extensions/throwingproviders/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-throwingproviders</artifactId>
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1556)
+--- extensions/service/pom.xml	(revision 1571)
 +++ extensions/service/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -748,7 +466,7 @@ Index: extensions/service/pom.xml
  
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1556)
+--- extensions/spring/pom.xml	(revision 1571)
 +++ extensions/spring/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -759,13 +477,13 @@ Index: extensions/spring/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-spring</artifactId>
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1556)
+--- extensions/jndi/pom.xml	(revision 1571)
 +++ extensions/jndi/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -776,13 +494,13 @@ Index: extensions/jndi/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-jndi</artifactId>
 Index: extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
 ===================================================================
---- extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(revision 1556)
+--- extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(revision 1571)
 +++ extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(working copy)
 @@ -37,7 +37,7 @@
   * @author dhanji@gmail.com (Dhanji R. Prasanna)
@@ -795,7 +513,7 @@ Index: extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
  
 Index: extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
 ===================================================================
---- extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(revision 1556)
+--- extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(revision 1571)
 +++ extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(working copy)
 @@ -62,8 +62,7 @@
    /**
@@ -821,7 +539,7 @@ Index: extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
        throws IOException, ServletException {
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1556)
+--- extensions/servlet/pom.xml	(revision 1571)
 +++ extensions/servlet/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -832,13 +550,13 @@ Index: extensions/servlet/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-servlet</artifactId>
 Index: extensions/struts2/pom.xml
 ===================================================================
---- extensions/struts2/pom.xml	(revision 1556)
+--- extensions/struts2/pom.xml	(revision 1571)
 +++ extensions/struts2/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -849,7 +567,7 @@ Index: extensions/struts2/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-struts2</artifactId>
@@ -873,7 +591,7 @@ Index: extensions/struts2/pom.xml
    </dependencies>
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1556)
+--- extensions/grapher/pom.xml	(revision 1571)
 +++ extensions/grapher/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -884,7 +602,7 @@ Index: extensions/grapher/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-grapher</artifactId>
@@ -905,7 +623,7 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1556)
+--- extensions/multibindings/pom.xml	(revision 1571)
 +++ extensions/multibindings/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -916,13 +634,13 @@ Index: extensions/multibindings/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-multibindings</artifactId>
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1556)
+--- extensions/persist/pom.xml	(revision 1571)
 +++ extensions/persist/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -933,7 +651,7 @@ Index: extensions/persist/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-persist</artifactId>
@@ -955,7 +673,7 @@ Index: extensions/persist/pom.xml
  </project>
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1556)
+--- extensions/pom.xml	(revision 1571)
 +++ extensions/pom.xml	(working copy)
 @@ -4,15 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
@@ -965,7 +683,7 @@ Index: extensions/pom.xml
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
 -    <version>3.0-SNAPSHOT</version>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <packaging>pom</packaging>
@@ -1019,7 +737,7 @@ Index: extensions/pom.xml
            <optional>true</optional>
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1556)
+--- extensions/assistedinject/pom.xml	(revision 1571)
 +++ extensions/assistedinject/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -1030,13 +748,13 @@ Index: extensions/assistedinject/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-assistedinject</artifactId>
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1556)
+--- extensions/mini/pom.xml	(revision 1571)
 +++ extensions/mini/pom.xml	(working copy)
 @@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
@@ -1051,7 +769,7 @@ Index: extensions/mini/pom.xml
  
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1556)
+--- extensions/jmx/pom.xml	(revision 1571)
 +++ extensions/jmx/pom.xml	(working copy)
 @@ -4,9 +4,9 @@
    <modelVersion>4.0.0</modelVersion>
@@ -1062,7 +780,7 @@ Index: extensions/jmx/pom.xml
 -    <version>3.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-+    <version>3.0.1-SNAPSHOT</version>
++    <version>3.0.4-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-jmx</artifactId>

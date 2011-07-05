@@ -16,11 +16,8 @@
 
 package com.google.inject;
 
-import com.google.inject.internal.util.FinalizableReferenceQueueTest;
-import com.google.inject.internal.util.ImmutableSet;
-import com.google.inject.internal.util.Jsr166HashMapTest;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.internal.util.LineNumbersTest;
-import com.google.inject.internal.util.MapMakerTestSuite;
 import com.google.inject.internal.MoreTypesTest;
 import com.google.inject.internal.UniqueAnnotationsTest;
 import com.google.inject.matcher.MatcherTest;
@@ -41,7 +38,6 @@ import com.google.inject.util.ProvidersTest;
 import com.google.inject.util.TypesTest;
 import com.googlecode.guice.Jsr330Test;
 import com.googlecode.guice.GuiceTck;
-import java.util.Enumeration;
 import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -103,10 +99,7 @@ public class AllTests {
     suite.addTestSuite(TypeLiteralTypeResolutionTest.class);
 
     // internal
-    suite.addTestSuite(FinalizableReferenceQueueTest.class);
-    suite.addTestSuite(Jsr166HashMapTest.class);
     suite.addTestSuite(LineNumbersTest.class);
-    suite.addTest(MapMakerTestSuite.suite());
     suite.addTestSuite(MoreTypesTest.class);
     suite.addTestSuite(UniqueAnnotationsTest.class);
 
@@ -145,30 +138,9 @@ public class AllTests {
     /*end[AOP]*/
 
     // googlecode.guice
-    suite.addTest(com.googlecode.guice.StrictContainerTestSuite.suite());
     suite.addTestSuite(com.googlecode.guice.OSGiContainerTest.class);
     suite.addTestSuite(Jsr330Test.class);
 
-    return removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);
-  }
-
-  public static TestSuite removeSuppressedTests(TestSuite suite, Set<String> suppressedTestNames) {
-    TestSuite result = new TestSuite(suite.getName());
-
-    for(Enumeration e = suite.tests(); e.hasMoreElements(); ) {
-      Test test = (Test) e.nextElement();
-
-      if (suppressedTestNames.contains(test.toString())) {
-        continue;
-      }
-
-      if (test instanceof TestSuite) {
-        result.addTest(removeSuppressedTests((TestSuite) test, suppressedTestNames));
-      } else {
-        result.addTest(test);
-      }
-    }
-
-    return result;
+    return SuiteUtils.removeSuppressedTests(suite, SUPPRESSED_TEST_NAMES);
   }
 }

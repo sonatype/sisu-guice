@@ -36,6 +36,11 @@
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>r09</version>
+    </dependency>
+    <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
       <version>${cglib.version}</version>
@@ -224,6 +229,8 @@
               <includes>
                 <include>*:asm</include>
                 <include>*:cglib</include>
+                <include>*:guava</include>
+                <include>*:jsr305</include>
               </includes>
             </configuration>
           </plugin>
