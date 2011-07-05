@@ -16,6 +16,7 @@
 
   <properties>
     <cglib.version>2.2.2</cglib.version>
+    <guava.version>0.10.0-SNAPSHOT</guava.version>
   </properties>
 
   <dependencies>
@@ -36,14 +37,14 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>r09</version>
-    </dependency>
-    <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
       <version>${cglib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guava</artifactId>
+      <version>${guava.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -229,7 +230,7 @@
               <includes>
                 <include>*:asm</include>
                 <include>*:cglib</include>
-                <include>*:guava</include>
+                <include>*:sisu-guava</include>
                 <include>*:jsr305</include>
               </includes>
             </configuration>
