@@ -230,8 +230,6 @@
               <includes>
                 <include>*:asm</include>
                 <include>*:cglib</include>
-                <include>*:sisu-guava</include>
-                <include>*:jsr305</include>
               </includes>
             </configuration>
           </plugin>
