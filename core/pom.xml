@@ -112,6 +112,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
+            <Require-Bundle>org.sonatype.sisu.guava</Require-Bundle>
             <DynamicImport-Package>org.slf4j</DynamicImport-Package>
             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
           </instructions>
