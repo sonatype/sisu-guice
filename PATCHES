@@ -198,7 +198,7 @@ Index: core/pom.xml
 ===================================================================
 --- core/pom.xml	(revision 1571)
 +++ core/pom.xml	(working copy)
-@@ -4,12 +4,13 @@
+@@ -4,17 +4,19 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -215,20 +215,39 @@ Index: core/pom.xml
  
    <name>Google Guice - Core Library</name>
  
-@@ -29,6 +30,12 @@
+   <properties>
+     <cglib.version>2.2.2</cglib.version>
++    <guava.version>0.10.0-SNAPSHOT</guava.version>
+   </properties>
+ 
+   <dependencies>
+@@ -29,9 +31,10 @@
        <version>1.0</version>
      </dependency>
      <dependency>
+-      <groupId>com.google.guava</groupId>
+-      <artifactId>guava</artifactId>
+-      <version>r09</version>
 +      <groupId>org.slf4j</groupId>
 +      <artifactId>slf4j-api</artifactId>
 +      <version>1.6.1</version>
 +      <optional>true</optional>
+     </dependency>
+     <dependency>
+       <groupId>cglib</groupId>
+@@ -39,6 +42,11 @@
+       <version>${cglib.version}</version>
+     </dependency>
+     <dependency>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guava</artifactId>
++      <version>${guava.version}</version>
 +    </dependency>
 +    <dependency>
-       <groupId>com.google.guava</groupId>
-       <artifactId>guava</artifactId>
-       <version>r09</version>
-@@ -59,7 +66,7 @@
+       <groupId>javax.inject</groupId>
+       <artifactId>javax.inject-tck</artifactId>
+       <version>1</version>
+@@ -59,7 +67,7 @@
      <dependency>
        <groupId>org.apache.felix</groupId>
        <artifactId>org.apache.felix.framework</artifactId>
@@ -237,7 +256,7 @@ Index: core/pom.xml
        <scope>test</scope>
      </dependency>
    </dependencies>
-@@ -83,12 +90,16 @@
+@@ -83,12 +91,16 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <!--
@@ -257,12 +276,13 @@ Index: core/pom.xml
            </excludes>
          </configuration>
        </plugin>
-@@ -98,6 +109,12 @@
+@@ -98,6 +110,13 @@
        <plugin>
          <groupId>org.apache.felix</groupId>
          <artifactId>maven-bundle-plugin</artifactId>
 +        <configuration>
 +          <instructions>
++            <Require-Bundle>org.sonatype.sisu.guava</Require-Bundle>
 +            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
 +            <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
 +          </instructions>
@@ -270,6 +290,15 @@ Index: core/pom.xml
        </plugin>
        <!--
         | Remove duplicate jarjar'd LICENSE and NOTICE
+@@ -212,8 +231,6 @@
+               <includes>
+                 <include>*:asm</include>
+                 <include>*:cglib</include>
+-                <include>*:guava</include>
+-                <include>*:jsr305</include>
+               </includes>
+             </configuration>
+           </plugin>
 Index: pom.xml
 ===================================================================
 --- pom.xml	(revision 1571)
@@ -335,7 +364,7 @@ Index: pom.xml
        <artifactId>testng</artifactId>
 -      <version>5.11</version>
 -      <classifier>jdk15</classifier>
-+      <version>6.0.1</version>
++      <version>6.1.1</version>
        <scope>test</scope>
      </dependency>
    </dependencies>
@@ -348,7 +377,22 @@ Index: pom.xml
            <executions>
              <execution>
                <goals>
-@@ -264,7 +264,7 @@
+@@ -220,14 +220,6 @@
+                 <pattern>org.objectweb.asm.**.*</pattern>
+                 <result>com.google.inject.internal.asm.@1.$@2</result>
+               </rule>
+-              <rule>
+-                <pattern>com.google.common.*</pattern>
+-                <result>com.google.inject.internal.guava.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>com.google.common.**.*</pattern>
+-                <result>com.google.inject.internal.guava.@1.$@2</result>
+-              </rule>
+               <keep>
+                 <pattern>com.google.inject.**</pattern>
+               </keep>
+@@ -264,7 +256,7 @@
          </plugin>
          <plugin>
            <artifactId>maven-surefire-plugin</artifactId>
@@ -357,7 +401,7 @@ Index: pom.xml
            <configuration>
              <redirectTestOutputToFile>true</redirectTestOutputToFile>
            </configuration>
-@@ -275,20 +275,18 @@
+@@ -275,21 +267,19 @@
          <plugin>
            <groupId>org.apache.felix</groupId>
            <artifactId>maven-bundle-plugin</artifactId>
@@ -367,21 +411,25 @@ Index: pom.xml
              <instructions>
 -              <module>com.google.inject</module>
 -              <_include>-${project.basedir}/build.properties</_include>
-+              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
++              <Bundle-Name>${project.artifactId}</Bundle-Name>
++              <Bundle-SymbolicName>$(maven-symbolicname);singleton:=true</Bundle-SymbolicName>
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
-               <Bundle-Name>${project.artifactId}</Bundle-Name>
+-              <Bundle-Name>${project.artifactId}</Bundle-Name>
 -              <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
++              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
                <Bundle-RequiredExecutionEnvironment>
                  J2SE-1.5,JavaSE-1.6
                </Bundle-RequiredExecutionEnvironment>
-               <Import-Package>!com.google.inject.*,*</Import-Package>
+-              <Import-Package>!com.google.inject.*,*</Import-Package>
 -              <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-+              <_exportcontents>!*.internal.*,com.google.inject.*;version=${guice.api.version}</_exportcontents>
-               <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+-              <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
++              <_exportcontents>!*.internal.*,*;version=${guice.api.version}</_exportcontents>
++              <Import-Package>!com.google.*,*</Import-Package>
                <_nouses>true</_nouses>
                <_removeheaders>
-@@ -333,7 +331,31 @@
+                 Embed-Dependency,Embed-Transitive,
+@@ -333,7 +323,31 @@
          </plugin>
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
@@ -414,7 +462,7 @@ Index: pom.xml
          </plugin>
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
-@@ -341,7 +363,7 @@
+@@ -341,18 +355,18 @@
          </plugin>
          <plugin>
            <artifactId>maven-gpg-plugin</artifactId>
@@ -423,7 +471,11 @@ Index: pom.xml
          </plugin>
          <plugin>
            <artifactId>maven-release-plugin</artifactId>
-@@ -352,7 +374,7 @@
+-          <version>2.1</version>
++          <version>2.2</version>
+           <configuration>
+             <autoVersionSubmodules>true</autoVersionSubmodules>
+           </configuration>
          </plugin>
          <plugin>
            <artifactId>maven-deploy-plugin</artifactId>
