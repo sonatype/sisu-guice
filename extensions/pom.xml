@@ -88,31 +88,6 @@
   <profiles>
     <profile>
       <!--
-       | JarJar build profile: re-package ASM and CGLIB references under the Guice namespace
-      -->
-      <id>guice.with.jarjar</id>
-      <activation>
-        <property>
-          <name>guice.with.jarjar</name>
-          <value>!false</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>jarjar-maven-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>*:*</exclude>
-              </excludes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <!--
        | Non-JarJar build profile: need CGLIB during tests
       -->
       <activation>

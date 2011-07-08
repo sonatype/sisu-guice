@@ -212,14 +212,102 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>jarjar-maven-plugin</artifactId>
+            <version>1.5-SNAPSHOT</version>
             <configuration>
+              <overwrite>true</overwrite>
               <includes>
                 <include>*:asm</include>
                 <include>*:cglib</include>
               </includes>
+              <rules>
+                <rule>
+                  <pattern>net.sf.cglib.*</pattern>
+                  <result>com.google.inject.internal.cglib.$@1</result>
+                </rule>
+                <rule>
+                  <pattern>net.sf.cglib.**.*</pattern>
+                  <result>com.google.inject.internal.cglib.@1.$@2</result>
+                </rule>
+                <rule>
+                  <pattern>org.objectweb.asm.*</pattern>
+                  <result>com.google.inject.internal.asm.$@1</result>
+                </rule>
+                <rule>
+                  <pattern>org.objectweb.asm.**.*</pattern>
+                  <result>com.google.inject.internal.asm.@1.$@2</result>
+                </rule>
+                <keep>
+                  <pattern>com.google.inject.**</pattern>
+                </keep>
+                <keep>
+                  <pattern>com.googlecode.**</pattern>
+                </keep>
+              </rules>
             </configuration>
+            <!--
+             | JarJar all classes before running tests
+            -->
+            <executions>
+              <execution>
+                <id>jarjar-classes</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>jarjar</goal>
+                </goals>
+                <configuration>
+                  <input>{classes}</input>
+                </configuration>
+              </execution>
+              <execution>
+                <id>jarjar-test-classes</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>jarjar</goal>
+                </goals>
+                <configuration>
+                  <input>{test-classes}</input>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!--
+       | m2e profile - force use of JarJar inside Eclipse
+      -->
+      <id>m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>jarjar-maven-plugin</artifactId>
+                        <versionRange>[1.4,)</versionRange>
+                        <goals><goal>jarjar</goal></goals>
+                      </pluginExecutionFilter>
+                      <action><execute/></action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
       </build>
     </profile>
   </profiles>
