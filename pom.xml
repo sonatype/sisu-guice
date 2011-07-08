@@ -201,7 +201,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
         <plugin>
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>jarjar-maven-plugin</artifactId>
-          <version>1.4</version>
+          <version>1.5-SNAPSHOT</version>
           <configuration>
             <rules>
               <rule>
@@ -394,6 +394,43 @@ See the Apache License Version 2.0 for the specific language governing permissio
           <url>${forgeSnapshotUrl}</url>
         </snapshotRepository>
       </distributionManagement>
+    </profile>
+    <profile>
+      <!--
+       | m2e profile - ignore unsupported plugins
+      -->
+      <id>m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>jarjar-maven-plugin</artifactId>
+                        <versionRange>[1.4,)</versionRange>
+                        <goals><goal>jarjar</goal></goals>
+                      </pluginExecutionFilter>
+                      <action><execute/></action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 
