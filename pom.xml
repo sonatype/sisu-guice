@@ -99,7 +99,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
     -->
     <guice.api.version>1.3</guice.api.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
     <!--
      | Use "-Dguice.with.jarjar=false" to build without jarjar
     -->
@@ -311,30 +310,5 @@ See the Apache License Version 2.0 for the specific language governing permissio
       </plugins>
     </pluginManagement>
   </build>
-
-  <profiles>
-    <profile>
-      <!--
-       | Deployment profile for the Sonatype Grid
-      -->
-      <id>sonatype-grid</id>
-      <properties>
-        <forgeReleaseId>forge-releases</forgeReleaseId>
-        <forgeReleaseUrl>http://repository.sonatype.org:8081/service/local/staging/deploy/maven2</forgeReleaseUrl>
-        <forgeSnapshotId>forge-snapshots</forgeSnapshotId>
-        <forgeSnapshotUrl>http://repository.sonatype.org/content/repositories/snapshots</forgeSnapshotUrl>
-      </properties>
-      <distributionManagement>
-        <repository>
-          <id>${forgeReleaseId}</id>
-          <url>${forgeReleaseUrl}</url>
-        </repository>
-        <snapshotRepository>
-          <id>${forgeSnapshotId}</id>
-          <url>${forgeSnapshotUrl}</url>
-        </snapshotRepository>
-      </distributionManagement>
-    </profile>
-  </profiles>
 
 </project>
