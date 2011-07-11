@@ -212,7 +212,7 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>jarjar-maven-plugin</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>1.5</version>
             <configuration>
               <overwrite>true</overwrite>
               <includes>
