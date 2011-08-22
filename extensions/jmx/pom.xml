@@ -11,6 +11,6 @@
 
   <artifactId>guice-jmx</artifactId>
 
-  <name>Google Guice - Extensions - JMX</name>
+  <name>Sisu Guice - Extensions - JMX</name>
 
 </project>

@@ -11,7 +11,7 @@
 
   <artifactId>guice-servlet</artifactId>
 
-  <name>Google Guice - Extensions - Servlet</name>
+  <name>Sisu Guice - Extensions - Servlet</name>
 
   <dependencies>
     <dependency>

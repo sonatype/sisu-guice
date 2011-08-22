@@ -11,6 +11,6 @@
 
   <artifactId>guice-service</artifactId>
 
-  <name>Google Guice - Extensions - Service</name>
+  <name>Sisu Guice - Extensions - Service</name>
 
 </project>

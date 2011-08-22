@@ -32,7 +32,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
   <name>Sisu Guice</name>
 
   <description>
-    Guice is a lightweight dependency injection framework for Java 5 and above
+    Patched build of Guice: a lightweight dependency injection framework for Java 5 and above
   </description>
 
   <url>http://code.google.com/p/google-guice/</url>
@@ -47,15 +47,15 @@ See the Apache License Version 2.0 for the specific language governing permissio
     <mailingList>
       <name>Guice Users List</name>
       <archive>http://groups.google.com/group/google-guice/topics</archive>
-      <subscribe>http://groups.google.com/group/google-guice/subscribe</subscribe>
-      <unsubscribe>http://groups.google.com/group/google-guice/subscribe</unsubscribe>
+      <subscribe>google-guice+subscribe@googlegroups.com</subscribe>
+      <unsubscribe>google-guice+unsubscribe@googlegroups.com</unsubscribe>
       <post>http://groups.google.com/group/google-guice/post</post>
     </mailingList>
     <mailingList>
       <name>Guice Developers List</name>
       <archive>http://groups.google.com/group/google-guice-dev/topics</archive>
-      <subscribe>http://groups.google.com/group/google-guice-dev/subscribe</subscribe>
-      <unsubscribe>http://groups.google.com/group/google-guice-dev/subscribe</unsubscribe>
+      <subscribe>google-guice-dev+subscribe@googlegroups.com</subscribe>
+      <unsubscribe>google-guice-dev+unsubscribe@googlegroups.com</unsubscribe>
       <post>http://groups.google.com/group/google-guice-dev/post</post>
     </mailingList>
   </mailingLists>
@@ -278,7 +278,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
               -quiet
               -federate JDK http://download.oracle.com/javase/6/docs/api/index.html?
               -federationxml JDK http://doclava.googlecode.com/svn/static/api/openjdk-6.xml
-              -hdf project.name "${project.name}"
+              -hdf project.name "${project.name} (patched build of Google Guice)"
               -d ${project.build.directory}/apidocs
             </additionalparam>
             <useStandardDocletOptions>false</useStandardDocletOptions>
@@ -287,6 +287,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
             -->
             <additionalJOption>-J-Xmx1024m</additionalJOption>
           </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>

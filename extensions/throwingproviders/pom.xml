@@ -11,6 +11,6 @@
 
   <artifactId>guice-throwingproviders</artifactId>
 
-  <name>Google Guice - Extensions - ThrowingProviders</name>
+  <name>Sisu Guice - Extensions - ThrowingProviders</name>
 
 </project>

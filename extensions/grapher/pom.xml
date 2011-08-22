@@ -11,7 +11,7 @@
 
   <artifactId>guice-grapher</artifactId>
 
-  <name>Google Guice - Extensions - Grapher</name>
+  <name>Sisu Guice - Extensions - Grapher</name>
 
   <dependencies>
     <dependency>

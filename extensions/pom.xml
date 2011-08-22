@@ -13,7 +13,7 @@
 
   <artifactId>guice-extensions</artifactId>
 
-  <name>Google Guice - Extensions</name>
+  <name>Sisu Guice - Extensions</name>
 
   <modules>
     <module>assistedinject</module>

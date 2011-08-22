@@ -11,6 +11,6 @@
 
   <artifactId>guice-assistedinject</artifactId>
 
-  <name>Google Guice - Extensions - AssistedInject</name>
+  <name>Sisu Guice - Extensions - AssistedInject</name>
 
 </project>

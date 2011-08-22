@@ -11,7 +11,7 @@
 
   <artifactId>guice-struts2</artifactId>
 
-  <name>Google Guice - Extensions - Struts2</name>
+  <name>Sisu Guice - Extensions - Struts2</name>
 
   <dependencies>
     <dependency>

@@ -11,7 +11,7 @@
 
   <artifactId>guice-persist</artifactId>
 
-  <name>Google Guice - Extensions - Persist</name>
+  <name>Sisu Guice - Extensions - Persist</name>
 
   <dependencies>
     <dependency>

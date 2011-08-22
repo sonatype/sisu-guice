@@ -11,6 +11,6 @@
 
   <artifactId>guice-jndi</artifactId>
 
-  <name>Google Guice - Extensions - JNDI</name>
+  <name>Sisu Guice - Extensions - JNDI</name>
 
 </project>

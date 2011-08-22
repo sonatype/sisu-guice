@@ -1,6 +1,6 @@
 Index: core/test/com/google/inject/TypeConversionTest.java
 ===================================================================
---- core/test/com/google/inject/TypeConversionTest.java	(revision 1575)
+--- core/test/com/google/inject/TypeConversionTest.java	(revision 1577)
 +++ core/test/com/google/inject/TypeConversionTest.java	(working copy)
 @@ -402,7 +402,7 @@
      @Inject @NumericValue Date date;
@@ -20,7 +20,7 @@ Index: core/test/com/google/inject/TypeConversionTest.java
  }
 Index: core/test/com/google/inject/ScopesTest.java
 ===================================================================
---- core/test/com/google/inject/ScopesTest.java	(revision 1575)
+--- core/test/com/google/inject/ScopesTest.java	(revision 1577)
 +++ core/test/com/google/inject/ScopesTest.java	(working copy)
 @@ -241,7 +241,7 @@
      Asserts.assertNotSerializable(Scopes.NO_SCOPE);
@@ -42,7 +42,7 @@ Index: core/test/com/google/inject/ScopesTest.java
      try {
 Index: core/src/com/google/inject/internal/InjectorShell.java
 ===================================================================
---- core/src/com/google/inject/internal/InjectorShell.java	(revision 1575)
+--- core/src/com/google/inject/internal/InjectorShell.java	(revision 1577)
 +++ core/src/com/google/inject/internal/InjectorShell.java	(working copy)
 @@ -251,6 +251,15 @@
          new ProviderInstanceBindingImpl<Logger>(injector, key,
@@ -107,7 +107,7 @@ Index: core/src/com/google/inject/internal/InjectorShell.java
  
 Index: core/src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
---- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1575)
+--- core/src/com/google/inject/internal/BytecodeGen.java	(revision 1577)
 +++ core/src/com/google/inject/internal/BytecodeGen.java	(working copy)
 @@ -118,8 +118,7 @@
    end[NO_AOP]*/
@@ -136,7 +136,7 @@ Index: core/src/com/google/inject/internal/BytecodeGen.java
            new Function<ClassLoader, ClassLoader>() {
 Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
 ===================================================================
---- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1575)
+--- core/src/com/google/inject/internal/AbstractBindingProcessor.java	(revision 1577)
 +++ core/src/com/google/inject/internal/AbstractBindingProcessor.java	(working copy)
 @@ -38,6 +38,12 @@
   */
@@ -168,7 +168,7 @@ Index: core/src/com/google/inject/internal/AbstractBindingProcessor.java
    /** 
 Index: core/src/com/google/inject/Scopes.java
 ===================================================================
---- core/src/com/google/inject/Scopes.java	(revision 1575)
+--- core/src/com/google/inject/Scopes.java	(revision 1577)
 +++ core/src/com/google/inject/Scopes.java	(working copy)
 @@ -17,7 +17,6 @@
  package com.google.inject;
@@ -196,7 +196,7 @@ Index: core/src/com/google/inject/Scopes.java
  
 Index: core/pom.xml
 ===================================================================
---- core/pom.xml	(revision 1575)
+--- core/pom.xml	(revision 1577)
 +++ core/pom.xml	(working copy)
 @@ -4,19 +4,16 @@
    <modelVersion>4.0.0</modelVersion>
@@ -213,7 +213,8 @@ Index: core/pom.xml
 +  <groupId>org.sonatype.sisu</groupId>
 +  <artifactId>sisu-guice</artifactId>
  
-   <name>Google Guice - Core Library</name>
+-  <name>Google Guice - Core Library</name>
++  <name>Sisu Guice - Core Library</name>
  
 -  <properties>
 -    <cglib.version>2.2.2</cglib.version>
@@ -231,7 +232,7 @@ Index: core/pom.xml
 -      <version>r09</version>
 +      <groupId>org.slf4j</groupId>
 +      <artifactId>slf4j-api</artifactId>
-+      <version>1.6.1</version>
++      <version>1.6.2</version>
 +      <optional>true</optional>
      </dependency>
      <dependency>
@@ -250,6 +251,15 @@ Index: core/pom.xml
        <groupId>javax.inject</groupId>
        <artifactId>javax.inject-tck</artifactId>
        <version>1</version>
+@@ -47,7 +51,7 @@
+     <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-beans</artifactId>
+-      <version>3.0.5.RELEASE</version>
++      <version>3.0.6.RELEASE</version>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
 @@ -59,7 +63,7 @@
      <dependency>
        <groupId>org.apache.felix</groupId>
@@ -427,9 +437,9 @@ Index: core/pom.xml
  </project>
 Index: pom.xml
 ===================================================================
---- pom.xml	(revision 1575)
+--- pom.xml	(revision 1577)
 +++ pom.xml	(working copy)
-@@ -18,18 +18,18 @@
+@@ -18,21 +18,21 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -453,8 +463,30 @@ Index: pom.xml
 +  <name>Sisu Guice</name>
  
    <description>
-     Guice is a lightweight dependency injection framework for Java 5 and above
-@@ -61,9 +61,9 @@
+-    Guice is a lightweight dependency injection framework for Java 5 and above
++    Patched build of Guice: a lightweight dependency injection framework for Java 5 and above
+   </description>
+ 
+   <url>http://code.google.com/p/google-guice/</url>
+@@ -47,23 +47,23 @@
+     <mailingList>
+       <name>Guice Users List</name>
+       <archive>http://groups.google.com/group/google-guice/topics</archive>
+-      <subscribe>http://groups.google.com/group/google-guice/subscribe</subscribe>
+-      <unsubscribe>http://groups.google.com/group/google-guice/subscribe</unsubscribe>
++      <subscribe>google-guice+subscribe@googlegroups.com</subscribe>
++      <unsubscribe>google-guice+unsubscribe@googlegroups.com</unsubscribe>
+       <post>http://groups.google.com/group/google-guice/post</post>
+     </mailingList>
+     <mailingList>
+       <name>Guice Developers List</name>
+       <archive>http://groups.google.com/group/google-guice-dev/topics</archive>
+-      <subscribe>http://groups.google.com/group/google-guice-dev/subscribe</subscribe>
+-      <unsubscribe>http://groups.google.com/group/google-guice-dev/subscribe</unsubscribe>
++      <subscribe>google-guice-dev+subscribe@googlegroups.com</subscribe>
++      <unsubscribe>google-guice-dev+unsubscribe@googlegroups.com</unsubscribe>
+       <post>http://groups.google.com/group/google-guice-dev/post</post>
+     </mailingList>
    </mailingLists>
  
    <scm>
@@ -482,7 +514,7 @@ Index: pom.xml
        <artifactId>testng</artifactId>
 -      <version>5.11</version>
 -      <classifier>jdk15</classifier>
-+      <version>6.1.1</version>
++      <version>6.2</version>
        <scope>test</scope>
      </dependency>
    </dependencies>
@@ -495,6 +527,15 @@ Index: pom.xml
            <executions>
              <execution>
                <goals>
+@@ -177,7 +176,7 @@
+         <plugin>
+           <groupId>org.codehaus.mojo</groupId>
+           <artifactId>animal-sniffer-maven-plugin</artifactId>
+-          <version>1.6</version>
++          <version>1.7</version>
+           <configuration>
+             <signature>
+               <groupId>org.codehaus.mojo.signature</groupId>
 @@ -195,76 +194,9 @@
              </execution>
            </executions>
@@ -601,7 +642,12 @@ Index: pom.xml
                <_nouses>true</_nouses>
                <_removeheaders>
                  Embed-Dependency,Embed-Transitive,
-@@ -318,8 +248,7 @@
+@@ -314,12 +244,11 @@
+         -->
+         <plugin>
+           <artifactId>maven-jar-plugin</artifactId>
+-          <version>2.3.1</version>
++          <version>2.3.2</version>
            <configuration>
              <archive>
                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -611,7 +657,7 @@ Index: pom.xml
              </archive>
            </configuration>
            <executions>
-@@ -333,7 +262,31 @@
+@@ -333,54 +262,57 @@
          </plugin>
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
@@ -632,7 +678,7 @@ Index: pom.xml
 +              -quiet
 +              -federate JDK http://download.oracle.com/javase/6/docs/api/index.html?
 +              -federationxml JDK http://doclava.googlecode.com/svn/static/api/openjdk-6.xml
-+              -hdf project.name "${project.name}"
++              -hdf project.name "${project.name} (patched build of Google Guice)"
 +              -d ${project.build.directory}/apidocs
 +            </additionalparam>
 +            <useStandardDocletOptions>false</useStandardDocletOptions>
@@ -643,8 +689,12 @@ Index: pom.xml
 +          </configuration>
          </plugin>
          <plugin>
++          <artifactId>maven-site-plugin</artifactId>
++          <version>3.0</version>
++        </plugin>
++        <plugin>
            <artifactId>maven-source-plugin</artifactId>
-@@ -341,46 +294,21 @@
+           <version>2.1.2</version>
          </plugin>
          <plugin>
            <artifactId>maven-gpg-plugin</artifactId>
@@ -654,7 +704,7 @@ Index: pom.xml
          <plugin>
            <artifactId>maven-release-plugin</artifactId>
 -          <version>2.1</version>
-+          <version>2.2</version>
++          <version>2.2.1</version>
            <configuration>
              <autoVersionSubmodules>true</autoVersionSubmodules>
            </configuration>
@@ -696,9 +746,9 @@ Index: pom.xml
  </project>
 Index: extensions/throwingproviders/pom.xml
 ===================================================================
---- extensions/throwingproviders/pom.xml	(revision 1575)
+--- extensions/throwingproviders/pom.xml	(revision 1577)
 +++ extensions/throwingproviders/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,13 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -711,11 +761,16 @@ Index: extensions/throwingproviders/pom.xml
    </parent>
  
    <artifactId>guice-throwingproviders</artifactId>
+ 
+-  <name>Google Guice - Extensions - ThrowingProviders</name>
++  <name>Sisu Guice - Extensions - ThrowingProviders</name>
+ 
+ </project>
 Index: extensions/service/pom.xml
 ===================================================================
---- extensions/service/pom.xml	(revision 1575)
+--- extensions/service/pom.xml	(revision 1577)
 +++ extensions/service/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,13 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -726,11 +781,17 @@ Index: extensions/service/pom.xml
      <version>3.0-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-service</artifactId>
+ 
+-  <name>Google Guice - Extensions - Service</name>
++  <name>Sisu Guice - Extensions - Service</name>
+ 
+ </project>
 Index: extensions/spring/pom.xml
 ===================================================================
---- extensions/spring/pom.xml	(revision 1575)
+--- extensions/spring/pom.xml	(revision 1577)
 +++ extensions/spring/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,20 +4,20 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -743,11 +804,24 @@ Index: extensions/spring/pom.xml
    </parent>
  
    <artifactId>guice-spring</artifactId>
+ 
+-  <name>Google Guice - Extensions - Spring</name>
++  <name>Sisu Guice - Extensions - Spring</name>
+ 
+   <dependencies>
+     <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-beans</artifactId>
+-      <version>3.0.5.RELEASE</version>
++      <version>3.0.6.RELEASE</version>
+       <scope>provided</scope>
+     </dependency>
+   </dependencies>
 Index: extensions/jndi/pom.xml
 ===================================================================
---- extensions/jndi/pom.xml	(revision 1575)
+--- extensions/jndi/pom.xml	(revision 1577)
 +++ extensions/jndi/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,13 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -760,9 +834,14 @@ Index: extensions/jndi/pom.xml
    </parent>
  
    <artifactId>guice-jndi</artifactId>
+ 
+-  <name>Google Guice - Extensions - JNDI</name>
++  <name>Sisu Guice - Extensions - JNDI</name>
+ 
+ </project>
 Index: extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
 ===================================================================
---- extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(revision 1575)
+--- extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(revision 1577)
 +++ extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java	(working copy)
 @@ -39,7 +39,7 @@
   * @author dhanji@gmail.com (Dhanji R. Prasanna)
@@ -775,7 +854,7 @@ Index: extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
  
 Index: extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
 ===================================================================
---- extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(revision 1575)
+--- extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(revision 1577)
 +++ extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java	(working copy)
 @@ -64,8 +64,7 @@
    /**
@@ -801,9 +880,9 @@ Index: extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
        throws IOException, ServletException {
 Index: extensions/servlet/pom.xml
 ===================================================================
---- extensions/servlet/pom.xml	(revision 1575)
+--- extensions/servlet/pom.xml	(revision 1577)
 +++ extensions/servlet/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,14 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -816,11 +895,17 @@ Index: extensions/servlet/pom.xml
    </parent>
  
    <artifactId>guice-servlet</artifactId>
+ 
+-  <name>Google Guice - Extensions - Servlet</name>
++  <name>Sisu Guice - Extensions - Servlet</name>
+ 
+   <dependencies>
+     <dependency>
 Index: extensions/struts2/pom.xml
 ===================================================================
---- extensions/struts2/pom.xml	(revision 1575)
+--- extensions/struts2/pom.xml	(revision 1577)
 +++ extensions/struts2/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,18 +4,18 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -833,7 +918,9 @@ Index: extensions/struts2/pom.xml
    </parent>
  
    <artifactId>guice-struts2</artifactId>
-@@ -15,7 +15,7 @@
+ 
+-  <name>Google Guice - Extensions - Struts2</name>
++  <name>Sisu Guice - Extensions - Struts2</name>
  
    <dependencies>
      <dependency>
@@ -853,7 +940,7 @@ Index: extensions/struts2/pom.xml
    </dependencies>
 Index: extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java
 ===================================================================
---- extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java	(revision 1575)
+--- extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java	(revision 1577)
 +++ extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java	(working copy)
 @@ -26,7 +26,6 @@
  import com.google.inject.Key;
@@ -873,9 +960,9 @@ Index: extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapher
  
 Index: extensions/grapher/pom.xml
 ===================================================================
---- extensions/grapher/pom.xml	(revision 1575)
+--- extensions/grapher/pom.xml	(revision 1577)
 +++ extensions/grapher/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,23 +4,23 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -888,7 +975,9 @@ Index: extensions/grapher/pom.xml
    </parent>
  
    <artifactId>guice-grapher</artifactId>
-@@ -15,12 +15,12 @@
+ 
+-  <name>Google Guice - Extensions - Grapher</name>
++  <name>Sisu Guice - Extensions - Grapher</name>
  
    <dependencies>
      <dependency>
@@ -905,9 +994,9 @@ Index: extensions/grapher/pom.xml
      </dependency>
 Index: extensions/multibindings/pom.xml
 ===================================================================
---- extensions/multibindings/pom.xml	(revision 1575)
+--- extensions/multibindings/pom.xml	(revision 1577)
 +++ extensions/multibindings/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,13 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -920,11 +1009,16 @@ Index: extensions/multibindings/pom.xml
    </parent>
  
    <artifactId>guice-multibindings</artifactId>
+ 
+-  <name>Google Guice - Extensions - MultiBindings</name>
++  <name>Sisu Guice - Extensions - MultiBindings</name>
+ 
+ </project>
 Index: extensions/persist/pom.xml
 ===================================================================
---- extensions/persist/pom.xml	(revision 1575)
+--- extensions/persist/pom.xml	(revision 1577)
 +++ extensions/persist/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,14 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -937,7 +1031,28 @@ Index: extensions/persist/pom.xml
    </parent>
  
    <artifactId>guice-persist</artifactId>
-@@ -46,15 +46,4 @@
+ 
+-  <name>Google Guice - Extensions - Persist</name>
++  <name>Sisu Guice - Extensions - Persist</name>
+ 
+   <dependencies>
+     <dependency>
+@@ -29,7 +29,7 @@
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-simple</artifactId>
+-      <version>1.6.1</version>
++      <version>1.6.2</version>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+@@ -41,20 +41,9 @@
+     <dependency>
+       <groupId>org.hsqldb</groupId>
+       <artifactId>hsqldb-j5</artifactId>
+-      <version>2.0.0</version>
++      <version>2.2.4</version>
+       <scope>test</scope>
      </dependency>
    </dependencies>
  
@@ -955,9 +1070,9 @@ Index: extensions/persist/pom.xml
  </project>
 Index: extensions/pom.xml
 ===================================================================
---- extensions/pom.xml	(revision 1575)
+--- extensions/pom.xml	(revision 1577)
 +++ extensions/pom.xml	(working copy)
-@@ -4,15 +4,14 @@
+@@ -4,17 +4,16 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -974,8 +1089,11 @@ Index: extensions/pom.xml
 -  <artifactId>extensions-parent</artifactId>
 +  <artifactId>guice-extensions</artifactId>
  
-   <name>Google Guice - Extensions</name>
+-  <name>Google Guice - Extensions</name>
++  <name>Sisu Guice - Extensions</name>
  
+   <modules>
+     <module>assistedinject</module>
 @@ -40,16 +39,16 @@
       | All extensions depend on the core
      -->
@@ -1056,9 +1174,9 @@ Index: extensions/pom.xml
  
 Index: extensions/assistedinject/pom.xml
 ===================================================================
---- extensions/assistedinject/pom.xml	(revision 1575)
+--- extensions/assistedinject/pom.xml	(revision 1577)
 +++ extensions/assistedinject/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,13 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -1071,11 +1189,16 @@ Index: extensions/assistedinject/pom.xml
    </parent>
  
    <artifactId>guice-assistedinject</artifactId>
+ 
+-  <name>Google Guice - Extensions - AssistedInject</name>
++  <name>Sisu Guice - Extensions - AssistedInject</name>
+ 
+ </project>
 Index: extensions/mini/pom.xml
 ===================================================================
---- extensions/mini/pom.xml	(revision 1575)
+--- extensions/mini/pom.xml	(revision 1577)
 +++ extensions/mini/pom.xml	(working copy)
-@@ -4,8 +4,8 @@
+@@ -4,13 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -1086,11 +1209,17 @@ Index: extensions/mini/pom.xml
      <version>3.0-SNAPSHOT</version>
    </parent>
  
+   <artifactId>guice-mini</artifactId>
+ 
+-  <name>Google Guice - Extensions - Mini</name>
++  <name>Sisu Guice - Extensions - Mini</name>
+ 
+ </project>
 Index: extensions/jmx/pom.xml
 ===================================================================
---- extensions/jmx/pom.xml	(revision 1575)
+--- extensions/jmx/pom.xml	(revision 1577)
 +++ extensions/jmx/pom.xml	(working copy)
-@@ -4,9 +4,9 @@
+@@ -4,13 +4,13 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -1103,3 +1232,8 @@ Index: extensions/jmx/pom.xml
    </parent>
  
    <artifactId>guice-jmx</artifactId>
+ 
+-  <name>Google Guice - Extensions - JMX</name>
++  <name>Sisu Guice - Extensions - JMX</name>
+ 
+ </project>

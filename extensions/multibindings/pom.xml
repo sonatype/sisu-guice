@@ -11,6 +11,6 @@
 
   <artifactId>guice-multibindings</artifactId>
 
-  <name>Google Guice - Extensions - MultiBindings</name>
+  <name>Sisu Guice - Extensions - MultiBindings</name>
 
 </project>

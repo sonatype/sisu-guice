@@ -11,7 +11,7 @@
 
   <artifactId>guice-spring</artifactId>
 
-  <name>Google Guice - Extensions - Spring</name>
+  <name>Sisu Guice - Extensions - Spring</name>
 
   <dependencies>
     <dependency>
