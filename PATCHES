@@ -289,12 +289,15 @@ Index: core/pom.xml
            </excludes>
          </configuration>
        </plugin>
-@@ -98,6 +106,13 @@
+@@ -98,6 +106,16 @@
        <plugin>
          <groupId>org.apache.felix</groupId>
          <artifactId>maven-bundle-plugin</artifactId>
 +        <configuration>
 +          <instructions>
++            <Bundle-Name>
++              ${project.artifactId}$(if;$(classes;NAMED;*.Interceptor*);; (no_aop))
++            </Bundle-Name>
 +            <Require-Bundle>org.sonatype.sisu.guava</Require-Bundle>
 +            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
 +            <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
@@ -303,7 +306,7 @@ Index: core/pom.xml
        </plugin>
        <!--
         | Remove duplicate jarjar'd LICENSE and NOTICE
-@@ -192,53 +207,109 @@
+@@ -192,53 +210,109 @@
            <value>!false</value>
          </property>
        </activation>
@@ -422,7 +425,7 @@ Index: core/pom.xml
 +                        <versionRange>[1.4,)</versionRange>
 +                        <goals><goal>jarjar</goal></goals>
 +                      </pluginExecutionFilter>
-+                      <action><execute/></action>
++                      <action><execute /></action>
 +                    </pluginExecution>
 +                  </pluginExecutions>
 +                </lifecycleMappingMetadata>
