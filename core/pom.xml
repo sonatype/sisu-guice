@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.sonatype.sisu.inject</groupId>
     <artifactId>guice-parent</artifactId>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>3.1.0-alpha-1</version>
   </parent>
 
   <groupId>org.sonatype.sisu</groupId>
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.sonatype.sisu</groupId>
       <artifactId>sisu-guava</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.10.0-alpha-1</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -300,7 +300,7 @@
                         <versionRange>[1.4,)</versionRange>
                         <goals><goal>jarjar</goal></goals>
                       </pluginExecutionFilter>
-                      <action><execute/></action>
+                      <action><execute /></action>
                     </pluginExecution>
                   </pluginExecutions>
                 </lifecycleMappingMetadata>
