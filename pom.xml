@@ -229,6 +229,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
                 Ignore-Package,Bnd-LastModified
               </_removeheaders>
             </instructions>
+            <archive>
+              <forced>true</forced><!-- dummy entry to stop bundleplugin from picking up jar config -->
+            </archive>
           </configuration>
           <executions>
             <execution>
