@@ -451,7 +451,7 @@ Index: pom.xml
 -    <version>5</version>
 +    <groupId>org.sonatype.forge</groupId>
 +    <artifactId>forge-parent</artifactId>
-+    <version>9</version>
++    <version>10</version>
    </parent>
  
    <packaging>pom</packaging>
@@ -1027,6 +1027,86 @@ Index: extensions/multibindings/pom.xml
 +  <name>Sisu Guice - Extensions - MultiBindings</name>
  
  </project>
+Index: extensions/persist/src/log4j.properties
+===================================================================
+--- extensions/persist/src/log4j.properties	(revision 1577)
++++ extensions/persist/src/log4j.properties	(working copy)
+@@ -1,6 +0,0 @@
+-log4j.rootLogger=warn, console
+-
+-log4j.appender.console=org.apache.log4j.ConsoleAppender
+-log4j.appender.console.Target=System.out
+-log4j.appender.console.layout=org.apache.log4j.PatternLayout
+-log4j.appender.console.layout.ConversionPattern=%p [%c{1}] - %m %n
+Index: extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java
+===================================================================
+--- extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java	(revision 1577)
++++ extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java	(working copy)
+@@ -42,11 +42,11 @@
+   private final ThreadLocal<EntityManager> entityManager = new ThreadLocal<EntityManager>();
+ 
+   private final String persistenceUnitName;
+-  private final Properties persistenceProperties;
++  private final Provider<Properties> persistenceProperties;
+ 
+   @Inject
+   public JpaPersistService(@Jpa String persistenceUnitName,
+-      @Nullable @Jpa Properties persistenceProperties) {
++      @Nullable @Jpa Provider<Properties> persistenceProperties) {
+     this.persistenceUnitName = persistenceUnitName;
+     this.persistenceProperties = persistenceProperties;
+   }
+@@ -95,7 +95,7 @@
+ 
+     if (null != persistenceProperties) {
+       this.emFactory = Persistence
+-          .createEntityManagerFactory(persistenceUnitName, persistenceProperties);
++          .createEntityManagerFactory(persistenceUnitName, persistenceProperties.get());
+     } else {
+       this.emFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+     }
+Index: extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java
+===================================================================
+--- extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java	(revision 1577)
++++ extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java	(working copy)
+@@ -37,6 +37,7 @@
+ import java.util.List;
+ import java.util.Properties;
+ 
++import javax.inject.Provider;
+ import javax.persistence.EntityManager;
+ import javax.persistence.EntityManagerFactory;
+ 
+@@ -55,6 +56,7 @@
+   }
+ 
+   private Properties properties;
++  private Class<? extends Provider<? extends Properties>> propertiesProvider;
+   private MethodInterceptor transactionInterceptor;
+ 
+   @Override protected void configurePersistence() {
+@@ -62,6 +64,9 @@
+ 
+     if (null != properties) {
+       bind(Properties.class).annotatedWith(Jpa.class).toInstance(properties);
++    } else if (null != propertiesProvider) {
++      bind(Properties.class).annotatedWith(Jpa.class)
++          .toProvider(propertiesProvider);
+     } else {
+       bind(Properties.class).annotatedWith(Jpa.class)
+           .toProvider(Providers.<Properties>of(null));
+@@ -99,6 +104,11 @@
+     return this;
+   }
+ 
++  public JpaPersistModule properties(Class<? extends Provider<? extends Properties>> provider) {
++    this.propertiesProvider = provider;
++    return this;
++  }
++
+   private final List<Class<?>> dynamicFinders = Lists.newArrayList();
+ 
+   /**
 Index: extensions/persist/pom.xml
 ===================================================================
 --- extensions/persist/pom.xml	(revision 1577)
