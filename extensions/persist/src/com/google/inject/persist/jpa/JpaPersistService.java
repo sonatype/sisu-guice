@@ -42,11 +42,11 @@ class JpaPersistService implements Provider<EntityManager>, UnitOfWork, PersistS
   private final ThreadLocal<EntityManager> entityManager = new ThreadLocal<EntityManager>();
 
   private final String persistenceUnitName;
-  private final Properties persistenceProperties;
+  private final Provider<Properties> persistenceProperties;
 
   @Inject
   public JpaPersistService(@Jpa String persistenceUnitName,
-      @Nullable @Jpa Properties persistenceProperties) {
+      @Nullable @Jpa Provider<Properties> persistenceProperties) {
     this.persistenceUnitName = persistenceUnitName;
     this.persistenceProperties = persistenceProperties;
   }
@@ -95,7 +95,7 @@ class JpaPersistService implements Provider<EntityManager>, UnitOfWork, PersistS
 
     if (null != persistenceProperties) {
       this.emFactory = Persistence
-          .createEntityManagerFactory(persistenceUnitName, persistenceProperties);
+          .createEntityManagerFactory(persistenceUnitName, persistenceProperties.get());
     } else {
       this.emFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
     }
