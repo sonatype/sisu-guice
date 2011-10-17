@@ -1,5 +1,5 @@
 diff --git a/core/pom.xml b/core/pom.xml
-index 3df788b..f7c5be8 100644
+index 3df788b..bbfe15c 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,18 +4,15 @@
@@ -48,7 +48,7 @@ index 3df788b..f7c5be8 100644
 +    <dependency>
 +      <groupId>org.sonatype.sisu</groupId>
 +      <artifactId>sisu-guava</artifactId>
-+      <version>0.9.9</version>
++      <version>0.10.0-SNAPSHOT</version>
      </dependency>
      <dependency>
        <groupId>javax.inject</groupId>
