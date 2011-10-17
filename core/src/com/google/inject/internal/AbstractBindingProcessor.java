@@ -39,9 +39,17 @@ import java.util.Set;
 abstract class AbstractBindingProcessor extends AbstractProcessor {
 
 //------------------------------------------------------------------------------
-  private static final boolean DISABLE_MISPLACED_ANNOTATION_CHECK
-      = Boolean.parseBoolean(System.getProperty(
+  private static final boolean DISABLE_MISPLACED_ANNOTATION_CHECK;
+  static {
+    boolean disableCheck;
+    try {
+      disableCheck = Boolean.parseBoolean(System.getProperty(
           "guice.disable.misplaced.annotation.check", "false"));
+    } catch (Throwable e) {
+      disableCheck = false;
+    }
+    DISABLE_MISPLACED_ANNOTATION_CHECK = disableCheck;
+  }
 //------------------------------------------------------------------------------
 
   // It's unfortunate that we have to maintain a blacklist of specific
