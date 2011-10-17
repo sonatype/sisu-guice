@@ -116,7 +116,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.2</version>
+      <version>6.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -196,7 +196,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.9</version>
+          <version>2.10</version>
           <configuration>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>

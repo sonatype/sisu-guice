@@ -1,5 +1,5 @@
 diff --git a/core/pom.xml b/core/pom.xml
-index 3df788b..fe779eb 100644
+index 3df788b..f7c5be8 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,18 +4,15 @@
@@ -66,7 +66,7 @@ index 3df788b..fe779eb 100644
        <groupId>org.apache.felix</groupId>
        <artifactId>org.apache.felix.framework</artifactId>
 -      <version>3.0.5</version>
-+      <version>3.2.2</version>
++      <version>4.0.1</version>
        <scope>test</scope>
      </dependency>
    </dependencies>
@@ -427,6 +427,27 @@ index 02fb442..df3ee93 100644
      Injector injector = Guice.createInjector(new AbstractModule() {
        protected void configure() {
          bind(String.class).toInstance("55");
+diff --git a/core/test/com/googlecode/guice/OSGiContainerTest.java b/core/test/com/googlecode/guice/OSGiContainerTest.java
+index 77ab8fa..068a541 100644
+--- a/core/test/com/googlecode/guice/OSGiContainerTest.java
++++ b/core/test/com/googlecode/guice/OSGiContainerTest.java
+@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
+ import java.io.IOException;
+ import java.io.OutputStream;
+ import java.util.Iterator;
++import java.util.Map;
+ import java.util.Properties;
+ 
+ import javax.imageio.spi.ServiceRegistry;
+@@ -134,7 +135,7 @@ public class OSGiContainerTest
+     // test each available OSGi framework in turn
+     Iterator<FrameworkFactory> f = ServiceRegistry.lookupProviders(FrameworkFactory.class);
+     while (f.hasNext()) {
+-      Framework framework = f.next().newFramework(properties);
++      Framework framework = f.next().newFramework((Map)properties);
+ 
+       framework.start();
+       BundleContext systemContext = framework.getBundleContext();
 diff --git a/extensions/assistedinject/pom.xml b/extensions/assistedinject/pom.xml
 index 745d6b4..4959704 100644
 --- a/extensions/assistedinject/pom.xml
@@ -931,7 +952,7 @@ index f81f6ad..edc79f7 100644
      </dependency>
    </dependencies>
 diff --git a/extensions/struts2/pom.xml b/extensions/struts2/pom.xml
-index 38d313a..cdaa6ec 100644
+index 38d313a..b85203c 100644
 --- a/extensions/struts2/pom.xml
 +++ b/extensions/struts2/pom.xml
 @@ -4,18 +4,18 @@
@@ -963,7 +984,7 @@ index 38d313a..cdaa6ec 100644
        <groupId>org.apache.struts</groupId>
        <artifactId>struts2-core</artifactId>
 -      <version>2.2.1</version>
-+      <version>2.2.3</version>
++      <version>2.2.3.1</version>
        <scope>provided</scope>
      </dependency>
    </dependencies>
@@ -993,7 +1014,7 @@ diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
 index 6abed4b..259cae6 100644
 Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
 diff --git a/pom.xml b/pom.xml
-index 001892b..035f3ac 100644
+index 001892b..2812abc 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -1080,7 +1101,7 @@ index 001892b..035f3ac 100644
        <artifactId>testng</artifactId>
 -      <version>5.11</version>
 -      <classifier>jdk15</classifier>
-+      <version>6.2</version>
++      <version>6.3</version>
        <scope>test</scope>
      </dependency>
    </dependencies>
@@ -1176,7 +1197,7 @@ index 001892b..035f3ac 100644
          <plugin>
            <artifactId>maven-surefire-plugin</artifactId>
 -          <version>2.5</version>
-+          <version>2.9</version>
++          <version>2.10</version>
            <configuration>
              <redirectTestOutputToFile>true</redirectTestOutputToFile>
            </configuration>

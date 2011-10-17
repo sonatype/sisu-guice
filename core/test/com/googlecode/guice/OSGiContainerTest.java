@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.imageio.spi.ServiceRegistry;
@@ -134,7 +135,7 @@ public class OSGiContainerTest
     // test each available OSGi framework in turn
     Iterator<FrameworkFactory> f = ServiceRegistry.lookupProviders(FrameworkFactory.class);
     while (f.hasNext()) {
-      Framework framework = f.next().newFramework(properties);
+      Framework framework = f.next().newFramework((Map)properties);
 
       framework.start();
       BundleContext systemContext = framework.getBundleContext();
