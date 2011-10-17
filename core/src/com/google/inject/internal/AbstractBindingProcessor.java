@@ -38,6 +38,12 @@ import java.util.Set;
  */
 abstract class AbstractBindingProcessor extends AbstractProcessor {
 
+//------------------------------------------------------------------------------
+  private static final boolean DISABLE_MISPLACED_ANNOTATION_CHECK
+      = Boolean.parseBoolean(System.getProperty(
+          "guice.disable.misplaced.annotation.check", "false"));
+//------------------------------------------------------------------------------
+
   // It's unfortunate that we have to maintain a blacklist of specific
   // classes, but we can't easily block the whole package because of
   // all our unit tests.
@@ -126,8 +132,14 @@ abstract class AbstractBindingProcessor extends AbstractProcessor {
   }
   
   private <T> void validateKey(Object source, Key<T> key) {
+//------------------------------------------------------------------------------
+if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
+//------------------------------------------------------------------------------
     Annotations.checkForMisplacedScopeAnnotations(
         key.getTypeLiteral().getRawType(), source, errors);
+//------------------------------------------------------------------------------
+}
+//------------------------------------------------------------------------------
   }
   
   /** 
