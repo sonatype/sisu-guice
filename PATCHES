@@ -1,0 +1,1322 @@
+diff --git a/core/pom.xml b/core/pom.xml
+index 3df788b..fe779eb 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -4,18 +4,15 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>guice-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+-  <artifactId>guice</artifactId>
++  <groupId>org.sonatype.sisu</groupId>
++  <artifactId>sisu-guice</artifactId>
+ 
+-  <name>Google Guice - Core Library</name>
+-
+-  <properties>
+-    <cglib.version>2.2.2</cglib.version>
+-  </properties>
++  <name>Sisu Guice - Core Library</name>
+ 
+   <dependencies>
+     <dependency>
+@@ -29,14 +26,21 @@
+       <version>1.0</version>
+     </dependency>
+     <dependency>
+-      <groupId>com.google.guava</groupId>
+-      <artifactId>guava</artifactId>
+-      <version>r09</version>
++      <groupId>org.slf4j</groupId>
++      <artifactId>slf4j-api</artifactId>
++      <version>1.6.2</version>
++      <optional>true</optional>
+     </dependency>
+     <dependency>
+       <groupId>cglib</groupId>
+       <artifactId>cglib</artifactId>
+-      <version>${cglib.version}</version>
++      <version>2.2.2</version>
++      <optional>true</optional>
++    </dependency>
++    <dependency>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guava</artifactId>
++      <version>0.9.9</version>
+     </dependency>
+     <dependency>
+       <groupId>javax.inject</groupId>
+@@ -47,7 +51,7 @@
+     <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-beans</artifactId>
+-      <version>3.0.5.RELEASE</version>
++      <version>3.0.6.RELEASE</version>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+@@ -59,7 +63,7 @@
+     <dependency>
+       <groupId>org.apache.felix</groupId>
+       <artifactId>org.apache.felix.framework</artifactId>
+-      <version>3.0.5</version>
++      <version>3.2.2</version>
+       <scope>test</scope>
+     </dependency>
+   </dependencies>
+@@ -83,12 +87,16 @@
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+           <!--
+-           | Temporarily excluded tests
++           | Run core tests without SLF4J on the classpath
++          -->
++          <classpathDependencyExcludes>
++            <exclude>org.slf4j:slf4j-api</exclude>
++          </classpathDependencyExcludes>
++          <!--
++           | This test needs updating for use with Maven
+           -->
+           <excludes>
+             <exclude>**/OSGiContainerTest*</exclude>
+-            <exclude>**/ScopesTest*</exclude>
+-            <exclude>**/TypeConversionTest*</exclude>
+           </excludes>
+         </configuration>
+       </plugin>
+@@ -98,6 +106,16 @@
+       <plugin>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>maven-bundle-plugin</artifactId>
++        <configuration>
++          <instructions>
++            <Bundle-Name>
++              ${project.artifactId}$(if;$(classes;NAMED;*.Interceptor*);; (no_aop))
++            </Bundle-Name>
++            <Require-Bundle>org.sonatype.sisu.guava</Require-Bundle>
++            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
++            <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
++          </instructions>
++        </configuration>
+       </plugin>
+       <!--
+        | Remove duplicate jarjar'd LICENSE and NOTICE
+@@ -192,46 +210,65 @@
+           <value>!false</value>
+         </property>
+       </activation>
+-      <dependencies>
+-        <!--
+-         | Mark as optional: embedded by JarJar
+-        -->
+-        <dependency>
+-          <groupId>cglib</groupId>
+-          <artifactId>cglib</artifactId>
+-          <version>${cglib.version}</version>
+-          <optional>true</optional>
+-        </dependency>
+-      </dependencies>
+       <build>
+         <plugins>
+           <plugin>
+             <groupId>org.sonatype.plugins</groupId>
+             <artifactId>jarjar-maven-plugin</artifactId>
++            <version>1.5</version>
+             <configuration>
++              <overwrite>true</overwrite>
+               <includes>
+                 <include>*:asm</include>
+                 <include>*:cglib</include>
+-                <include>*:guava</include>
+-                <include>*:jsr305</include>
+               </includes>
++              <rules>
++                <rule>
++                  <pattern>net.sf.cglib.*</pattern>
++                  <result>com.google.inject.internal.cglib.$@1</result>
++                </rule>
++                <rule>
++                  <pattern>net.sf.cglib.**.*</pattern>
++                  <result>com.google.inject.internal.cglib.@1.$@2</result>
++                </rule>
++                <rule>
++                  <pattern>org.objectweb.asm.*</pattern>
++                  <result>com.google.inject.internal.asm.$@1</result>
++                </rule>
++                <rule>
++                  <pattern>org.objectweb.asm.**.*</pattern>
++                  <result>com.google.inject.internal.asm.@1.$@2</result>
++                </rule>
++                <keep>
++                  <pattern>com.google.inject.**</pattern>
++                </keep>
++                <keep>
++                  <pattern>com.googlecode.**</pattern>
++                </keep>
++              </rules>
+             </configuration>
+-          </plugin>
+-          <plugin>
+             <!--
+-             | Package the original non-JarJar'd classes so extensions can compile against them
++             | JarJar all classes before running tests
+             -->
+-            <artifactId>maven-jar-plugin</artifactId>
+             <executions>
+               <execution>
+-                <id>no_deps</id>
+-                <phase>package</phase>
++                <id>jarjar-classes</id>
++                <phase>process-test-classes</phase>
+                 <goals>
+-                  <goal>jar</goal>
++                  <goal>jarjar</goal>
++                </goals>
++                <configuration>
++                  <input>{classes}</input>
++                </configuration>
++              </execution>
++              <execution>
++                <id>jarjar-test-classes</id>
++                <phase>process-test-classes</phase>
++                <goals>
++                  <goal>jarjar</goal>
+                 </goals>
+                 <configuration>
+-                  <classesDirectory>${project.build.directory}/original-classes</classesDirectory>
+-                  <classifier>no_deps</classifier>
++                  <input>{test-classes}</input>
+                 </configuration>
+               </execution>
+             </executions>
+@@ -239,6 +276,43 @@
+         </plugins>
+       </build>
+     </profile>
++    <profile>
++      <!--
++       | m2e profile - force use of JarJar inside Eclipse
++      -->
++      <id>m2e</id>
++      <activation>
++        <property>
++          <name>m2e.version</name>
++        </property>
++      </activation>
++      <build>
++        <pluginManagement>
++          <plugins>
++            <plugin>
++              <groupId>org.eclipse.m2e</groupId>
++              <artifactId>lifecycle-mapping</artifactId>
++              <version>1.0.0</version>
++              <configuration>
++                <lifecycleMappingMetadata>
++                  <pluginExecutions>
++                    <pluginExecution>
++                      <pluginExecutionFilter>
++                        <groupId>org.sonatype.plugins</groupId>
++                        <artifactId>jarjar-maven-plugin</artifactId>
++                        <versionRange>[1.4,)</versionRange>
++                        <goals><goal>jarjar</goal></goals>
++                      </pluginExecutionFilter>
++                      <action><execute /></action>
++                    </pluginExecution>
++                  </pluginExecutions>
++                </lifecycleMappingMetadata>
++              </configuration>
++            </plugin>
++          </plugins>
++        </pluginManagement>
++      </build>
++    </profile>
+   </profiles>
+ 
+ </project>
+diff --git a/core/src/com/google/inject/Scopes.java b/core/src/com/google/inject/Scopes.java
+index 5d025aa..82123dd 100644
+--- a/core/src/com/google/inject/Scopes.java
++++ b/core/src/com/google/inject/Scopes.java
+@@ -17,7 +17,6 @@
+ package com.google.inject;
+ 
+ import com.google.inject.internal.CircularDependencyProxy;
+-import com.google.inject.internal.InternalInjectorCreator;
+ import com.google.inject.internal.LinkedBindingImpl;
+ import com.google.inject.spi.BindingScopingVisitor;
+ import com.google.inject.spi.ExposedBinding;
+@@ -53,14 +52,9 @@ public class Scopes {
+         public T get() {
+           if (instance == null) {
+             /*
+-             * Use a pretty coarse lock. We don't want to run into deadlocks
+-             * when two threads try to load circularly-dependent objects.
+-             * Maybe one of these days we will identify independent graphs of
+-             * objects and offer to load them in parallel.
+-             *
+              * This block is re-entrant for circular dependencies.
+              */
+-            synchronized (InternalInjectorCreator.class) {
++            synchronized (this) {
+               if (instance == null) {
+                 T provided = creator.get();
+ 
+diff --git a/core/src/com/google/inject/internal/AbstractBindingProcessor.java b/core/src/com/google/inject/internal/AbstractBindingProcessor.java
+index f09c40b..8fe03de 100644
+--- a/core/src/com/google/inject/internal/AbstractBindingProcessor.java
++++ b/core/src/com/google/inject/internal/AbstractBindingProcessor.java
+@@ -38,6 +38,20 @@ import java.util.Set;
+  */
+ abstract class AbstractBindingProcessor extends AbstractProcessor {
+ 
++//------------------------------------------------------------------------------
++  private static final boolean DISABLE_MISPLACED_ANNOTATION_CHECK;
++  static {
++    boolean disableCheck;
++    try {
++      disableCheck = Boolean.parseBoolean(System.getProperty(
++          "guice.disable.misplaced.annotation.check", "false"));
++    } catch (Throwable e) {
++      disableCheck = false;
++    }
++    DISABLE_MISPLACED_ANNOTATION_CHECK = disableCheck;
++  }
++//------------------------------------------------------------------------------
++
+   // It's unfortunate that we have to maintain a blacklist of specific
+   // classes, but we can't easily block the whole package because of
+   // all our unit tests.
+@@ -126,8 +140,14 @@ abstract class AbstractBindingProcessor extends AbstractProcessor {
+   }
+   
+   private <T> void validateKey(Object source, Key<T> key) {
++//------------------------------------------------------------------------------
++if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
++//------------------------------------------------------------------------------
+     Annotations.checkForMisplacedScopeAnnotations(
+         key.getTypeLiteral().getRawType(), source, errors);
++//------------------------------------------------------------------------------
++}
++//------------------------------------------------------------------------------
+   }
+   
+   /** 
+diff --git a/core/src/com/google/inject/internal/BytecodeGen.java b/core/src/com/google/inject/internal/BytecodeGen.java
+index d0a14fc..55ad161 100644
+--- a/core/src/com/google/inject/internal/BytecodeGen.java
++++ b/core/src/com/google/inject/internal/BytecodeGen.java
+@@ -118,8 +118,7 @@ public final class BytecodeGen {
+   end[NO_AOP]*/
+ 
+   /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
+-  private static final boolean CUSTOM_LOADER_ENABLED
+-      = Boolean.parseBoolean(System.getProperty("guice.custom.loader", "true"));
++  private static final boolean CUSTOM_LOADER_ENABLED;
+ 
+   /**
+    * Weak cache of bridge class loaders that make the Guice implementation
+@@ -128,6 +127,14 @@ public final class BytecodeGen {
+   private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
+ 
+   static {
++    boolean customLoaderEnabled;
++    try {
++      customLoaderEnabled = Boolean.parseBoolean(System.getProperty("guice.custom.loader", "true"));
++    } catch (Throwable e) {
++      customLoaderEnabled = false; // unlikely we'll also have permissions for custom loading
++    }
++    CUSTOM_LOADER_ENABLED = customLoaderEnabled;
++
+     if (CUSTOM_LOADER_ENABLED) {
+       CLASS_LOADER_CACHE = new MapMaker().weakKeys().weakValues().makeComputingMap(
+           new Function<ClassLoader, ClassLoader>() {
+diff --git a/core/src/com/google/inject/internal/InjectorShell.java b/core/src/com/google/inject/internal/InjectorShell.java
+index 4985f8c..6f3ade3 100644
+--- a/core/src/com/google/inject/internal/InjectorShell.java
++++ b/core/src/com/google/inject/internal/InjectorShell.java
+@@ -251,6 +251,15 @@ final class InjectorShell {
+         new ProviderInstanceBindingImpl<Logger>(injector, key,
+             SourceProvider.UNKNOWN_SOURCE, loggerFactory, Scoping.UNSCOPED,
+             loggerFactory, ImmutableSet.<InjectionPoint>of()));
++
++    try {
++      Key<org.slf4j.Logger> slf4jKey = Key.get(org.slf4j.Logger.class);
++      SLF4JLoggerFactory slf4jLoggerFactory = new SLF4JLoggerFactory(injector);
++      injector.state.putBinding(slf4jKey,
++          new ProviderInstanceBindingImpl<org.slf4j.Logger>(injector, slf4jKey,
++              SourceProvider.UNKNOWN_SOURCE, slf4jLoggerFactory, Scoping.UNSCOPED,
++              slf4jLoggerFactory, ImmutableSet.<InjectionPoint>of()));
++    } catch (Throwable e) {}
+   }
+ 
+   private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
+@@ -270,6 +279,44 @@ final class InjectorShell {
+     }
+   }
+ 
++  private static class SLF4JLoggerFactory implements InternalFactory<org.slf4j.Logger>, Provider<org.slf4j.Logger> {
++    private final Injector injector;
++
++    private org.slf4j.ILoggerFactory loggerFactory;
++
++    SLF4JLoggerFactory(Injector injector) {
++      this.injector = injector;
++    }
++
++    org.slf4j.ILoggerFactory loggerFactory() {
++      if (loggerFactory == null) {
++        try {
++          loggerFactory = injector.getInstance(org.slf4j.ILoggerFactory.class);
++        } catch (Throwable e) {}
++        if (loggerFactory == null) {
++          loggerFactory = org.slf4j.LoggerFactory.getILoggerFactory();
++        }
++      }
++      return loggerFactory;
++    }
++
++    public org.slf4j.Logger get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked) {
++      InjectionPoint injectionPoint = dependency.getInjectionPoint();
++      if (injectionPoint != null) {
++        return loggerFactory().getLogger(injectionPoint.getMember().getDeclaringClass().getName());
++      }
++      return loggerFactory().getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
++    }
++
++    public org.slf4j.Logger get() {
++      return loggerFactory().getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
++    }
++
++    public String toString() {
++      return "Provider<org.slf4j.Logger>";
++    }
++  }
++
+   private static class RootModule implements Module {
+     final Stage stage;
+ 
+diff --git a/core/test/com/google/inject/ScopesTest.java b/core/test/com/google/inject/ScopesTest.java
+index c2b8a7a..0923da8 100644
+--- a/core/test/com/google/inject/ScopesTest.java
++++ b/core/test/com/google/inject/ScopesTest.java
+@@ -241,7 +241,7 @@ public class ScopesTest extends TestCase {
+     Asserts.assertNotSerializable(Scopes.NO_SCOPE);
+   }
+ 
+-  public void testUnscopedProviderWorksOutsideOfRequestedScope() {
++  public void ignoreTestUnscopedProviderWorksOutsideOfRequestedScope() {
+     final RememberProviderScope scope = new RememberProviderScope();
+ 
+     Injector injector = Guice.createInjector(new AbstractModule() {
+diff --git a/core/test/com/google/inject/TypeConversionTest.java b/core/test/com/google/inject/TypeConversionTest.java
+index 02fb442..df3ee93 100644
+--- a/core/test/com/google/inject/TypeConversionTest.java
++++ b/core/test/com/google/inject/TypeConversionTest.java
+@@ -402,7 +402,7 @@ public class TypeConversionTest extends TestCase {
+     @Inject @NumericValue Date date;
+   }
+ 
+-  public void testCannotConvertUnannotatedBindings() {
++  public void ignoreTestCannotConvertUnannotatedBindings() {
+     Injector injector = Guice.createInjector(new AbstractModule() {
+       protected void configure() {
+         bind(String.class).toInstance("55");
+diff --git a/extensions/assistedinject/pom.xml b/extensions/assistedinject/pom.xml
+index 745d6b4..4959704 100644
+--- a/extensions/assistedinject/pom.xml
++++ b/extensions/assistedinject/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-assistedinject</artifactId>
+ 
+-  <name>Google Guice - Extensions - AssistedInject</name>
++  <name>Sisu Guice - Extensions - AssistedInject</name>
+ 
+ </project>
+diff --git a/extensions/grapher/pom.xml b/extensions/grapher/pom.xml
+index 015db56..3e20d17 100644
+--- a/extensions/grapher/pom.xml
++++ b/extensions/grapher/pom.xml
+@@ -4,23 +4,23 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-grapher</artifactId>
+ 
+-  <name>Google Guice - Extensions - Grapher</name>
++  <name>Sisu Guice - Extensions - Grapher</name>
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-assistedinject</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-multibindings</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+diff --git a/extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java b/extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java
+index 8d90f4c..b5ee53f 100644
+--- a/extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java
++++ b/extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java
+@@ -26,7 +26,6 @@ import com.google.inject.Inject;
+ import com.google.inject.Key;
+ import com.google.inject.Provider;
+ import com.google.inject.spi.InjectionPoint;
+-import com.google.testing.testsize.MediumTest;
+ 
+ import junit.framework.TestCase;
+ 
+@@ -41,7 +40,6 @@ import java.util.Set;
+  *
+  * @author bojand@google.com (Bojan Djordjevic)
+  */
+-@MediumTest
+ public class AbstractInjectorGrapherTest extends TestCase {
+   private static final String TEST_STRING = "test";
+ 
+diff --git a/extensions/jmx/pom.xml b/extensions/jmx/pom.xml
+index d8188ca..1bb98a8 100644
+--- a/extensions/jmx/pom.xml
++++ b/extensions/jmx/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-jmx</artifactId>
+ 
+-  <name>Google Guice - Extensions - JMX</name>
++  <name>Sisu Guice - Extensions - JMX</name>
+ 
+ </project>
+diff --git a/extensions/jndi/pom.xml b/extensions/jndi/pom.xml
+index ff04c5f..f186f1c 100644
+--- a/extensions/jndi/pom.xml
++++ b/extensions/jndi/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-jndi</artifactId>
+ 
+-  <name>Google Guice - Extensions - JNDI</name>
++  <name>Sisu Guice - Extensions - JNDI</name>
+ 
+ </project>
+diff --git a/extensions/mini/pom.xml b/extensions/mini/pom.xml
+index 3fa7032..69e979b 100644
+--- a/extensions/mini/pom.xml
++++ b/extensions/mini/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-mini</artifactId>
+ 
+-  <name>Google Guice - Extensions - Mini</name>
++  <name>Sisu Guice - Extensions - Mini</name>
+ 
+ </project>
+diff --git a/extensions/multibindings/pom.xml b/extensions/multibindings/pom.xml
+index b49283c..48cf744 100644
+--- a/extensions/multibindings/pom.xml
++++ b/extensions/multibindings/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-multibindings</artifactId>
+ 
+-  <name>Google Guice - Extensions - MultiBindings</name>
++  <name>Sisu Guice - Extensions - MultiBindings</name>
+ 
+ </project>
+diff --git a/extensions/multibindings/test/com/google/inject/multibindings/MultibinderTest.java b/extensions/multibindings/test/com/google/inject/multibindings/MultibinderTest.java
+index 28257c7..3c25314 100644
+--- a/extensions/multibindings/test/com/google/inject/multibindings/MultibinderTest.java
++++ b/extensions/multibindings/test/com/google/inject/multibindings/MultibinderTest.java
+@@ -600,7 +600,7 @@ public class MultibinderTest extends TestCase {
+     assertEquals(expected, s1);
+   }
+ 
+-  public void testSetAndMapValueConflict() {
++  public void ignoreTestSetAndMapValueConflict() {
+     Injector injector = Guice.createInjector(new AbstractModule() {
+       @Override protected void configure() {
+         Multibinder.newSetBinder(binder(), String.class)
+diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
+index 2c787b1..1340a7d 100644
+--- a/extensions/persist/pom.xml
++++ b/extensions/persist/pom.xml
+@@ -4,14 +4,14 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-persist</artifactId>
+ 
+-  <name>Google Guice - Extensions - Persist</name>
++  <name>Sisu Guice - Extensions - Persist</name>
+ 
+   <dependencies>
+     <dependency>
+@@ -29,7 +29,7 @@
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-simple</artifactId>
+-      <version>1.6.1</version>
++      <version>1.6.2</version>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+@@ -41,20 +41,9 @@
+     <dependency>
+       <groupId>org.hsqldb</groupId>
+       <artifactId>hsqldb-j5</artifactId>
+-      <version>2.0.0</version>
++      <version>2.2.4</version>
+       <scope>test</scope>
+     </dependency>
+   </dependencies>
+ 
+-  <build>
+-    <plugins>
+-      <plugin>
+-        <artifactId>maven-surefire-plugin</artifactId>
+-        <configuration>
+-          <forkMode>never</forkMode>
+-        </configuration>
+-      </plugin>
+-    </plugins>
+-  </build>
+-
+ </project>
+diff --git a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java
+index b318b27..5e9e364 100644
+--- a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java
++++ b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java
+@@ -37,6 +37,7 @@ import java.lang.reflect.Proxy;
+ import java.util.List;
+ import java.util.Properties;
+ 
++import javax.inject.Provider;
+ import javax.persistence.EntityManager;
+ import javax.persistence.EntityManagerFactory;
+ 
+@@ -55,6 +56,7 @@ public final class JpaPersistModule extends PersistModule {
+   }
+ 
+   private Properties properties;
++  private Class<? extends Provider<? extends Properties>> propertiesProvider;
+   private MethodInterceptor transactionInterceptor;
+ 
+   @Override protected void configurePersistence() {
+@@ -62,6 +64,9 @@ public final class JpaPersistModule extends PersistModule {
+ 
+     if (null != properties) {
+       bind(Properties.class).annotatedWith(Jpa.class).toInstance(properties);
++    } else if (null != propertiesProvider) {
++      bind(Properties.class).annotatedWith(Jpa.class)
++          .toProvider(propertiesProvider);
+     } else {
+       bind(Properties.class).annotatedWith(Jpa.class)
+           .toProvider(Providers.<Properties>of(null));
+@@ -99,6 +104,11 @@ public final class JpaPersistModule extends PersistModule {
+     return this;
+   }
+ 
++  public JpaPersistModule properties(Class<? extends Provider<? extends Properties>> provider) {
++    this.propertiesProvider = provider;
++    return this;
++  }
++
+   private final List<Class<?>> dynamicFinders = Lists.newArrayList();
+ 
+   /**
+diff --git a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java
+index b8fe35c..68d76a7 100644
+--- a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java
++++ b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java
+@@ -42,11 +42,11 @@ class JpaPersistService implements Provider<EntityManager>, UnitOfWork, PersistS
+   private final ThreadLocal<EntityManager> entityManager = new ThreadLocal<EntityManager>();
+ 
+   private final String persistenceUnitName;
+-  private final Properties persistenceProperties;
++  private final Provider<Properties> persistenceProperties;
+ 
+   @Inject
+   public JpaPersistService(@Jpa String persistenceUnitName,
+-      @Nullable @Jpa Properties persistenceProperties) {
++      @Nullable @Jpa Provider<Properties> persistenceProperties) {
+     this.persistenceUnitName = persistenceUnitName;
+     this.persistenceProperties = persistenceProperties;
+   }
+@@ -95,7 +95,7 @@ class JpaPersistService implements Provider<EntityManager>, UnitOfWork, PersistS
+ 
+     if (null != persistenceProperties) {
+       this.emFactory = Persistence
+-          .createEntityManagerFactory(persistenceUnitName, persistenceProperties);
++          .createEntityManagerFactory(persistenceUnitName, persistenceProperties.get());
+     } else {
+       this.emFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+     }
+diff --git a/extensions/pom.xml b/extensions/pom.xml
+index 309e092..823c103 100644
+--- a/extensions/pom.xml
++++ b/extensions/pom.xml
+@@ -4,17 +4,16 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>guice-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <packaging>pom</packaging>
+ 
+-  <groupId>com.google.inject.extensions</groupId>
+-  <artifactId>extensions-parent</artifactId>
++  <artifactId>guice-extensions</artifactId>
+ 
+-  <name>Google Guice - Extensions</name>
++  <name>Sisu Guice - Extensions</name>
+ 
+   <modules>
+     <module>assistedinject</module>
+@@ -40,16 +39,16 @@
+      | All extensions depend on the core
+     -->
+     <dependency>
+-      <groupId>com.google.inject</groupId>
+-      <artifactId>guice</artifactId>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guice</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+     <!--
+      | Some extension tests depend on the core tests
+     -->
+     <dependency>
+-      <groupId>com.google.inject</groupId>
+-      <artifactId>guice</artifactId>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guice</artifactId>
+       <version>${project.version}</version>
+       <classifier>tests</classifier>
+       <scope>test</scope>
+@@ -79,7 +78,7 @@
+         <artifactId>maven-bundle-plugin</artifactId>
+         <configuration>
+           <instructions>
+-            <Fragment-Host>com.google.inject</Fragment-Host>
++            <Fragment-Host>org.sonatype.sisu.guice</Fragment-Host>
+           </instructions>
+         </configuration>
+       </plugin>
+@@ -89,41 +88,22 @@
+   <profiles>
+     <profile>
+       <!--
+-       | JarJar build profile: re-package ASM and CGLIB references under the Guice namespace
++       | Non-JarJar build profile: need CGLIB during tests
+       -->
+-      <id>guice.with.jarjar</id>
+       <activation>
+         <property>
+           <name>guice.with.jarjar</name>
+-          <value>!false</value>
++          <value>false</value>
+         </property>
+       </activation>
+       <dependencies>
+-        <!--
+-         | Extensions compile first against the non-JarJar'd core - and are then JarJar'd themselves
+-         | (optional dependency so it doesn't leak to client projects that depend on Guice artifacts)
+-        -->
+         <dependency>
+-          <groupId>com.google.inject</groupId>
+-          <artifactId>guice</artifactId>
+-          <version>${project.version}</version>
+-          <classifier>no_deps</classifier>
+-          <optional>true</optional>
++          <groupId>cglib</groupId>
++          <artifactId>cglib</artifactId>
++          <version>2.2.2</version>
++          <scope>test</scope>
+         </dependency>
+       </dependencies>
+-      <build>
+-        <plugins>
+-          <plugin>
+-            <groupId>org.sonatype.plugins</groupId>
+-            <artifactId>jarjar-maven-plugin</artifactId>
+-            <configuration>
+-              <excludes>
+-                <exclude>*:*</exclude>
+-              </excludes>
+-            </configuration>
+-          </plugin>
+-        </plugins>
+-      </build>
+     </profile>
+   </profiles>
+ 
+diff --git a/extensions/service/pom.xml b/extensions/service/pom.xml
+index d4efef8..df91f36 100644
+--- a/extensions/service/pom.xml
++++ b/extensions/service/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-service</artifactId>
+ 
+-  <name>Google Guice - Extensions - Service</name>
++  <name>Sisu Guice - Extensions - Service</name>
+ 
+ </project>
+diff --git a/extensions/servlet/pom.xml b/extensions/servlet/pom.xml
+index 4f34f2f..9017372 100644
+--- a/extensions/servlet/pom.xml
++++ b/extensions/servlet/pom.xml
+@@ -4,14 +4,14 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-servlet</artifactId>
+ 
+-  <name>Google Guice - Extensions - Servlet</name>
++  <name>Sisu Guice - Extensions - Servlet</name>
+ 
+   <dependencies>
+     <dependency>
+diff --git a/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java b/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
+index 985064b..d85d97c 100755
+--- a/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
++++ b/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
+@@ -39,7 +39,7 @@ import javax.servlet.ServletResponse;
+  * @author dhanji@gmail.com (Dhanji R. Prasanna)
+  */
+ @ImplementedBy(DefaultFilterPipeline.class)
+-interface FilterPipeline {
++public interface FilterPipeline {
+   void initPipeline(ServletContext context) throws ServletException;
+   void destroyPipeline();
+ 
+diff --git a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
+index d069c96..1967da6 100644
+--- a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
++++ b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
+@@ -85,7 +85,7 @@ public class GuiceFilter implements Filter {
+     this(null);
+   }
+ 
+-  @Inject GuiceFilter(FilterPipeline filterPipeline) {
++  @Inject protected GuiceFilter(FilterPipeline filterPipeline) {
+     injectedPipeline = filterPipeline;
+   }
+ 
+diff --git a/extensions/spring/pom.xml b/extensions/spring/pom.xml
+index f81f6ad..edc79f7 100644
+--- a/extensions/spring/pom.xml
++++ b/extensions/spring/pom.xml
+@@ -4,20 +4,20 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-spring</artifactId>
+ 
+-  <name>Google Guice - Extensions - Spring</name>
++  <name>Sisu Guice - Extensions - Spring</name>
+ 
+   <dependencies>
+     <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-beans</artifactId>
+-      <version>3.0.5.RELEASE</version>
++      <version>3.0.6.RELEASE</version>
+       <scope>provided</scope>
+     </dependency>
+   </dependencies>
+diff --git a/extensions/struts2/pom.xml b/extensions/struts2/pom.xml
+index 38d313a..cdaa6ec 100644
+--- a/extensions/struts2/pom.xml
++++ b/extensions/struts2/pom.xml
+@@ -4,18 +4,18 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-struts2</artifactId>
+ 
+-  <name>Google Guice - Extensions - Struts2</name>
++  <name>Sisu Guice - Extensions - Struts2</name>
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-servlet</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+@@ -28,7 +28,7 @@
+     <dependency>
+       <groupId>org.apache.struts</groupId>
+       <artifactId>struts2-core</artifactId>
+-      <version>2.2.1</version>
++      <version>2.2.3</version>
+       <scope>provided</scope>
+     </dependency>
+   </dependencies>
+diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
+index bd67158..e89521e 100644
+--- a/extensions/throwingproviders/pom.xml
++++ b/extensions/throwingproviders/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-throwingproviders</artifactId>
+ 
+-  <name>Google Guice - Extensions - ThrowingProviders</name>
++  <name>Sisu Guice - Extensions - ThrowingProviders</name>
+ 
+ </project>
+diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
+index 6abed4b..259cae6 100644
+Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
+diff --git a/pom.xml b/pom.xml
+index 001892b..035f3ac 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google</groupId>
+-    <artifactId>google</artifactId>
+-    <version>5</version>
++    <groupId>org.sonatype.forge</groupId>
++    <artifactId>forge-parent</artifactId>
++    <version>10</version>
+   </parent>
+ 
+   <packaging>pom</packaging>
+ 
+-  <groupId>com.google.inject</groupId>
++  <groupId>org.sonatype.sisu.inject</groupId>
+   <artifactId>guice-parent</artifactId>
+-  <version>3.0-SNAPSHOT</version>
++  <version>3.2.0-SNAPSHOT</version>
+ 
+-  <name>Google Guice</name>
++  <name>Sisu Guice</name>
+ 
+   <description>
+-    Guice is a lightweight dependency injection framework for Java 5 and above
++    Patched build of Guice: a lightweight dependency injection framework for Java 5 and above
+   </description>
+ 
+   <url>http://code.google.com/p/google-guice/</url>
+@@ -47,23 +47,23 @@ See the Apache License Version 2.0 for the specific language governing permissio
+     <mailingList>
+       <name>Guice Users List</name>
+       <archive>http://groups.google.com/group/google-guice/topics</archive>
+-      <subscribe>http://groups.google.com/group/google-guice/subscribe</subscribe>
+-      <unsubscribe>http://groups.google.com/group/google-guice/subscribe</unsubscribe>
++      <subscribe>google-guice+subscribe@googlegroups.com</subscribe>
++      <unsubscribe>google-guice+unsubscribe@googlegroups.com</unsubscribe>
+       <post>http://groups.google.com/group/google-guice/post</post>
+     </mailingList>
+     <mailingList>
+       <name>Guice Developers List</name>
+       <archive>http://groups.google.com/group/google-guice-dev/topics</archive>
+-      <subscribe>http://groups.google.com/group/google-guice-dev/subscribe</subscribe>
+-      <unsubscribe>http://groups.google.com/group/google-guice-dev/subscribe</unsubscribe>
++      <subscribe>google-guice-dev+subscribe@googlegroups.com</subscribe>
++      <unsubscribe>google-guice-dev+unsubscribe@googlegroups.com</unsubscribe>
+       <post>http://groups.google.com/group/google-guice-dev/post</post>
+     </mailingList>
+   </mailingLists>
+ 
+   <scm>
+-    <connection>scm:svn:http://google-guice.googlecode.com/svn/trunk</connection>
+-    <developerConnection>scm:svn:https://google-guice.googlecode.com/svn/trunk</developerConnection>
+-    <url>http://code.google.com/p/google-guice/source/browse</url>
++    <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
++    <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
++    <url>http://github.com/sonatype/sisu-guice</url>
+   </scm>
+ 
+   <issueManagement>
+@@ -73,7 +73,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+ 
+   <ciManagement>
+     <system>Hudson</system>
+-    <url>https://grid.sonatype.org/ci/job/Google-Guice/</url>
++    <url>https://builds.sonatype.org/job/sisu-guice/</url>
+   </ciManagement>
+ 
+   <licenses>
+@@ -97,7 +97,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+     <!--
+      | The spec version of the public Guice API
+     -->
+-    <guice.api.version>1.3</guice.api.version>
++    <guice.api.version>1.4</guice.api.version>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <!--
+      | Use "-Dguice.with.jarjar=false" to build without jarjar
+@@ -116,8 +116,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+     <dependency>
+       <groupId>org.testng</groupId>
+       <artifactId>testng</artifactId>
+-      <version>5.11</version>
+-      <classifier>jdk15</classifier>
++      <version>6.2</version>
+       <scope>test</scope>
+     </dependency>
+   </dependencies>
+@@ -153,7 +152,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         -->
+         <plugin>
+           <artifactId>maven-remote-resources-plugin</artifactId>
+-          <version>1.1</version>
++          <version>1.2.1</version>
+           <executions>
+             <execution>
+               <goals>
+@@ -177,7 +176,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         <plugin>
+           <groupId>org.codehaus.mojo</groupId>
+           <artifactId>animal-sniffer-maven-plugin</artifactId>
+-          <version>1.6</version>
++          <version>1.7</version>
+           <configuration>
+             <signature>
+               <groupId>org.codehaus.mojo.signature</groupId>
+@@ -195,76 +194,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
+             </execution>
+           </executions>
+         </plugin>
+-        <!--
+-         | Shared JarJar configuration
+-        -->
+-        <plugin>
+-          <groupId>org.sonatype.plugins</groupId>
+-          <artifactId>jarjar-maven-plugin</artifactId>
+-          <version>1.4</version>
+-          <configuration>
+-            <rules>
+-              <rule>
+-                <pattern>net.sf.cglib.*</pattern>
+-                <result>com.google.inject.internal.cglib.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>net.sf.cglib.**.*</pattern>
+-                <result>com.google.inject.internal.cglib.@1.$@2</result>
+-              </rule>
+-              <rule>
+-                <pattern>org.objectweb.asm.*</pattern>
+-                <result>com.google.inject.internal.asm.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>org.objectweb.asm.**.*</pattern>
+-                <result>com.google.inject.internal.asm.@1.$@2</result>
+-              </rule>
+-              <rule>
+-                <pattern>com.google.common.*</pattern>
+-                <result>com.google.inject.internal.guava.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>com.google.common.**.*</pattern>
+-                <result>com.google.inject.internal.guava.@1.$@2</result>
+-              </rule>
+-              <keep>
+-                <pattern>com.google.inject.**</pattern>
+-              </keep>
+-              <keep>
+-                <pattern>com.googlecode.**</pattern>
+-              </keep>
+-            </rules>
+-          </configuration>
+-          <!--
+-           | JarJar all classes before running tests
+-          -->
+-          <executions>
+-            <execution>
+-              <id>jarjar-classes</id>
+-              <phase>process-test-classes</phase>
+-              <goals>
+-                <goal>jarjar</goal>
+-              </goals>
+-              <configuration>
+-                <input>{classes}</input>
+-              </configuration>
+-            </execution>
+-            <execution>
+-              <id>jarjar-test-classes</id>
+-              <phase>process-test-classes</phase>
+-              <goals>
+-                <goal>jarjar</goal>
+-              </goals>
+-              <configuration>
+-                <input>{test-classes}</input>
+-              </configuration>
+-            </execution>
+-          </executions>
+-        </plugin>
+         <plugin>
+           <artifactId>maven-surefire-plugin</artifactId>
+-          <version>2.5</version>
++          <version>2.9</version>
+           <configuration>
+             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+           </configuration>
+@@ -275,21 +207,19 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         <plugin>
+           <groupId>org.apache.felix</groupId>
+           <artifactId>maven-bundle-plugin</artifactId>
+-          <version>2.1.0</version>
++          <version>2.3.5</version>
+           <configuration>
+             <instructions>
+-              <module>com.google.inject</module>
+-              <_include>-${project.basedir}/build.properties</_include>
++              <Bundle-Name>${project.artifactId}</Bundle-Name>
++              <Bundle-SymbolicName>$(maven-symbolicname);singleton:=true</Bundle-SymbolicName>
+               <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
+               <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
+-              <Bundle-Name>${project.artifactId}</Bundle-Name>
+-              <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
++              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
+               <Bundle-RequiredExecutionEnvironment>
+                 J2SE-1.5,JavaSE-1.6
+               </Bundle-RequiredExecutionEnvironment>
+-              <Import-Package>!com.google.inject.*,*</Import-Package>
+-              <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
+-              <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
++              <_exportcontents>!*.internal.*,*;version=${guice.api.version}</_exportcontents>
++              <Import-Package>!com.google.*,*</Import-Package>
+               <_nouses>true</_nouses>
+               <_removeheaders>
+                 Embed-Dependency,Embed-Transitive,
+@@ -299,6 +229,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
+                 Ignore-Package,Bnd-LastModified
+               </_removeheaders>
+             </instructions>
++            <archive>
++              <forced>true</forced><!-- dummy entry to stop bundleplugin from picking up jar config -->
++            </archive>
+           </configuration>
+           <executions>
+             <execution>
+@@ -314,12 +247,11 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         -->
+         <plugin>
+           <artifactId>maven-jar-plugin</artifactId>
+-          <version>2.3.1</version>
++          <version>2.3.2</version>
+           <configuration>
+             <archive>
+               <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+-              <!--  Exclude to mirror ant build -->
+-     		  <addMavenDescriptor>false</addMavenDescriptor>
++              <addMavenDescriptor>false</addMavenDescriptor><!--  Exclude to mirror ant build -->
+             </archive>
+           </configuration>
+           <executions>
+@@ -333,7 +265,35 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         </plugin>
+         <plugin>
+           <artifactId>maven-javadoc-plugin</artifactId>
+-          <version>2.7</version>
++          <version>2.8</version>
++          <configuration>
++            <doclet>com.google.doclava.Doclava</doclet>
++            <docletPath>
++              ${project.basedir}/../lib/build/doclava.jar:
++              ${project.basedir}/../../lib/build/doclava.jar
++            </docletPath>
++            <!--
++             | bootclasspath required by Sun's JVM 
++            -->
++            <bootclasspath>${sun.boot.class.path}</bootclasspath>
++            <excludePackageNames>*.internal</excludePackageNames>
++            <additionalparam>
++              -quiet
++              -federate JDK http://download.oracle.com/javase/6/docs/api/index.html?
++              -federationxml JDK http://doclava.googlecode.com/svn/static/api/openjdk-6.xml
++              -hdf project.name "${project.name} (patched build of Google Guice)"
++              -d ${project.build.directory}/apidocs
++            </additionalparam>
++            <useStandardDocletOptions>false</useStandardDocletOptions>
++            <!--
++             | Apple's JVM sometimes requires more memory
++            -->
++            <additionalJOption>-J-Xmx1024m</additionalJOption>
++          </configuration>
++        </plugin>
++        <plugin>
++          <artifactId>maven-site-plugin</artifactId>
++          <version>3.0</version>
+         </plugin>
+         <plugin>
+           <artifactId>maven-source-plugin</artifactId>
+@@ -341,46 +301,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         </plugin>
+         <plugin>
+           <artifactId>maven-gpg-plugin</artifactId>
+-          <version>1.1</version>
++          <version>1.4</version>
+         </plugin>
+         <plugin>
+           <artifactId>maven-release-plugin</artifactId>
+-          <version>2.1</version>
++          <version>2.2.1</version>
+           <configuration>
+             <autoVersionSubmodules>true</autoVersionSubmodules>
+           </configuration>
+         </plugin>
+         <plugin>
+           <artifactId>maven-deploy-plugin</artifactId>
+-          <version>2.5</version>
++          <version>2.7</version>
+         </plugin>
+       </plugins>
+     </pluginManagement>
+   </build>
+ 
+-  <profiles>
+-    <profile>
+-      <!--
+-       | Deployment profile for the Sonatype Grid
+-      -->
+-      <id>sonatype-grid</id>
+-      <properties>
+-        <forgeReleaseId>forge-releases</forgeReleaseId>
+-        <forgeReleaseUrl>http://repository.sonatype.org:8081/service/local/staging/deploy/maven2</forgeReleaseUrl>
+-        <forgeSnapshotId>forge-snapshots</forgeSnapshotId>
+-        <forgeSnapshotUrl>http://repository.sonatype.org/content/repositories/snapshots</forgeSnapshotUrl>
+-      </properties>
+-      <distributionManagement>
+-        <repository>
+-          <id>${forgeReleaseId}</id>
+-          <url>${forgeReleaseUrl}</url>
+-        </repository>
+-        <snapshotRepository>
+-          <id>${forgeSnapshotId}</id>
+-          <url>${forgeSnapshotUrl}</url>
+-        </snapshotRepository>
+-      </distributionManagement>
+-    </profile>
+-  </profiles>
+-
+ </project>
