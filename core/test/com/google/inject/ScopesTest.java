@@ -241,7 +241,7 @@ public class ScopesTest extends TestCase {
     Asserts.assertNotSerializable(Scopes.NO_SCOPE);
   }
 
-  public void testUnscopedProviderWorksOutsideOfRequestedScope() {
+  public void ignoreTestUnscopedProviderWorksOutsideOfRequestedScope() {
     final RememberProviderScope scope = new RememberProviderScope();
 
     Injector injector = Guice.createInjector(new AbstractModule() {
