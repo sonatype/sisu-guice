@@ -1,5 +1,5 @@
 diff --git a/core/pom.xml b/core/pom.xml
-index 3df788b..bbfe15c 100644
+index 3df788b..6db2984 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,18 +4,15 @@
@@ -35,7 +35,7 @@ index 3df788b..bbfe15c 100644
 -      <version>r09</version>
 +      <groupId>org.slf4j</groupId>
 +      <artifactId>slf4j-api</artifactId>
-+      <version>1.6.2</version>
++      <version>1.6.3</version>
 +      <optional>true</optional>
      </dependency>
      <dependency>
@@ -625,7 +625,7 @@ index 28257c7..3c25314 100644
        @Override protected void configure() {
          Multibinder.newSetBinder(binder(), String.class)
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index 2c787b1..1340a7d 100644
+index 2c787b1..4fb1820 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -4,14 +4,14 @@
@@ -652,7 +652,7 @@ index 2c787b1..1340a7d 100644
        <groupId>org.slf4j</groupId>
        <artifactId>slf4j-simple</artifactId>
 -      <version>1.6.1</version>
-+      <version>1.6.2</version>
++      <version>1.6.3</version>
        <scope>test</scope>
      </dependency>
      <dependency>
