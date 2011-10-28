@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.spi.InjectionPoint;
 
+import net.sf.cglib.core.MethodWrapper;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
@@ -198,35 +199,34 @@ final class ProxyFactory<T> implements ConstructionProxyFactory<T> {
   }
 
   /**
-   * A callback filter that maps methods to unique IDs. We define equals and hashCode using the
-   * declaring class so that enhanced classes can be shared between injectors.
+   * A callback filter that maps methods to unique IDs. We define equals and hashCode using
+   * the method-wrapper:indices map so that enhanced classes can be shared between injectors.
    */
   private static class IndicesCallbackFilter implements CallbackFilter {
-    final Class<?> declaringClass;
-    final Map<Method, Integer> indices;
+    final Map<Object, Integer> indices;
+    final int hashCode;
 
     IndicesCallbackFilter(Class<?> declaringClass, List<Method> methods) {
-      this.declaringClass = declaringClass;
-      final Map<Method, Integer> indices = Maps.newHashMap();
+      final Map<Object, Integer> indices = Maps.newHashMap();
       for (int i = 0; i < methods.size(); i++) {
-        Method method = methods.get(i);
-        indices.put(method, i);
+        indices.put(MethodWrapper.create(methods.get(i)), i);
       }
 
       this.indices = indices;
+      hashCode = indices.hashCode();
     }
 
     public int accept(Method method) {
-      return indices.get(method);
+      return indices.get(MethodWrapper.create(method));
     }
 
     @Override public boolean equals(Object o) {
       return o instanceof IndicesCallbackFilter &&
-          ((IndicesCallbackFilter) o).declaringClass == declaringClass;
+          ((IndicesCallbackFilter) o).indices.equals(indices);
     }
 
     @Override public int hashCode() {
-      return declaringClass.hashCode();
+      return hashCode;
     }
   }
 
