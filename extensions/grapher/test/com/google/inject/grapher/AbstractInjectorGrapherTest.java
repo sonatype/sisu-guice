@@ -40,6 +40,7 @@ import java.util.Set;
  *
  * @author bojand@google.com (Bojan Djordjevic)
  */
+
 public class AbstractInjectorGrapherTest extends TestCase {
   private static final String TEST_STRING = "test";
 
