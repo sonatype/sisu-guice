@@ -1033,9 +1033,6 @@ index bd67158..e89521e 100644
 +  <name>Sisu Guice - Extensions - ThrowingProviders</name>
  
  </project>
-diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
-index 6abed4b..259cae6 100644
-Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
 diff --git a/pom.xml b/pom.xml
 index 3b76484..2812abc 100644
 --- a/pom.xml
