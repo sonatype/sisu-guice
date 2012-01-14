@@ -1,5 +1,5 @@
 diff --git a/core/pom.xml b/core/pom.xml
-index 3df788b..6db2984 100644
+index 12ed258..6388bfe 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,18 +4,15 @@
@@ -32,11 +32,10 @@ index 3df788b..6db2984 100644
      <dependency>
 -      <groupId>com.google.guava</groupId>
 -      <artifactId>guava</artifactId>
--      <version>r09</version>
-+      <groupId>org.slf4j</groupId>
-+      <artifactId>slf4j-api</artifactId>
-+      <version>1.6.3</version>
-+      <optional>true</optional>
+-      <version>11.0.1</version>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guava</artifactId>
++      <version>0.10.0-SNAPSHOT</version>
      </dependency>
      <dependency>
        <groupId>cglib</groupId>
@@ -46,9 +45,10 @@ index 3df788b..6db2984 100644
 +      <optional>true</optional>
 +    </dependency>
 +    <dependency>
-+      <groupId>org.sonatype.sisu</groupId>
-+      <artifactId>sisu-guava</artifactId>
-+      <version>0.10.0-SNAPSHOT</version>
++      <groupId>org.slf4j</groupId>
++      <artifactId>slf4j-api</artifactId>
++      <version>1.6.3</version>
++      <optional>true</optional>
      </dependency>
      <dependency>
        <groupId>javax.inject</groupId>
@@ -90,24 +90,19 @@ index 3df788b..6db2984 100644
            </excludes>
          </configuration>
        </plugin>
-@@ -98,6 +106,16 @@
-       <plugin>
-         <groupId>org.apache.felix</groupId>
+@@ -100,6 +108,11 @@
          <artifactId>maven-bundle-plugin</artifactId>
-+        <configuration>
-+          <instructions>
+         <configuration>
+           <instructions>
 +            <Bundle-Name>
 +              ${project.artifactId}$(if;$(classes;NAMED;*.Interceptor*);; (no_aop))
 +            </Bundle-Name>
 +            <Require-Bundle>org.sonatype.sisu.guava</Require-Bundle>
 +            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
-+            <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
-+          </instructions>
-+        </configuration>
-       </plugin>
-       <!--
-        | Remove duplicate jarjar'd LICENSE and NOTICE
-@@ -192,46 +210,65 @@
+             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
+           </instructions>
+         </configuration>
+@@ -197,46 +210,65 @@
            <value>!false</value>
          </property>
        </activation>
@@ -195,7 +190,7 @@ index 3df788b..6db2984 100644
                  </configuration>
                </execution>
              </executions>
-@@ -239,6 +276,43 @@
+@@ -244,6 +276,43 @@
          </plugins>
        </build>
      </profile>
@@ -240,7 +235,7 @@ index 3df788b..6db2984 100644
  
  </project>
 diff --git a/core/src/com/google/inject/Scopes.java b/core/src/com/google/inject/Scopes.java
-index 5d025aa..82123dd 100644
+index fe44c15..035bd43 100644
 --- a/core/src/com/google/inject/Scopes.java
 +++ b/core/src/com/google/inject/Scopes.java
 @@ -17,7 +17,6 @@
@@ -460,7 +455,7 @@ index 3ab04bd..f4e93d2 100644
    }
  
 diff --git a/core/test/com/google/inject/ScopesTest.java b/core/test/com/google/inject/ScopesTest.java
-index c2b8a7a..0923da8 100644
+index 7fd328a..689aec4 100644
 --- a/core/test/com/google/inject/ScopesTest.java
 +++ b/core/test/com/google/inject/ScopesTest.java
 @@ -241,7 +241,7 @@ public class ScopesTest extends TestCase {
@@ -562,26 +557,6 @@ index 015db56..3e20d17 100644
        <artifactId>guice-multibindings</artifactId>
        <version>${project.version}</version>
      </dependency>
-diff --git a/extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java b/extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java
-index 8d90f4c..b5ee53f 100644
---- a/extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java
-+++ b/extensions/grapher/test/com/google/inject/grapher/AbstractInjectorGrapherTest.java
-@@ -26,7 +26,6 @@ import com.google.inject.Inject;
- import com.google.inject.Key;
- import com.google.inject.Provider;
- import com.google.inject.spi.InjectionPoint;
--import com.google.testing.testsize.MediumTest;
- 
- import junit.framework.TestCase;
- 
-@@ -41,7 +40,6 @@ import java.util.Set;
-  *
-  * @author bojand@google.com (Bojan Djordjevic)
-  */
--@MediumTest
- public class AbstractInjectorGrapherTest extends TestCase {
-   private static final String TEST_STRING = "test";
- 
 diff --git a/extensions/jmx/pom.xml b/extensions/jmx/pom.xml
 index d8188ca..1bb98a8 100644
 --- a/extensions/jmx/pom.xml
@@ -626,6 +601,9 @@ index ff04c5f..f186f1c 100644
 +  <name>Sisu Guice - Extensions - JNDI</name>
  
  </project>
+diff --git a/extensions/jndi/test/placeholder.txt b/extensions/jndi/test/placeholder.txt
+new file mode 100644
+index 0000000..e69de29
 diff --git a/extensions/mini/pom.xml b/extensions/mini/pom.xml
 index 3fa7032..69e979b 100644
 --- a/extensions/mini/pom.xml
@@ -669,19 +647,6 @@ index b49283c..48cf744 100644
 +  <name>Sisu Guice - Extensions - MultiBindings</name>
  
  </project>
-diff --git a/extensions/multibindings/test/com/google/inject/multibindings/MultibinderTest.java b/extensions/multibindings/test/com/google/inject/multibindings/MultibinderTest.java
-index 28257c7..3c25314 100644
---- a/extensions/multibindings/test/com/google/inject/multibindings/MultibinderTest.java
-+++ b/extensions/multibindings/test/com/google/inject/multibindings/MultibinderTest.java
-@@ -600,7 +600,7 @@ public class MultibinderTest extends TestCase {
-     assertEquals(expected, s1);
-   }
- 
--  public void testSetAndMapValueConflict() {
-+  public void ignoreTestSetAndMapValueConflict() {
-     Injector injector = Guice.createInjector(new AbstractModule() {
-       @Override protected void configure() {
-         Multibinder.newSetBinder(binder(), String.class)
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
 index 2c787b1..4fb1820 100644
 --- a/extensions/persist/pom.xml
@@ -1072,7 +1037,7 @@ diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
 index 6abed4b..259cae6 100644
 Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
 diff --git a/pom.xml b/pom.xml
-index 001892b..2812abc 100644
+index 3b76484..2812abc 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -1181,7 +1146,7 @@ index 001892b..2812abc 100644
            <configuration>
              <signature>
                <groupId>org.codehaus.mojo.signature</groupId>
-@@ -195,76 +194,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -195,81 +194,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
              </execution>
            </executions>
          </plugin>
@@ -1224,6 +1189,11 @@ index 001892b..2812abc 100644
 -              <keep>
 -                <pattern>com.googlecode.**</pattern>
 -              </keep>
+-              <keep>
+-                <!-- the servlet extension uses this but core doesn't,
+-                     so we explicitly instruct the build to keep it. -->
+-                <pattern>com.google.common.base.Throwables</pattern>
+-              </keep>
 -            </rules>
 -          </configuration>
 -          <!--
@@ -1259,7 +1229,7 @@ index 001892b..2812abc 100644
            <configuration>
              <redirectTestOutputToFile>true</redirectTestOutputToFile>
            </configuration>
-@@ -275,21 +207,19 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -280,21 +207,19 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <groupId>org.apache.felix</groupId>
            <artifactId>maven-bundle-plugin</artifactId>
@@ -1287,7 +1257,7 @@ index 001892b..2812abc 100644
                <_nouses>true</_nouses>
                <_removeheaders>
                  Embed-Dependency,Embed-Transitive,
-@@ -299,6 +229,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -304,6 +229,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
                  Ignore-Package,Bnd-LastModified
                </_removeheaders>
              </instructions>
@@ -1297,7 +1267,7 @@ index 001892b..2812abc 100644
            </configuration>
            <executions>
              <execution>
-@@ -314,12 +247,11 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -319,12 +247,11 @@ See the Apache License Version 2.0 for the specific language governing permissio
          -->
          <plugin>
            <artifactId>maven-jar-plugin</artifactId>
@@ -1307,12 +1277,12 @@ index 001892b..2812abc 100644
              <archive>
                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
 -              <!--  Exclude to mirror ant build -->
--     		  <addMavenDescriptor>false</addMavenDescriptor>
+-          <addMavenDescriptor>false</addMavenDescriptor>
 +              <addMavenDescriptor>false</addMavenDescriptor><!--  Exclude to mirror ant build -->
              </archive>
            </configuration>
            <executions>
-@@ -333,7 +265,35 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -338,7 +265,35 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
@@ -1349,7 +1319,7 @@ index 001892b..2812abc 100644
          </plugin>
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
-@@ -341,46 +301,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -346,46 +301,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
          <plugin>
            <artifactId>maven-gpg-plugin</artifactId>
