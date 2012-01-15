@@ -1034,7 +1034,7 @@ diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
 index 6abed4b..259cae6 100644
 Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
 diff --git a/pom.xml b/pom.xml
-index 3b76484..2812abc 100644
+index 3b76484..88c0d85 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -1231,7 +1231,7 @@ index 3b76484..2812abc 100644
            <groupId>org.apache.felix</groupId>
            <artifactId>maven-bundle-plugin</artifactId>
 -          <version>2.1.0</version>
-+          <version>2.3.5</version>
++          <version>2.3.6</version>
            <configuration>
              <instructions>
 -              <module>com.google.inject</module>
