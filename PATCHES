@@ -1,5 +1,5 @@
 diff --git a/core/pom.xml b/core/pom.xml
-index 12ed258..6388bfe 100644
+index 12ed258..eccd787 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,18 +4,15 @@
@@ -35,7 +35,7 @@ index 12ed258..6388bfe 100644
 -      <version>11.0.1</version>
 +      <groupId>org.sonatype.sisu</groupId>
 +      <artifactId>sisu-guava</artifactId>
-+      <version>0.10.0-SNAPSHOT</version>
++      <version>0.11.1</version>
      </dependency>
      <dependency>
        <groupId>cglib</groupId>
@@ -601,9 +601,6 @@ index ff04c5f..f186f1c 100644
 +  <name>Sisu Guice - Extensions - JNDI</name>
  
  </project>
-diff --git a/extensions/jndi/test/placeholder.txt b/extensions/jndi/test/placeholder.txt
-new file mode 100644
-index 0000000..e69de29
 diff --git a/extensions/mini/pom.xml b/extensions/mini/pom.xml
 index 3fa7032..69e979b 100644
 --- a/extensions/mini/pom.xml
@@ -1033,6 +1030,9 @@ index bd67158..e89521e 100644
 +  <name>Sisu Guice - Extensions - ThrowingProviders</name>
  
  </project>
+diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
+index 6abed4b..259cae6 100644
+Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
 diff --git a/pom.xml b/pom.xml
 index 3b76484..2812abc 100644
 --- a/pom.xml
