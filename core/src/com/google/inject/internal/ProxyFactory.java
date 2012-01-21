@@ -170,7 +170,7 @@ final class ProxyFactory<T> implements ConstructionProxyFactory<T> {
     // to this injector. Otherwise, the proxies for each injector will waste PermGen memory
     try {
     Enhancer enhancer = BytecodeGen.newEnhancer(declaringClass, visibility);
-    enhancer.setCallbackFilter(new IndicesCallbackFilter(declaringClass, methods));
+    enhancer.setCallbackFilter(new IndicesCallbackFilter(methods));
     enhancer.setCallbackTypes(callbackTypes);
     return new ProxyConstructor<T>(enhancer, injectionPoint, callbacks, interceptors);
     } catch (Throwable e) {
@@ -199,21 +199,22 @@ final class ProxyFactory<T> implements ConstructionProxyFactory<T> {
   }
 
   /**
-   * A callback filter that maps methods to unique IDs. We define equals and hashCode using
-   * the method-wrapper:indices map so that enhanced classes can be shared between injectors.
+   * A callback filter that maps methods to unique IDs. We define equals and
+   * hashCode without using any state related to the injector so that enhanced
+   * classes intercepting the same methods can be shared between injectors (and
+   * child injectors, etc).
    */
   private static class IndicesCallbackFilter implements CallbackFilter {
     final Map<Object, Integer> indices;
     final int hashCode;
 
-    IndicesCallbackFilter(Class<?> declaringClass, List<Method> methods) {
+    IndicesCallbackFilter(List<Method> methods) {
       final Map<Object, Integer> indices = Maps.newHashMap();
       for (int i = 0; i < methods.size(); i++) {
         indices.put(MethodWrapper.create(methods.get(i)), i);
       }
-
       this.indices = indices;
-      hashCode = indices.hashCode();
+      this.hashCode = indices.hashCode();
     }
 
     public int accept(Method method) {
