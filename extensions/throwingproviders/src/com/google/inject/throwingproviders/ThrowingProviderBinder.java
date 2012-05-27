@@ -188,21 +188,14 @@ public class ThrowingProviderBinder {
     
     @SuppressWarnings("unchecked") // safe because this is the cxtor of the literal
     public ScopedBindingBuilder providing(TypeLiteral<? extends T> cxtorLiteral) {     
-      // Find the injection point of the class we want to create & get its constructor.
-      InjectionPoint ip = null;
-      try {
-        ip = InjectionPoint.forConstructorOf(cxtorLiteral);
-      } catch (ConfigurationException ce) {
-        for (Message message : ce.getErrorMessages()) {
-          binder.addError(message);
-        }
-      }
+      // Find a constructor that has @ThrowingInject.
+      Constructor<? extends T> cxtor =
+          CheckedProvideUtils.findThrowingConstructor(cxtorLiteral, binder);
 
       final Provider<T> typeProvider;
       final Key<? extends T> typeKey;
       // If we found an injection point, then bind the cxtor to a unique key
-      if (ip != null) {
-        Constructor<? extends T> cxtor = (Constructor<? extends T>) ip.getMember();
+      if (cxtor != null) {
         // Validate the exceptions are consistent with the CheckedProvider interface.
         CheckedProvideUtils.validateExceptions(
             binder, cxtorLiteral.getExceptionTypes(cxtor), exceptionTypes, interfaceType);
@@ -229,7 +222,11 @@ public class ThrowingProviderBinder {
             } else if (pe.getCause() instanceof Error) {
               throw (Error) pe.getCause();
             } else {
-              throw new AssertionError(pe.getCause()); // Impossible!
+              // If this failed because of multiple reasons (ie, more than
+              // one dependency failed due to scoping errors), then
+              // the ProvisionException won't have a cause, so we need
+              // to rethrow it as-is.
+              throw pe;
             }
           }
         }
@@ -272,6 +269,10 @@ public class ThrowingProviderBinder {
               new InvocationHandler() {
                 public Object invoke(Object proxy, Method method, Object[] args)
                     throws Throwable {
+                  // Allow methods like .equals(..), .hashcode(..), .toString(..) to work.
+                  if (method.getDeclaringClass() == Object.class) {
+                    return method.invoke(this, args);
+                  }
                   return resultProvider.get().getOrThrow();
                 }
               }));

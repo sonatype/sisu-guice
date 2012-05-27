@@ -20,6 +20,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Asserts;
 import com.google.inject.CreationException;
@@ -27,6 +28,11 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.OutOfScopeException;
+import com.google.inject.Provider;
+import com.google.inject.ProvisionException;
+import com.google.inject.Scope;
+import com.google.inject.ScopeAnnotation;
 import com.google.inject.TypeLiteral;
 import com.google.inject.internal.util.Classes;
 import com.google.inject.name.Named;
@@ -39,6 +45,10 @@ import com.google.inject.throwingproviders.ThrowingProviderBinder.Result;
 import junit.framework.TestCase;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.net.BindException;
 import java.rmi.AccessException;
 import java.rmi.RemoteException;
@@ -568,7 +578,7 @@ public class CheckedProviderTest extends TestCase {
   static class DependentMockFoo implements Foo {
     @Inject double foo;
     
-    @Inject public DependentMockFoo(String foo, int bar) {
+    @ThrowingInject public DependentMockFoo(String foo, int bar) {
     }
     
     @Inject void initialize(long foo) {}
@@ -618,6 +628,7 @@ public class CheckedProviderTest extends TestCase {
     static Exception nextToThrow;    
     static String nextToReturn;
     
+    @ThrowingInject
     MockFoo() throws RemoteException, BindException {
       if (nextToThrow instanceof RemoteException) {
         throw (RemoteException) nextToThrow;
@@ -647,6 +658,7 @@ public class CheckedProviderTest extends TestCase {
     static Exception nextToThrow;    
     static String nextToReturn;
     
+    @ThrowingInject
     AnotherMockFoo() throws RemoteException, BindException {
       if (nextToThrow instanceof RemoteException) {
         throw (RemoteException) nextToThrow;
@@ -801,13 +813,19 @@ public class CheckedProviderTest extends TestCase {
       protected void configure() {
         ThrowingProviderBinder.create(binder())
         .bind(RemoteProvider.class, new TypeLiteral<List<String>>() {})
-        .providing(new TypeLiteral<ArrayList<String>>() {});
+        .providing(new TypeLiteral<ThrowingArrayList<String>>() {});
       }
     });
 
     Key<RemoteProvider<List<String>>> key
         = Key.get(new TypeLiteral<RemoteProvider<List<String>>>() { });
     assertEquals(Arrays.asList(), cxtorInjector.getInstance(key).get());
+  }
+  
+  private static class ThrowingArrayList<T> extends ArrayList<T> {
+    @SuppressWarnings("unused")
+    @ThrowingInject
+    ThrowingArrayList() {}
   }
   
   public void testProviderMethodWithWrongException() {
@@ -860,6 +878,7 @@ public class CheckedProviderTest extends TestCase {
   
   static class WrongExceptionFoo implements Foo {
     @SuppressWarnings("unused")
+    @ThrowingInject
     public WrongExceptionFoo() throws InterruptedException {
     }
     
@@ -916,6 +935,7 @@ public class CheckedProviderTest extends TestCase {
   }
   
   static class SubclassExceptionFoo implements Foo {
+    @ThrowingInject
     public SubclassExceptionFoo() throws AccessException {
       throw new AccessException("boo!");
     }
@@ -974,6 +994,7 @@ public class CheckedProviderTest extends TestCase {
   
   static class SuperclassExceptionFoo implements Foo {
     @SuppressWarnings("unused")
+    @ThrowingInject
     public SuperclassExceptionFoo() throws IOException {
     }
     
@@ -1028,6 +1049,7 @@ public class CheckedProviderTest extends TestCase {
   }
     
   static class RuntimeExceptionFoo implements Foo {
+    @ThrowingInject
     public RuntimeExceptionFoo() throws RuntimeException {
       throw new RuntimeException("boo!");
     }
@@ -1110,6 +1132,7 @@ public class CheckedProviderTest extends TestCase {
   
   static class ManyExceptionFoo implements Foo {
     @SuppressWarnings("unused")
+    @ThrowingInject
     public ManyExceptionFoo()
         throws InterruptedException,
         RuntimeException,
@@ -1331,13 +1354,90 @@ public class CheckedProviderTest extends TestCase {
     } catch (CreationException ce) {
       assertEquals("Could not find a suitable constructor in " + InvalidFoo.class.getName()
           + ". Classes must have either one (and only one) constructor annotated with "
-          + "@Inject or a zero-argument constructor that is not private.",
+          + "@ThrowingInject.",
           Iterables.getOnlyElement(ce.getErrorMessages()).getMessage());
     }
   }
   
   static class InvalidFoo implements Foo {
     public InvalidFoo(String dep) {
+    }
+    
+    @Override public String s() { return null; }
+  }
+  
+  public void testNoThrowingInject() {
+    try {
+      Guice.createInjector(new AbstractModule() {
+        @Override
+        protected void configure() {
+          ThrowingProviderBinder.create(binder())
+              .bind(RemoteProvider.class, Foo.class)
+              .providing(NormalInjectableFoo.class);
+        }
+      });
+      fail();
+    } catch (CreationException ce) {
+      assertEquals("Could not find a suitable constructor in " + NormalInjectableFoo.class.getName()
+          + ". Classes must have either one (and only one) constructor annotated with "
+          + "@ThrowingInject.",
+          Iterables.getOnlyElement(ce.getErrorMessages()).getMessage());
+    }
+  }
+  
+  static class NormalInjectableFoo implements Foo {
+    @Inject
+    public NormalInjectableFoo() {
+    }
+    
+    @Override public String s() { return null; }
+  }
+  
+  public void testProvisionExceptionOnDependenciesOfCxtor() throws Exception {
+    Injector injector = Guice.createInjector(new AbstractModule() {
+        @Override
+        protected void configure() {
+          ThrowingProviderBinder.create(binder())
+              .bind(RemoteProvider.class, Foo.class)
+              .providing(ProvisionExceptionFoo.class);
+          bindScope(BadScope.class, new Scope() {
+            @Override
+            public <T> Provider<T> scope(Key<T> key, Provider<T> unscoped) {
+              return new Provider<T>() {
+                @Override
+                public T get() {
+                  throw new OutOfScopeException("failure");
+                }
+              };
+            }
+          });
+        }
+      });
+    
+    try {
+      injector.getInstance(Key.get(remoteProviderOfFoo)).get();
+      fail();
+    } catch(ProvisionException pe) {
+      assertEquals(2, pe.getErrorMessages().size());
+      List<Message> messages = Lists.newArrayList(pe.getErrorMessages());
+      assertEquals("Error in custom provider, com.google.inject.OutOfScopeException: failure",
+          messages.get(0).getMessage());
+      assertEquals("Error in custom provider, com.google.inject.OutOfScopeException: failure",
+          messages.get(1).getMessage());
+    }
+  }
+  
+  @ScopeAnnotation
+  @Target(ElementType.TYPE)
+  @Retention(RetentionPolicy.RUNTIME)
+  private @interface BadScope { }
+  
+  @BadScope private static class Unscoped1 {}
+  @BadScope private static class Unscoped2 {}
+  
+  static class ProvisionExceptionFoo implements Foo {
+    @ThrowingInject
+    public ProvisionExceptionFoo(Unscoped1 a, Unscoped2 b) {
     }
     
     @Override public String s() { return null; }
