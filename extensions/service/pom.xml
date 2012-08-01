@@ -4,13 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.inject.extensions</groupId>
-    <artifactId>extensions-parent</artifactId>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>guice-extensions</artifactId>
     <version>3.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>guice-service</artifactId>
 
-  <name>Google Guice - Extensions - Service</name>
+  <name>Sisu Guice - Extensions - Service</name>
 
 </project>

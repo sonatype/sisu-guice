@@ -37,6 +37,7 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Properties;
 
+import javax.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -55,6 +56,7 @@ public final class JpaPersistModule extends PersistModule {
   }
 
   private Properties properties;
+  private Class<? extends Provider<? extends Properties>> propertiesProvider;
   private MethodInterceptor transactionInterceptor;
 
   @Override protected void configurePersistence() {
@@ -62,6 +64,8 @@ public final class JpaPersistModule extends PersistModule {
 
     if (null != properties) {
       bind(Properties.class).annotatedWith(Jpa.class).toInstance(properties);
+    } else if (null != propertiesProvider) {
+      bind(Properties.class).annotatedWith(Jpa.class).toProvider(propertiesProvider);
     } else {
       bind(Properties.class).annotatedWith(Jpa.class)
           .toProvider(Providers.<Properties>of(null));
@@ -96,6 +100,11 @@ public final class JpaPersistModule extends PersistModule {
    */
   public JpaPersistModule properties(Properties properties) {
     this.properties = properties;
+    return this;
+  }
+
+  public JpaPersistModule properties(Class<? extends Provider<? extends Properties>> provider) {
+    this.propertiesProvider = provider;
     return this;
   }
 

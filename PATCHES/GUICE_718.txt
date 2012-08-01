@@ -1,0 +1,40 @@
+diff --git a/core/src/com/google/inject/internal/AbstractBindingProcessor.java b/core/src/com/google/inject/internal/AbstractBindingProcessor.java
+index f09c40b..8fe03de 100644
+--- a/core/src/com/google/inject/internal/AbstractBindingProcessor.java
++++ b/core/src/com/google/inject/internal/AbstractBindingProcessor.java
+@@ -38,6 +38,20 @@ import java.util.Set;
+  */
+ abstract class AbstractBindingProcessor extends AbstractProcessor {
+ 
++//------------------------------------------------------------------------------
++  private static final boolean DISABLE_MISPLACED_ANNOTATION_CHECK;
++  static {
++    boolean disableCheck;
++    try {
++      disableCheck = Boolean.parseBoolean(System.getProperty(
++          "guice.disable.misplaced.annotation.check", "false"));
++    } catch (Throwable e) {
++      disableCheck = false;
++    }
++    DISABLE_MISPLACED_ANNOTATION_CHECK = disableCheck;
++  }
++//------------------------------------------------------------------------------
++
+   // It's unfortunate that we have to maintain a blacklist of specific
+   // classes, but we can't easily block the whole package because of
+   // all our unit tests.
+@@ -126,8 +140,14 @@ abstract class AbstractBindingProcessor extends AbstractProcessor {
+   }
+   
+   private <T> void validateKey(Object source, Key<T> key) {
++//------------------------------------------------------------------------------
++if (!DISABLE_MISPLACED_ANNOTATION_CHECK) {
++//------------------------------------------------------------------------------
+     Annotations.checkForMisplacedScopeAnnotations(
+         key.getTypeLiteral().getRawType(), source, errors);
++//------------------------------------------------------------------------------
++}
++//------------------------------------------------------------------------------
+   }
+   
+   /** 

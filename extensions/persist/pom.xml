@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.inject.extensions</groupId>
-    <artifactId>extensions-parent</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>guice-extensions</artifactId>
+    <version>3.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>guice-persist</artifactId>
 
-  <name>Google Guice - Extensions - Persist</name>
+  <name>Sisu Guice - Extensions - Persist</name>
 
   <dependencies>
     <dependency>
@@ -29,7 +29,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>

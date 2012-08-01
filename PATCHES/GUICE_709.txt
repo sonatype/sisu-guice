@@ -1,0 +1,273 @@
+diff --git a/build.properties b/build.properties
+index a76a5ab..d8bf543 100644
+--- a/build.properties
++++ b/build.properties
+@@ -32,4 +32,4 @@ javadoc.packagenames=com.google.inject,com.google.inject.spi,\
+   com.google.inject.persist.jpa
+ test.class=com.google.inject.AllTests
+ module=com.google.inject
+-imports=!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.common.*
++imports=!net.sf.cglib.*,!org.objectweb.asm.*
+diff --git a/build.xml b/build.xml
+index b499839..c56400b 100644
+--- a/build.xml
++++ b/build.xml
+@@ -89,11 +89,12 @@
+       <classpath>
+         <pathelement location="${build.dir}/guice-${version}-tests.jar"/>
+         <pathelement location="${build.dir}/dist/guice-${version}.jar"/>
++        <pathelement location="lib/javax.inject.jar"/>
+         <pathelement location="lib/aopalliance.jar"/>
++        <pathelement location="lib/guava-12.0.1.jar"/>
+         <pathelement location="lib/build/junit.jar"/>
+         <pathelement location="lib/build/servlet-api-2.5.jar"/>
+         <pathelement location="lib/build/easymock.jar"/>
+-        <pathelement location="lib/javax.inject.jar"/>
+         <pathelement location="lib/build/javax.inject-tck.jar"/>
+         <pathelement location="lib/build/bnd-0.0.384.jar"/>
+         <pathelement location="lib/build/felix-2.0.5.jar"/>
+@@ -120,7 +121,7 @@
+     <javadoc packagenames="com.google.*"
+ 	         docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
+              maxmemory="512M"
+-    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
++    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-12.0.1.jar">
+       <fileset dir="${src.dir}" defaultexcludes="yes">
+         <include name="com/google/**"/>
+         <exclude name="com/google/inject/internal/**"/>
+@@ -149,7 +150,7 @@
+ 		     docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
+ 	         maxmemory="512M"
+ 		     sourcefiles="${jdiff.home}/Null.java"
+-  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
++  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-12.0.1.jar">
+ 	  <doclet name="jdiff.JDiff">
+ 	  	<param name="-oldapi" value="${old.api}"/>
+ 	  	<param name="-oldapidir" value="latest-api-diffs"/>	  	
+@@ -169,7 +170,7 @@
+     	     docletpath="lib/build/doclava.jar"
+              bootclasspath="${java.home}/lib/rt.jar"
+              maxmemory="512M"
+-    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
++    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-12.0.1.jar">
+       <fileset dir="${src.dir}" defaultexcludes="yes">
+         <include name="com/google/**"/>
+         <exclude name="com/google/inject/internal/**"/>
+diff --git a/common.xml b/common.xml
+index 943d385..2dc84b1 100644
+--- a/common.xml
++++ b/common.xml
+@@ -131,8 +131,6 @@
+       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
+       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
+       <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
+-      <rule pattern="com.google.common.*" result="com.google.inject.internal.guava.$@1"/>
+-      <rule pattern="com.google.common.**.*" result="com.google.inject.internal.guava.@1.$@2"/>
+       <rule pattern="javax.annotation.*.class" result="com.google.inject.internal.jsr305.$@1"/>
+       <rule pattern="javax.annotation.**.*.class" result="com.google.inject.internal.jsr305.@1.$@2"/>
+       <keep pattern="com.google.inject.**"/>
+@@ -150,17 +148,11 @@
+       <fileset dir="${build.dir}/classes"/>
+       <zipfileset src="${common.basedir}/lib/build/cglib-2.2.2.jar"/>
+       <zipfileset src="${common.basedir}/lib/build/asm-3.3.1.jar"/>
+-      <zipfileset src="${common.basedir}/lib/build/guava-11.0.1.jar"/>
+       <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
+       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
+       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
+       <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
+-      <rule pattern="com.google.common.*" result="com.google.inject.internal.guava.$@1"/>
+-      <rule pattern="com.google.common.**.*" result="com.google.inject.internal.guava.@1.$@2"/>
+       <keep pattern="com.google.inject.**"/>
+-      <!-- the servlet extension uses this but core doesn't,
+-           so we explicitly instruct the build to keep it. -->
+-      <keep pattern="com.google.common.base.Throwables"/>
+     </jarjar>
+   </target>
+ 
+@@ -180,8 +172,6 @@
+       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
+       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
+       <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
+-      <rule pattern="com.google.common.*" result="com.google.inject.internal.guava.$@1"/>
+-      <rule pattern="com.google.common.**.*" result="com.google.inject.internal.guava.@1.$@2"/>
+       <keep pattern="com.google.inject.**"/>
+     </jarjar>
+   </target>
+diff --git a/copy.sh b/copy.sh
+deleted file mode 100755
+index a3e2202..0000000
+--- a/copy.sh
++++ /dev/null
+@@ -1,54 +0,0 @@
+-#!/bin/sh
+-# Copies classes into Guice's internal package.
+-
+-client=/usr/local/google/clients/collect/google3
+-
+-srcdir=core/src/com/google/inject/internal
+-testdir=core/test/com/google/inject/internal
+-
+-filter() {
+-  sed 's/com.google.common.base.internal/com.google.inject.internal/' | \
+-  sed 's/com.google.common.base/com.google.inject.internal/' | \
+-  sed 's/com.google.common.collect/com.google.inject.internal/'
+-}
+-
+-copy() {
+-  inFile=$1;
+-  fileName=`basename $inFile`
+-  dest=$2
+-  destpath=$dest/$fileName
+-  filter < $client/${inFile} > $destpath
+-}
+-
+-commonpath=java/com/google/common
+-
+-copy $commonpath/collect/ComputationException.java $srcdir
+-copy $commonpath/collect/AsynchronousComputationException.java $srcdir
+-copy $commonpath/collect/CustomConcurrentHashMap.java $srcdir
+-copy $commonpath/collect/ExpirationTimer.java $srcdir
+-copy $commonpath/collect/MapMaker.java $srcdir
+-copy $commonpath/collect/NullOutputException.java $srcdir
+-copy $commonpath/base/Function.java $srcdir
+-copy $commonpath/base/Nullable.java $srcdir
+-copy $commonpath/base/FinalizableReference.java $srcdir
+-copy $commonpath/base/FinalizableReferenceQueue.java $srcdir
+-copy $commonpath/base/internal/Finalizer.java $srcdir
+-copy $commonpath/base/FinalizableWeakReference.java $srcdir
+-copy $commonpath/base/FinalizableSoftReference.java $srcdir
+-copy $commonpath/base/FinalizablePhantomReference.java $srcdir
+-
+-commontestspath=javatests/com/google/common
+-
+-copy $commontestspath/base/FinalizableReferenceQueueTest.java $testdir
+-copy $commontestspath/collect/MapMakerTestSuite.java $testdir
+-copy $commontestspath/collect/Jsr166HashMap.java $testdir
+-copy $commontestspath/collect/Jsr166HashMapTest.java $testdir
+-copy $commonpath/collect/ForwardingConcurrentMap.java $testdir
+-copy $commonpath/collect/ForwardingMap.java $testdir
+-copy $commonpath/collect/ForwardingCollection.java $testdir
+-copy $commonpath/collect/ForwardingObject.java $testdir
+-copy $commonpath/collect/ForwardingSet.java $testdir
+-copy $commonpath/collect/ForwardingMap.java $testdir
+-copy $commonpath/base/Preconditions.java $testdir
+-
+-chmod +w -R $srcdir $testdir
+diff --git a/core/pom.xml b/core/pom.xml
+index 12ed258..5da2ff7 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -31,7 +31,7 @@
+     <dependency>
+       <groupId>com.google.guava</groupId>
+       <artifactId>guava</artifactId>
+-      <version>11.0.1</version>
++      <version>12.0.1</version>
+     </dependency>
+     <dependency>
+       <groupId>cglib</groupId>
+@@ -217,7 +217,6 @@
+               <includes>
+                 <include>*:asm</include>
+                 <include>*:cglib</include>
+-                <include>*:guava</include>
+                 <include>*:jsr305</include>
+               </includes>
+             </configuration>
+diff --git a/core/test/com/googlecode/guice/OSGiContainerTest.java b/core/test/com/googlecode/guice/OSGiContainerTest.java
+index 77ab8fa..63b5bb2 100644
+--- a/core/test/com/googlecode/guice/OSGiContainerTest.java
++++ b/core/test/com/googlecode/guice/OSGiContainerTest.java
+@@ -58,6 +58,7 @@ public class OSGiContainerTest
+   static final String AOPALLIANCE_JAR = System.getProperty("aopalliance.jar", "lib/aopalliance.jar");
+ /*end[AOP]*/
+   static final String JAVAX_INJECT_JAR = System.getProperty("javax.inject.jar", "lib/javax.inject.jar");
++  static final String GUAVA_JAR = System.getProperty("guava.jar", "lib/guava-12.0.1.jar");
+ 
+   // dynamically build test bundles
+   @Override protected void setUp()
+@@ -71,6 +72,7 @@ public class OSGiContainerTest
+     assertTrue(failMsg(), new File(AOPALLIANCE_JAR).isFile());
+ /*end[AOP]*/
+     assertTrue(failMsg(), new File(JAVAX_INJECT_JAR).isFile());
++    assertTrue(failMsg(), new File(GUAVA_JAR).isFile());
+ 
+     Properties instructions = new Properties();
+ 
+@@ -144,6 +146,7 @@ public class OSGiContainerTest
+       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/aopalliance.jar");
+ /*end[AOP]*/
+       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/javax.inject.jar");
++      systemContext.installBundle("reference:file:" + GUAVA_JAR);
+       systemContext.installBundle("reference:file:" + GUICE_JAR);
+       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/osgitests.jar").start();
+ 
+diff --git a/guice.iml b/guice.iml
+index 53b2d05..2185a54 100644
+--- a/guice.iml
++++ b/guice.iml
+@@ -87,6 +87,15 @@
+         <SOURCES />
+       </library>
+     </orderEntry>
++    <orderEntry type="module-library" exported="">
++      <library>
++        <CLASSES>
++          <root url="jar://$MODULE_DIR$/lib/guava-12.0.1.jar!/" />
++        </CLASSES>
++        <JAVADOC />
++        <SOURCES />
++      </library>
++    </orderEntry>
+   </component>
+ </module>
+ 
+diff --git a/lib/build/guava-11.0.1.jar b/lib/build/guava-11.0.1.jar
+deleted file mode 100644
+index af4a383..0000000
+Binary files a/lib/build/guava-11.0.1.jar and /dev/null differ
+diff --git a/lib/guava-12.0.1.jar b/lib/guava-12.0.1.jar
+new file mode 100644
+index 0000000..b185ee6
+Binary files /dev/null and b/lib/guava-12.0.1.jar differ
+diff --git a/pom.xml b/pom.xml
+index 3b76484..1c8165a 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -220,25 +220,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
+                 <pattern>org.objectweb.asm.**.*</pattern>
+                 <result>com.google.inject.internal.asm.@1.$@2</result>
+               </rule>
+-              <rule>
+-                <pattern>com.google.common.*</pattern>
+-                <result>com.google.inject.internal.guava.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>com.google.common.**.*</pattern>
+-                <result>com.google.inject.internal.guava.@1.$@2</result>
+-              </rule>
+               <keep>
+                 <pattern>com.google.inject.**</pattern>
+               </keep>
+               <keep>
+                 <pattern>com.googlecode.**</pattern>
+               </keep>
+-              <keep>
+-                <!-- the servlet extension uses this but core doesn't,
+-                     so we explicitly instruct the build to keep it. -->
+-                <pattern>com.google.common.base.Throwables</pattern>
+-              </keep>
+             </rules>
+           </configuration>
+           <!--
+@@ -304,6 +291,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
+                 Ignore-Package,Bnd-LastModified
+               </_removeheaders>
+             </instructions>
++            <!--
++             | Exclude from version calculations, as it doesn't use semantic versioning
++            -->
++            <excludeDependencies>guava</excludeDependencies>
+           </configuration>
+           <executions>
+             <execution>

@@ -58,6 +58,7 @@ public class OSGiContainerTest
   static final String AOPALLIANCE_JAR = System.getProperty("aopalliance.jar", "lib/aopalliance.jar");
 /*end[AOP]*/
   static final String JAVAX_INJECT_JAR = System.getProperty("javax.inject.jar", "lib/javax.inject.jar");
+  static final String GUAVA_JAR = System.getProperty("guava.jar", "lib/guava-12.0.1.jar");
 
   // dynamically build test bundles
   @Override protected void setUp()
@@ -71,6 +72,7 @@ public class OSGiContainerTest
     assertTrue(failMsg(), new File(AOPALLIANCE_JAR).isFile());
 /*end[AOP]*/
     assertTrue(failMsg(), new File(JAVAX_INJECT_JAR).isFile());
+    assertTrue(failMsg(), new File(GUAVA_JAR).isFile());
 
     Properties instructions = new Properties();
 
@@ -144,6 +146,7 @@ public class OSGiContainerTest
       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/aopalliance.jar");
 /*end[AOP]*/
       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/javax.inject.jar");
+      systemContext.installBundle("reference:file:" + GUAVA_JAR);
       systemContext.installBundle("reference:file:" + GUICE_JAR);
       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/osgitests.jar").start();
 

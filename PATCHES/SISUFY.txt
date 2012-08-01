@@ -1,0 +1,549 @@
+diff --git a/README b/README
+new file mode 100644
+index 0000000..ad2843d
+--- /dev/null
++++ b/README
+@@ -0,0 +1 @@
++Patched build of http://code.google.com/p/google-guice/ - see PATCHES for the exact differences.
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..6efbfff
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,16 @@
++# Maven
++target/
++*.ser
++*.ec
++
++# IntelliJ Idea
++.idea/
++out/
++*.ipr
++*.iws
++*.iml
++
++# Eclipse
++.classpath
++.project
++.settings/
+diff --git a/core/pom.xml b/core/pom.xml
+index 8dc1fda..a649feb 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -4,14 +4,15 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>guice-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+-  <artifactId>guice</artifactId>
++  <groupId>org.sonatype.sisu</groupId>
++  <artifactId>sisu-guice</artifactId>
+ 
+-  <name>Google Guice - Core Library</name>
++  <name>Sisu Guice - Core Library</name>
+ 
+   <dependencies>
+     <dependency>
+diff --git a/extensions/assistedinject/pom.xml b/extensions/assistedinject/pom.xml
+index 745d6b4..4959704 100644
+--- a/extensions/assistedinject/pom.xml
++++ b/extensions/assistedinject/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-assistedinject</artifactId>
+ 
+-  <name>Google Guice - Extensions - AssistedInject</name>
++  <name>Sisu Guice - Extensions - AssistedInject</name>
+ 
+ </project>
+diff --git a/extensions/grapher/pom.xml b/extensions/grapher/pom.xml
+index 015db56..3e20d17 100644
+--- a/extensions/grapher/pom.xml
++++ b/extensions/grapher/pom.xml
+@@ -4,23 +4,23 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-grapher</artifactId>
+ 
+-  <name>Google Guice - Extensions - Grapher</name>
++  <name>Sisu Guice - Extensions - Grapher</name>
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-assistedinject</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-multibindings</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+diff --git a/extensions/jmx/pom.xml b/extensions/jmx/pom.xml
+index d8188ca..1bb98a8 100644
+--- a/extensions/jmx/pom.xml
++++ b/extensions/jmx/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-jmx</artifactId>
+ 
+-  <name>Google Guice - Extensions - JMX</name>
++  <name>Sisu Guice - Extensions - JMX</name>
+ 
+ </project>
+diff --git a/extensions/jndi/pom.xml b/extensions/jndi/pom.xml
+index ff04c5f..f186f1c 100644
+--- a/extensions/jndi/pom.xml
++++ b/extensions/jndi/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-jndi</artifactId>
+ 
+-  <name>Google Guice - Extensions - JNDI</name>
++  <name>Sisu Guice - Extensions - JNDI</name>
+ 
+ </project>
+diff --git a/extensions/jndi/test/placeholder.txt b/extensions/jndi/test/placeholder.txt
+new file mode 100644
+index 0000000..8d1c8b6
+--- /dev/null
++++ b/extensions/jndi/test/placeholder.txt
+@@ -0,0 +1 @@
++ 
+diff --git a/extensions/mini/pom.xml b/extensions/mini/pom.xml
+index 3fa7032..69e979b 100644
+--- a/extensions/mini/pom.xml
++++ b/extensions/mini/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-mini</artifactId>
+ 
+-  <name>Google Guice - Extensions - Mini</name>
++  <name>Sisu Guice - Extensions - Mini</name>
+ 
+ </project>
+diff --git a/extensions/multibindings/pom.xml b/extensions/multibindings/pom.xml
+index b49283c..48cf744 100644
+--- a/extensions/multibindings/pom.xml
++++ b/extensions/multibindings/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-multibindings</artifactId>
+ 
+-  <name>Google Guice - Extensions - MultiBindings</name>
++  <name>Sisu Guice - Extensions - MultiBindings</name>
+ 
+ </project>
+diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
+index d894b0b..37b168c 100644
+--- a/extensions/persist/pom.xml
++++ b/extensions/persist/pom.xml
+@@ -4,14 +4,14 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-persist</artifactId>
+ 
+-  <name>Google Guice - Extensions - Persist</name>
++  <name>Sisu Guice - Extensions - Persist</name>
+ 
+   <dependencies>
+     <dependency>
+diff --git a/extensions/pom.xml b/extensions/pom.xml
+index 6a4dc58..823c103 100644
+--- a/extensions/pom.xml
++++ b/extensions/pom.xml
+@@ -4,17 +4,16 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>guice-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <packaging>pom</packaging>
+ 
+-  <groupId>com.google.inject.extensions</groupId>
+-  <artifactId>extensions-parent</artifactId>
++  <artifactId>guice-extensions</artifactId>
+ 
+-  <name>Google Guice - Extensions</name>
++  <name>Sisu Guice - Extensions</name>
+ 
+   <modules>
+     <module>assistedinject</module>
+@@ -40,16 +39,16 @@
+      | All extensions depend on the core
+     -->
+     <dependency>
+-      <groupId>com.google.inject</groupId>
+-      <artifactId>guice</artifactId>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guice</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+     <!--
+      | Some extension tests depend on the core tests
+     -->
+     <dependency>
+-      <groupId>com.google.inject</groupId>
+-      <artifactId>guice</artifactId>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guice</artifactId>
+       <version>${project.version}</version>
+       <classifier>tests</classifier>
+       <scope>test</scope>
+@@ -79,7 +78,7 @@
+         <artifactId>maven-bundle-plugin</artifactId>
+         <configuration>
+           <instructions>
+-            <Fragment-Host>com.google.inject</Fragment-Host>
++            <Fragment-Host>org.sonatype.sisu.guice</Fragment-Host>
+           </instructions>
+         </configuration>
+       </plugin>
+diff --git a/extensions/service/pom.xml b/extensions/service/pom.xml
+index d4efef8..df91f36 100644
+--- a/extensions/service/pom.xml
++++ b/extensions/service/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
+     <version>3.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-service</artifactId>
+ 
+-  <name>Google Guice - Extensions - Service</name>
++  <name>Sisu Guice - Extensions - Service</name>
+ 
+ </project>
+diff --git a/extensions/servlet/pom.xml b/extensions/servlet/pom.xml
+index 4f34f2f..9017372 100644
+--- a/extensions/servlet/pom.xml
++++ b/extensions/servlet/pom.xml
+@@ -4,14 +4,14 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-servlet</artifactId>
+ 
+-  <name>Google Guice - Extensions - Servlet</name>
++  <name>Sisu Guice - Extensions - Servlet</name>
+ 
+   <dependencies>
+     <dependency>
+diff --git a/extensions/spring/pom.xml b/extensions/spring/pom.xml
+index f81f6ad..b39aae8 100644
+--- a/extensions/spring/pom.xml
++++ b/extensions/spring/pom.xml
+@@ -4,14 +4,14 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-spring</artifactId>
+ 
+-  <name>Google Guice - Extensions - Spring</name>
++  <name>Sisu Guice - Extensions - Spring</name>
+ 
+   <dependencies>
+     <dependency>
+diff --git a/extensions/struts2/pom.xml b/extensions/struts2/pom.xml
+index 38d313a..9603846 100644
+--- a/extensions/struts2/pom.xml
++++ b/extensions/struts2/pom.xml
+@@ -4,18 +4,18 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-struts2</artifactId>
+ 
+-  <name>Google Guice - Extensions - Struts2</name>
++  <name>Sisu Guice - Extensions - Struts2</name>
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-servlet</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
+index bd67158..e89521e 100644
+--- a/extensions/throwingproviders/pom.xml
++++ b/extensions/throwingproviders/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
+-    <artifactId>extensions-parent</artifactId>
+-    <version>3.0-SNAPSHOT</version>
++    <groupId>org.sonatype.sisu.inject</groupId>
++    <artifactId>guice-extensions</artifactId>
++    <version>3.2.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-throwingproviders</artifactId>
+ 
+-  <name>Google Guice - Extensions - ThrowingProviders</name>
++  <name>Sisu Guice - Extensions - ThrowingProviders</name>
+ 
+ </project>
+diff --git a/pom.xml b/pom.xml
+index 2cf1023..5ece9d7 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google</groupId>
+-    <artifactId>google</artifactId>
+-    <version>5</version>
++    <groupId>org.sonatype.forge</groupId>
++    <artifactId>forge-parent</artifactId>
++    <version>12</version>
+   </parent>
+ 
+   <packaging>pom</packaging>
+ 
+-  <groupId>com.google.inject</groupId>
++  <groupId>org.sonatype.sisu.inject</groupId>
+   <artifactId>guice-parent</artifactId>
+-  <version>3.0-SNAPSHOT</version>
++  <version>3.2.0-SNAPSHOT</version>
+ 
+-  <name>Google Guice</name>
++  <name>Sisu Guice</name>
+ 
+   <description>
+-    Guice is a lightweight dependency injection framework for Java 5 and above
++    Patched build of Guice: a lightweight dependency injection framework for Java 5 and above
+   </description>
+ 
+   <url>http://code.google.com/p/google-guice/</url>
+@@ -61,9 +61,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
+   </mailingLists>
+ 
+   <scm>
+-    <connection>scm:git:https://code.google.com/p/google-guice/</connection>
+-    <developerConnection>scm:git:https://code.google.com/p/google-guice/</developerConnection>
+-    <url>https://code.google.com/p/google-guice/</url>
++    <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
++    <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
++    <url>http://github.com/sonatype/sisu-guice</url>
+   </scm>
+ 
+   <issueManagement>
+@@ -73,7 +73,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+ 
+   <ciManagement>
+     <system>Hudson</system>
+-    <url>https://builds.sonatype.org/job/google-guice/</url>
++    <url>https://builds.sonatype.org/job/sisu-guice/</url>
+   </ciManagement>
+ 
+   <licenses>
+@@ -216,7 +216,8 @@ See the Apache License Version 2.0 for the specific language governing permissio
+               <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
+               <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
+               <Bundle-Name>${project.artifactId}</Bundle-Name>
+-              <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
++              <Bundle-SymbolicName>$(maven-symbolicname);singleton:=true</Bundle-SymbolicName>
++              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
+               <Bundle-RequiredExecutionEnvironment>
+                 J2SE-1.5,JavaSE-1.6
+               </Bundle-RequiredExecutionEnvironment>
+@@ -271,6 +272,34 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         <plugin>
+           <artifactId>maven-javadoc-plugin</artifactId>
+           <version>2.7</version>
++          <configuration>
++            <doclet>com.google.doclava.Doclava</doclet>
++            <docletPath>
++              ${project.basedir}/../lib/build/doclava.jar:
++              ${project.basedir}/../../lib/build/doclava.jar
++            </docletPath>
++            <!--
++             | bootclasspath required by Sun's JVM 
++            -->
++            <bootclasspath>${sun.boot.class.path}</bootclasspath>
++            <excludePackageNames>*.internal</excludePackageNames>
++            <additionalparam>
++              -quiet
++              -federate JDK http://download.oracle.com/javase/6/docs/api/index.html?
++              -federationxml JDK http://doclava.googlecode.com/svn/static/api/openjdk-6.xml
++              -hdf project.name "${project.name} (patched build of Google Guice)"
++              -d ${project.build.directory}/apidocs
++            </additionalparam>
++            <useStandardDocletOptions>false</useStandardDocletOptions>
++            <!--
++             | Apple's JVM sometimes requires more memory
++            -->
++            <additionalJOption>-J-Xmx1024m</additionalJOption>
++          </configuration>
++        </plugin>
++        <plugin>
++          <artifactId>maven-site-plugin</artifactId>
++          <version>3.0</version>
+         </plugin>
+         <plugin>
+           <artifactId>maven-source-plugin</artifactId>
+@@ -278,46 +307,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         </plugin>
+         <plugin>
+           <artifactId>maven-gpg-plugin</artifactId>
+-          <version>1.1</version>
++          <version>1.4</version>
+         </plugin>
+         <plugin>
+           <artifactId>maven-release-plugin</artifactId>
+-          <version>2.1</version>
++          <version>2.2.1</version>
+           <configuration>
+             <autoVersionSubmodules>true</autoVersionSubmodules>
+           </configuration>
+         </plugin>
+         <plugin>
+           <artifactId>maven-deploy-plugin</artifactId>
+-          <version>2.5</version>
++          <version>2.6</version>
+         </plugin>
+       </plugins>
+     </pluginManagement>
+   </build>
+ 
+-  <profiles>
+-    <profile>
+-      <!--
+-       | Deployment profile for the Sonatype Grid
+-      -->
+-      <id>sonatype-grid</id>
+-      <properties>
+-        <forgeReleaseId>forge-releases</forgeReleaseId>
+-        <forgeReleaseUrl>http://repository.sonatype.org:8081/service/local/staging/deploy/maven2</forgeReleaseUrl>
+-        <forgeSnapshotId>forge-snapshots</forgeSnapshotId>
+-        <forgeSnapshotUrl>http://repository.sonatype.org/content/repositories/snapshots</forgeSnapshotUrl>
+-      </properties>
+-      <distributionManagement>
+-        <repository>
+-          <id>${forgeReleaseId}</id>
+-          <url>${forgeReleaseUrl}</url>
+-        </repository>
+-        <snapshotRepository>
+-          <id>${forgeSnapshotId}</id>
+-          <url>${forgeSnapshotUrl}</url>
+-        </snapshotRepository>
+-      </distributionManagement>
+-    </profile>
+-  </profiles>
+-
+ </project>

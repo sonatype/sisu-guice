@@ -1,0 +1,28 @@
+diff --git a/core/src/com/google/inject/Scopes.java b/core/src/com/google/inject/Scopes.java
+index fe44c15..035bd43 100644
+--- a/core/src/com/google/inject/Scopes.java
++++ b/core/src/com/google/inject/Scopes.java
+@@ -17,7 +17,6 @@
+ package com.google.inject;
+ 
+ import com.google.inject.internal.CircularDependencyProxy;
+-import com.google.inject.internal.InternalInjectorCreator;
+ import com.google.inject.internal.LinkedBindingImpl;
+ import com.google.inject.spi.BindingScopingVisitor;
+ import com.google.inject.spi.ExposedBinding;
+@@ -53,14 +52,9 @@ public class Scopes {
+         public T get() {
+           if (instance == null) {
+             /*
+-             * Use a pretty coarse lock. We don't want to run into deadlocks
+-             * when two threads try to load circularly-dependent objects.
+-             * Maybe one of these days we will identify independent graphs of
+-             * objects and offer to load them in parallel.
+-             *
+              * This block is re-entrant for circular dependencies.
+              */
+-            synchronized (InternalInjectorCreator.class) {
++            synchronized (this) {
+               if (instance == null) {
+                 T provided = creator.get();
+ 

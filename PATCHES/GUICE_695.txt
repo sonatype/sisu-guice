@@ -1,0 +1,68 @@
+diff --git a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java
+index b318b27..9bbcbfb 100644
+--- a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java
++++ b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java
+@@ -37,6 +37,7 @@ import java.lang.reflect.Proxy;
+ import java.util.List;
+ import java.util.Properties;
+ 
++import javax.inject.Provider;
+ import javax.persistence.EntityManager;
+ import javax.persistence.EntityManagerFactory;
+ 
+@@ -55,6 +56,7 @@ public final class JpaPersistModule extends PersistModule {
+   }
+ 
+   private Properties properties;
++  private Class<? extends Provider<? extends Properties>> propertiesProvider;
+   private MethodInterceptor transactionInterceptor;
+ 
+   @Override protected void configurePersistence() {
+@@ -62,6 +64,8 @@ public final class JpaPersistModule extends PersistModule {
+ 
+     if (null != properties) {
+       bind(Properties.class).annotatedWith(Jpa.class).toInstance(properties);
++    } else if (null != propertiesProvider) {
++      bind(Properties.class).annotatedWith(Jpa.class).toProvider(propertiesProvider);
+     } else {
+       bind(Properties.class).annotatedWith(Jpa.class)
+           .toProvider(Providers.<Properties>of(null));
+@@ -99,6 +103,11 @@ public final class JpaPersistModule extends PersistModule {
+     return this;
+   }
+ 
++  public JpaPersistModule properties(Class<? extends Provider<? extends Properties>> provider) {
++    this.propertiesProvider = provider;
++    return this;
++  }
++
+   private final List<Class<?>> dynamicFinders = Lists.newArrayList();
+ 
+   /**
+diff --git a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java
+index b8fe35c..68d76a7 100644
+--- a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java
++++ b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistService.java
+@@ -42,11 +42,11 @@ class JpaPersistService implements Provider<EntityManager>, UnitOfWork, PersistS
+   private final ThreadLocal<EntityManager> entityManager = new ThreadLocal<EntityManager>();
+ 
+   private final String persistenceUnitName;
+-  private final Properties persistenceProperties;
++  private final Provider<Properties> persistenceProperties;
+ 
+   @Inject
+   public JpaPersistService(@Jpa String persistenceUnitName,
+-      @Nullable @Jpa Properties persistenceProperties) {
++      @Nullable @Jpa Provider<Properties> persistenceProperties) {
+     this.persistenceUnitName = persistenceUnitName;
+     this.persistenceProperties = persistenceProperties;
+   }
+@@ -95,7 +95,7 @@ class JpaPersistService implements Provider<EntityManager>, UnitOfWork, PersistS
+ 
+     if (null != persistenceProperties) {
+       this.emFactory = Persistence
+-          .createEntityManagerFactory(persistenceUnitName, persistenceProperties);
++          .createEntityManagerFactory(persistenceUnitName, persistenceProperties.get());
+     } else {
+       this.emFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+     }

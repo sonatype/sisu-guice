@@ -1,0 +1,563 @@
+diff --git a/build.xml b/build.xml
+index c56400b..fa2d666 100644
+--- a/build.xml
++++ b/build.xml
+@@ -31,34 +31,34 @@
+   	<ant antfile="extensions/grapher/build.xml" target="distjars" inheritAll="false"/>
+ 
+     <copy toDir="${build.dir}/dist"> 
+-      <fileset dir="extensions/servlet/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/servlet/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist"> 
+-      <fileset dir="extensions/spring/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/spring/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/struts2/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/struts2/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/assistedinject/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/assistedinject/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/jmx/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/jmx/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/jndi/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/jndi/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/throwingproviders/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/throwingproviders/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/multibindings/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/multibindings/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/persist/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/persist/build" includes="*.jar"/>
+     </copy>
+   	<copy toDir="${build.dir}/dist">
+-  	  <fileset dir="extensions/grapher/build" includes="*.jar" excludes="*-with-deps.jar"/>
++  	  <fileset dir="extensions/grapher/build" includes="*.jar"/>
+   	</copy>    	
+ 
+     <copy toDir="${build.dir}/dist" file="COPYING"/> 
+@@ -80,7 +80,7 @@
+   </target>
+   
+   <target name="test.dist"
+-      depends="jar, test.compile-with-deps"
++      depends="jar, test.withdeps"
+       description="Execute JUnit tests against distribution jar.">
+     <java fork="true" 
+         classname="junit.textui.TestRunner"
+diff --git a/common.xml b/common.xml
+index 574b668..576ead3 100644
+--- a/common.xml
++++ b/common.xml
+@@ -123,7 +123,7 @@
+       depends="source.jar, jar"
+       description="Build jar files"/>
+ 
+-  <target name="test.compile-with-deps" depends="test.compile"
++  <target name="test.withdeps" depends="test.compile"
+       description="Build a jar of tests with internal.util refocused.">
+     <mkdir dir="${build.dir}/dist"/>
+     <dirname property="common.basedir" file="${ant.file.common}"/>
+@@ -135,8 +135,6 @@
+       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
+       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
+       <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
+-      <rule pattern="javax.annotation.*.class" result="com.google.inject.internal.jsr305.$@1"/>
+-      <rule pattern="javax.annotation.**.*.class" result="com.google.inject.internal.jsr305.@1.$@2"/>
+       <keep pattern="com.google.inject.**"/>
+       <keep pattern="com.googlecode.**"/>
+     </jarjar>
+@@ -159,24 +157,4 @@
+       <keep pattern="com.google.inject.**"/>
+     </jarjar>
+   </target>
+-
+-  <target name="jar.withrenameddeps" depends="compile"
+-      description="Build jar with dependencies embedded.">
+-    <mkdir dir="${build.dir}/dist"/>
+-    <dirname property="common.basedir" file="${ant.file.common}"/>
+-    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+-        classpath="${common.basedir}/lib/build/jarjar-1.1.jar"/>
+-    <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
+-      <zipfileset src="${common.basedir}/lib/build/cglib-2.2.2.jar">
+-        <include name="LICENSE"/>
+-        <include name="NOTICE"/>
+-      </zipfileset>
+-      <fileset dir="${build.dir}/classes"/>
+-      <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
+-      <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
+-      <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
+-      <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
+-      <keep pattern="com.google.inject.**"/>
+-    </jarjar>
+-  </target>
+ </project>
+diff --git a/core/pom.xml b/core/pom.xml
+index 7f76bf9..4289914 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -13,10 +13,6 @@
+ 
+   <name>Google Guice - Core Library</name>
+ 
+-  <properties>
+-    <cglib.version>2.2.2</cglib.version>
+-  </properties>
+-
+   <dependencies>
+     <dependency>
+       <groupId>javax.inject</groupId>
+@@ -42,7 +38,8 @@
+     <dependency>
+       <groupId>cglib</groupId>
+       <artifactId>cglib</artifactId>
+-      <version>${cglib.version}</version>
++      <version>2.2.2</version>
++      <optional>true</optional>
+     </dependency>
+     <dependency>
+       <groupId>javax.inject</groupId>
+@@ -210,45 +207,65 @@
+           <value>!false</value>
+         </property>
+       </activation>
+-      <dependencies>
+-        <!--
+-         | Mark as optional: embedded by JarJar
+-        -->
+-        <dependency>
+-          <groupId>cglib</groupId>
+-          <artifactId>cglib</artifactId>
+-          <version>${cglib.version}</version>
+-          <optional>true</optional>
+-        </dependency>
+-      </dependencies>
+       <build>
+         <plugins>
+           <plugin>
+             <groupId>org.sonatype.plugins</groupId>
+             <artifactId>jarjar-maven-plugin</artifactId>
++            <version>1.5</version>
+             <configuration>
++              <overwrite>true</overwrite>
+               <includes>
+                 <include>*:asm</include>
+                 <include>*:cglib</include>
+-                <include>*:jsr305</include>
+               </includes>
++              <rules>
++                <rule>
++                  <pattern>net.sf.cglib.*</pattern>
++                  <result>com.google.inject.internal.cglib.$@1</result>
++                </rule>
++                <rule>
++                  <pattern>net.sf.cglib.**.*</pattern>
++                  <result>com.google.inject.internal.cglib.@1.$@2</result>
++                </rule>
++                <rule>
++                  <pattern>org.objectweb.asm.*</pattern>
++                  <result>com.google.inject.internal.asm.$@1</result>
++                </rule>
++                <rule>
++                  <pattern>org.objectweb.asm.**.*</pattern>
++                  <result>com.google.inject.internal.asm.@1.$@2</result>
++                </rule>
++                <keep>
++                  <pattern>com.google.inject.**</pattern>
++                </keep>
++                <keep>
++                  <pattern>com.googlecode.**</pattern>
++                </keep>
++              </rules>
+             </configuration>
+-          </plugin>
+-          <plugin>
+             <!--
+-             | Package the original non-JarJar'd classes so extensions can compile against them
++             | JarJar all classes before running tests
+             -->
+-            <artifactId>maven-jar-plugin</artifactId>
+             <executions>
+               <execution>
+-                <id>no_deps</id>
+-                <phase>package</phase>
++                <id>jarjar-classes</id>
++                <phase>process-test-classes</phase>
+                 <goals>
+-                  <goal>jar</goal>
++                  <goal>jarjar</goal>
+                 </goals>
+                 <configuration>
+-                  <classesDirectory>${project.build.directory}/original-classes</classesDirectory>
+-                  <classifier>no_deps</classifier>
++                  <input>{classes}</input>
++                </configuration>
++              </execution>
++              <execution>
++                <id>jarjar-test-classes</id>
++                <phase>process-test-classes</phase>
++                <goals>
++                  <goal>jarjar</goal>
++                </goals>
++                <configuration>
++                  <input>{test-classes}</input>
+                 </configuration>
+               </execution>
+             </executions>
+@@ -256,6 +273,43 @@
+         </plugins>
+       </build>
+     </profile>
++    <profile>
++      <!--
++       | m2e profile - force use of JarJar inside Eclipse
++      -->
++      <id>m2e</id>
++      <activation>
++        <property>
++          <name>m2e.version</name>
++        </property>
++      </activation>
++      <build>
++        <pluginManagement>
++          <plugins>
++            <plugin>
++              <groupId>org.eclipse.m2e</groupId>
++              <artifactId>lifecycle-mapping</artifactId>
++              <version>1.0.0</version>
++              <configuration>
++                <lifecycleMappingMetadata>
++                  <pluginExecutions>
++                    <pluginExecution>
++                      <pluginExecutionFilter>
++                        <groupId>org.sonatype.plugins</groupId>
++                        <artifactId>jarjar-maven-plugin</artifactId>
++                        <versionRange>[1.4,)</versionRange>
++                        <goals><goal>jarjar</goal></goals>
++                      </pluginExecutionFilter>
++                      <action><execute /></action>
++                    </pluginExecution>
++                  </pluginExecutions>
++                </lifecycleMappingMetadata>
++              </configuration>
++            </plugin>
++          </plugins>
++        </pluginManagement>
++      </build>
++    </profile>
+   </profiles>
+ 
+ </project>
+diff --git a/extensions/assistedinject/build.xml b/extensions/assistedinject/build.xml
+index 16557de..459ff9e 100644
+--- a/extensions/assistedinject/build.xml
++++ b/extensions/assistedinject/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/grapher/build.xml b/extensions/grapher/build.xml
+index d36fdcd..d5524dd 100644
+--- a/extensions/grapher/build.xml
++++ b/extensions/grapher/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/jmx/build.xml b/extensions/jmx/build.xml
+index 1bdcb97..8a99b77 100644
+--- a/extensions/jmx/build.xml
++++ b/extensions/jmx/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/jndi/build.xml b/extensions/jndi/build.xml
+index 14eaa8b..5c366a2 100644
+--- a/extensions/jndi/build.xml
++++ b/extensions/jndi/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/multibindings/build.xml b/extensions/multibindings/build.xml
+index 7a23462..2f72159 100644
+--- a/extensions/multibindings/build.xml
++++ b/extensions/multibindings/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/persist/build.xml b/extensions/persist/build.xml
+index 9be40c8..764c726 100644
+--- a/extensions/persist/build.xml
++++ b/extensions/persist/build.xml
+@@ -11,11 +11,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/pom.xml b/extensions/pom.xml
+index 309e092..6a4dc58 100644
+--- a/extensions/pom.xml
++++ b/extensions/pom.xml
+@@ -89,41 +89,22 @@
+   <profiles>
+     <profile>
+       <!--
+-       | JarJar build profile: re-package ASM and CGLIB references under the Guice namespace
++       | Non-JarJar build profile: need CGLIB during tests
+       -->
+-      <id>guice.with.jarjar</id>
+       <activation>
+         <property>
+           <name>guice.with.jarjar</name>
+-          <value>!false</value>
++          <value>false</value>
+         </property>
+       </activation>
+       <dependencies>
+-        <!--
+-         | Extensions compile first against the non-JarJar'd core - and are then JarJar'd themselves
+-         | (optional dependency so it doesn't leak to client projects that depend on Guice artifacts)
+-        -->
+         <dependency>
+-          <groupId>com.google.inject</groupId>
+-          <artifactId>guice</artifactId>
+-          <version>${project.version}</version>
+-          <classifier>no_deps</classifier>
+-          <optional>true</optional>
++          <groupId>cglib</groupId>
++          <artifactId>cglib</artifactId>
++          <version>2.2.2</version>
++          <scope>test</scope>
+         </dependency>
+       </dependencies>
+-      <build>
+-        <plugins>
+-          <plugin>
+-            <groupId>org.sonatype.plugins</groupId>
+-            <artifactId>jarjar-maven-plugin</artifactId>
+-            <configuration>
+-              <excludes>
+-                <exclude>*:*</exclude>
+-              </excludes>
+-            </configuration>
+-          </plugin>
+-        </plugins>
+-      </build>
+     </profile>
+   </profiles>
+ 
+diff --git a/extensions/servlet/build.xml b/extensions/servlet/build.xml
+index d7a10e1..5bee7e5 100644
+--- a/extensions/servlet/build.xml
++++ b/extensions/servlet/build.xml
+@@ -12,11 +12,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/spring/build.xml b/extensions/spring/build.xml
+index 16c8299..3051929 100644
+--- a/extensions/spring/build.xml
++++ b/extensions/spring/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/struts2/build.xml b/extensions/struts2/build.xml
+index 820dfa2..6463274 100644
+--- a/extensions/struts2/build.xml
++++ b/extensions/struts2/build.xml
+@@ -11,11 +11,10 @@
+     <fileset dir="../servlet/build" includes="*.jar"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/throwingproviders/build.xml b/extensions/throwingproviders/build.xml
+index 9d36431..27c20e0 100644
+--- a/extensions/throwingproviders/build.xml
++++ b/extensions/throwingproviders/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/pom.xml b/pom.xml
+index 402abd7..2c5dee0 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -195,65 +195,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+             </execution>
+           </executions>
+         </plugin>
+-        <!--
+-         | Shared JarJar configuration
+-        -->
+-        <plugin>
+-          <groupId>org.sonatype.plugins</groupId>
+-          <artifactId>jarjar-maven-plugin</artifactId>
+-          <version>1.4</version>
+-          <configuration>
+-            <rules>
+-              <rule>
+-                <pattern>net.sf.cglib.*</pattern>
+-                <result>com.google.inject.internal.cglib.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>net.sf.cglib.**.*</pattern>
+-                <result>com.google.inject.internal.cglib.@1.$@2</result>
+-              </rule>
+-              <rule>
+-                <pattern>org.objectweb.asm.*</pattern>
+-                <result>com.google.inject.internal.asm.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>org.objectweb.asm.**.*</pattern>
+-                <result>com.google.inject.internal.asm.@1.$@2</result>
+-              </rule>
+-              <keep>
+-                <pattern>com.google.inject.**</pattern>
+-              </keep>
+-              <keep>
+-                <pattern>com.googlecode.**</pattern>
+-              </keep>
+-            </rules>
+-          </configuration>
+-          <!--
+-           | JarJar all classes before running tests
+-          -->
+-          <executions>
+-            <execution>
+-              <id>jarjar-classes</id>
+-              <phase>process-test-classes</phase>
+-              <goals>
+-                <goal>jarjar</goal>
+-              </goals>
+-              <configuration>
+-                <input>{classes}</input>
+-              </configuration>
+-            </execution>
+-            <execution>
+-              <id>jarjar-test-classes</id>
+-              <phase>process-test-classes</phase>
+-              <goals>
+-                <goal>jarjar</goal>
+-              </goals>
+-              <configuration>
+-                <input>{test-classes}</input>
+-              </configuration>
+-            </execution>
+-          </executions>
+-        </plugin>
+         <plugin>
+           <artifactId>maven-surefire-plugin</artifactId>
+           <version>2.6</version>
