@@ -3,6 +3,10 @@ target/
 *.ser
 *.ec
 
+# Ant
+build/
+!lib/build/
+
 # IntelliJ Idea
 .idea/
 out/

@@ -10,11 +10,15 @@ new file mode 100644
 index 0000000..6efbfff
 --- /dev/null
 +++ b/.gitignore
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,20 @@
 +# Maven
 +target/
 +*.ser
 +*.ec
++
++# Ant
++build/
++!lib/build/
 +
 +# IntelliJ Idea
 +.idea/
