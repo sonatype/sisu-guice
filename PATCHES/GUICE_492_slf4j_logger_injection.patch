@@ -1,3 +1,8 @@
+Description: Provide built-in injection of SLF4J loggers
+Author: mcculls@gmail.com
+Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=492
+Last-Update: 2012-07-29
+
 diff --git a/common.xml b/common.xml
 index 2dc84b1..574b668 100644
 --- a/common.xml

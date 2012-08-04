@@ -1,3 +1,8 @@
+Description: Wrap System.getProperty call in case security is enabled
+Author: mcculls@gmail.com
+Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=350
+Last-Update: 2012-07-29
+
 diff --git a/core/src/com/google/inject/internal/BytecodeGen.java b/core/src/com/google/inject/internal/BytecodeGen.java
 index d0a14fc..55ad161 100644
 --- a/core/src/com/google/inject/internal/BytecodeGen.java

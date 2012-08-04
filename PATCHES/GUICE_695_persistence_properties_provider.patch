@@ -1,3 +1,8 @@
+Description: Let clients bind lazy (provided) persistence properties
+Author: mcculls@gmail.com
+Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=695
+Last-Update: 2012-07-29
+
 diff --git a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java b/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java
 index b318b27..9bbcbfb 100644
 --- a/extensions/persist/src/com/google/inject/persist/jpa/JpaPersistModule.java

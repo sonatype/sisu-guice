@@ -1,3 +1,8 @@
+Description: Let sub-classes of GuiceFilter customize the servlet filter pipeline
+Author: mcculls@gmail.com
+Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=618
+Last-Update: 2012-07-29
+
 diff --git a/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java b/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
 index 985064b..d85d97c 100755
 --- a/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
