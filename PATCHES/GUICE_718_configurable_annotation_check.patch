@@ -1,5 +1,5 @@
 Description: Support disabling of misplaced annotation check for legacy components
-Author: mcculls@gmail.com
+Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=718
 Last-Update: 2012-07-29
 

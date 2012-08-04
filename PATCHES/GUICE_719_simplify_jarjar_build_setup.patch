@@ -1,5 +1,5 @@
 Description: Isolate jarjar instructions to core build, extensions no longer need jarjar
-Author: mcculls@gmail.com
+Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=719
 Last-Update: 2012-07-29
 

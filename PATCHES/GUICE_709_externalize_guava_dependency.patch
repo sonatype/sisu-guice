@@ -1,5 +1,5 @@
 Description: Pull out embedded Guava and expose it as an external dependency
-Author: mcculls@gmail.com
+Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=709
 Last-Update: 2012-08-03
 

@@ -1,5 +1,5 @@
 Description: Wrap System.getProperty call in case security is enabled
-Author: mcculls@gmail.com
+Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=350
 Last-Update: 2012-07-29
 

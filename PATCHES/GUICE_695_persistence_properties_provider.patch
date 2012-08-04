@@ -1,5 +1,5 @@
 Description: Let clients bind lazy (provided) persistence properties
-Author: mcculls@gmail.com
+Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=695
 Last-Update: 2012-07-29
 

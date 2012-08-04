@@ -1,5 +1,5 @@
 Description: Minor build improvements (bump API version, fix links, better bundle names)
-Author: mcculls@gmail.com
+Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=720
 Last-Update: 2012-07-29
 

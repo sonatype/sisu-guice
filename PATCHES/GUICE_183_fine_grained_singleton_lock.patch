@@ -1,5 +1,5 @@
 Description: Replace class-level global SINGLETON lock with a finer-grained lock
-Author: mcculls@gmail.com
+Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=183
 Last-Update: 2012-07-29
 
