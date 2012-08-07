@@ -1032,7 +1032,7 @@ final class InjectorImpl implements Injector, Lookups {
     return getProvider(type).get();
   }
 
-  final ThreadLocal<Object[]> localContext;
+  private final ThreadLocal<Object[]> localContext;
 
   /** Looks up thread local context. Creates (and removes) a new context if necessary. */
   <T> T callInContext(ContextualCallable<T> callable) throws ErrorsException {

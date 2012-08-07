@@ -21,7 +21,13 @@ index ee5e2d6..f40bc0f 100644
      }
    }
  
-@@ -1042,6 +1037,10 @@ final class InjectorImpl implements Injector, Lookups {
+@@ -1037,11 +1032,15 @@ final class InjectorImpl implements Injector, Lookups {
+     return getProvider(type).get();
+   }
+ 
+-  final ThreadLocal<Object[]> localContext;
++  private final ThreadLocal<Object[]> localContext;
+ 
    /** Looks up thread local context. Creates (and removes) a new context if necessary. */
    <T> T callInContext(ContextualCallable<T> callable) throws ErrorsException {
      Object[] reference = localContext.get();
