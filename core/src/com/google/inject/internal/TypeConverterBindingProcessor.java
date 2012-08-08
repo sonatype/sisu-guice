@@ -41,19 +41,18 @@ final class TypeConverterBindingProcessor extends AbstractProcessor {
   }
 
   /** Installs default converters for primitives, enums, and class literals. */
-  void prepareBuiltInConverters(InjectorImpl injector) {
-    this.injector = injector;
-    try {
-      // Configure type converters.
-      convertToPrimitiveType(int.class, Integer.class);
-      convertToPrimitiveType(long.class, Long.class);
-      convertToPrimitiveType(boolean.class, Boolean.class);
-      convertToPrimitiveType(byte.class, Byte.class);
-      convertToPrimitiveType(short.class, Short.class);
-      convertToPrimitiveType(float.class, Float.class);
-      convertToPrimitiveType(double.class, Double.class);
+  static void prepareBuiltInConverters(InjectorImpl injector) {
 
-      convertToClass(Character.class, new TypeConverter() {
+      // Configure type converters.
+      convertToPrimitiveType(injector, int.class, Integer.class);
+      convertToPrimitiveType(injector, long.class, Long.class);
+      convertToPrimitiveType(injector, boolean.class, Boolean.class);
+      convertToPrimitiveType(injector, byte.class, Byte.class);
+      convertToPrimitiveType(injector, short.class, Short.class);
+      convertToPrimitiveType(injector, float.class, Float.class);
+      convertToPrimitiveType(injector, double.class, Double.class);
+
+      convertToClass(injector, Character.class, new TypeConverter() {
         public Object convert(String value, TypeLiteral<?> toType) {
           value = value.trim();
           if (value.length() != 1) {
@@ -67,7 +66,7 @@ final class TypeConverterBindingProcessor extends AbstractProcessor {
         }
       });
 
-      convertToClasses(Matchers.subclassesOf(Enum.class), new TypeConverter() {
+      convertToClasses(injector, Matchers.subclassesOf(Enum.class), new TypeConverter() {
         @SuppressWarnings("unchecked")
         public Object convert(String value, TypeLiteral<?> toType) {
           return Enum.valueOf((Class) toType.getRawType(), value);
@@ -78,7 +77,7 @@ final class TypeConverterBindingProcessor extends AbstractProcessor {
         }
       });
 
-      internalConvertToTypes(
+      internalConvertToTypes(injector,
         new AbstractMatcher<TypeLiteral<?>>() {
           public boolean matches(TypeLiteral<?> typeLiteral) {
             return typeLiteral.getRawType() == Class.class;
@@ -103,12 +102,9 @@ final class TypeConverterBindingProcessor extends AbstractProcessor {
           }
         }
       );
-    } finally {
-      this.injector = null;
-    }
   }
 
-  private <T> void convertToPrimitiveType(Class<T> primitiveType, final Class<T> wrapperType) {
+  private static <T> void convertToPrimitiveType(InjectorImpl injector, Class<T> primitiveType, final Class<T> wrapperType) {
     try {
       final Method parser = wrapperType.getMethod(
           "parse" + capitalize(primitiveType.getName()), String.class);
@@ -130,19 +126,19 @@ final class TypeConverterBindingProcessor extends AbstractProcessor {
         }
       };
 
-      convertToClass(wrapperType, typeConverter);
+      convertToClass(injector, wrapperType, typeConverter);
     } catch (NoSuchMethodException e) {
       throw new AssertionError(e);
     }
   }
 
-  private <T> void convertToClass(Class<T> type, TypeConverter converter) {
-    convertToClasses(Matchers.identicalTo(type), converter);
+  private static <T> void convertToClass(InjectorImpl injector, Class<T> type, TypeConverter converter) {
+    convertToClasses(injector, Matchers.identicalTo(type), converter);
   }
 
-  private void convertToClasses(final Matcher<? super Class<?>> typeMatcher,
+  private static void convertToClasses(InjectorImpl injector, final Matcher<? super Class<?>> typeMatcher,
       TypeConverter converter) {
-    internalConvertToTypes(new AbstractMatcher<TypeLiteral<?>>() {
+    internalConvertToTypes(injector, new AbstractMatcher<TypeLiteral<?>>() {
       public boolean matches(TypeLiteral<?> typeLiteral) {
         Type type = typeLiteral.getType();
         if (!(type instanceof Class)) {
@@ -158,7 +154,7 @@ final class TypeConverterBindingProcessor extends AbstractProcessor {
     }, converter);
   }
 
-  private void internalConvertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
+  private static void internalConvertToTypes(InjectorImpl injector, Matcher<? super TypeLiteral<?>> typeMatcher,
       TypeConverter converter) {
     injector.state.addConverter(
         new TypeConverterBinding(SourceProvider.UNKNOWN_SOURCE, typeMatcher, converter));
