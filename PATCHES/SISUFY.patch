@@ -460,12 +460,11 @@ index 2cf1023..5ece9d7 100644
    </ciManagement>
  
    <licenses>
-@@ -216,7 +216,8 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -216,7 +216,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
 -              <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
-+              <Bundle-SymbolicName>$(maven-symbolicname);singleton:=true</Bundle-SymbolicName>
 +              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
                <Bundle-RequiredExecutionEnvironment>
                  J2SE-1.5,JavaSE-1.6
