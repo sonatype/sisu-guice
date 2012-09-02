@@ -46,7 +46,7 @@ index 8dc1fda..a649feb 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <version>3.2.0-SNAPSHOT</version>
    </parent>
  
@@ -69,7 +69,7 @@ index 745d6b4..4959704 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -91,7 +91,7 @@ index 015db56..3e20d17 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -125,7 +125,7 @@ index d8188ca..1bb98a8 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -147,7 +147,7 @@ index ff04c5f..f186f1c 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -178,7 +178,7 @@ index 3fa7032..69e979b 100644
 -    <artifactId>extensions-parent</artifactId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
+     <version>3.1.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-mini</artifactId>
@@ -197,7 +197,7 @@ index b49283c..48cf744 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -219,7 +219,7 @@ index d894b0b..37b168c 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -243,7 +243,7 @@ index 6a4dc58..823c103 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <version>3.2.0-SNAPSHOT</version>
    </parent>
  
@@ -300,7 +300,7 @@ index d4efef8..df91f36 100644
 -    <artifactId>extensions-parent</artifactId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.0-SNAPSHOT</version>
+     <version>3.1.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-service</artifactId>
@@ -319,7 +319,7 @@ index 4f34f2f..9017372 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -342,7 +342,7 @@ index f81f6ad..b39aae8 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -365,7 +365,7 @@ index 38d313a..9603846 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -393,7 +393,7 @@ index bd67158..e89521e 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
--    <version>3.0-SNAPSHOT</version>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
 +    <version>3.2.0-SNAPSHOT</version>
@@ -426,7 +426,7 @@ index 2cf1023..5ece9d7 100644
 -  <groupId>com.google.inject</groupId>
 +  <groupId>org.sonatype.sisu.inject</groupId>
    <artifactId>guice-parent</artifactId>
--  <version>3.0-SNAPSHOT</version>
+-  <version>3.1.0-SNAPSHOT</version>
 +  <version>3.2.0-SNAPSHOT</version>
  
 -  <name>Google Guice</name>
