@@ -176,9 +176,10 @@ index 3fa7032..69e979b 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.1.0-SNAPSHOT</version>
++    <version>3.2.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-mini</artifactId>
@@ -298,9 +299,10 @@ index d4efef8..df91f36 100644
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 -    <artifactId>extensions-parent</artifactId>
+-    <version>3.1.0-SNAPSHOT</version>
 +    <groupId>org.sonatype.sisu.inject</groupId>
 +    <artifactId>guice-extensions</artifactId>
-     <version>3.1.0-SNAPSHOT</version>
++    <version>3.2.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-service</artifactId>
