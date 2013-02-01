@@ -153,7 +153,7 @@ index 7f76bf9..4289914 100644
            <plugin>
              <groupId>org.sonatype.plugins</groupId>
              <artifactId>jarjar-maven-plugin</artifactId>
-+            <version>1.5</version>
++            <version>1.7</version>
              <configuration>
 +              <overwrite>true</overwrite>
                <includes>
