@@ -1,0 +1,26 @@
+Description: Clear construction context after initial provisioning rather than when all provision listeners are done
+Author: Stuart McCulloch <mcculls@gmail.com>
+Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=743
+Last-Update: 2013-03-21
+
+diff --git a/core/src/com/google/inject/internal/ConstructorInjector.java b/core/src/com/google/inject/internal/ConstructorInjector.java
+index e71a25a..8f86db5 100644
+--- a/core/src/com/google/inject/internal/ConstructorInjector.java
++++ b/core/src/com/google/inject/internal/ConstructorInjector.java
+@@ -94,7 +94,6 @@ final class ConstructorInjector<T> {
+         });
+       }
+     } finally {
+-      constructionContext.removeCurrentReference();
+       constructionContext.finishConstruction();
+     }
+   }
+@@ -125,6 +124,8 @@ final class ConstructorInjector<T> {
+           : userException;
+       throw errors.withSource(constructionProxy.getInjectionPoint())
+           .errorInjectingConstructor(cause).toException();
++    } finally {
++      constructionContext.removeCurrentReference();
+     }
+   }
+ }
