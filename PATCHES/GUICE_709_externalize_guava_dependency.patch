@@ -23,7 +23,7 @@ index b499839..4bec3cc 100644
          <pathelement location="${build.dir}/dist/guice-${version}.jar"/>
 +        <pathelement location="lib/javax.inject.jar"/>
          <pathelement location="lib/aopalliance.jar"/>
-+        <pathelement location="lib/guava-13.0.1.jar"/>
++        <pathelement location="lib/guava-11.0.2.jar"/>
          <pathelement location="lib/build/junit.jar"/>
          <pathelement location="lib/build/servlet-api-2.5.jar"/>
          <pathelement location="lib/build/easymock.jar"/>
@@ -36,7 +36,7 @@ index b499839..4bec3cc 100644
  	         docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
               maxmemory="512M"
 -    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
-+    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-13.0.1.jar">
++    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
        <fileset dir="${src.dir}" defaultexcludes="yes">
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
@@ -45,7 +45,7 @@ index b499839..4bec3cc 100644
  	         maxmemory="512M"
  		     sourcefiles="${jdiff.home}/Null.java"
 -  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
-+  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-13.0.1.jar">
++  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
  	  <doclet name="jdiff.JDiff">
  	  	<param name="-oldapi" value="${old.api}"/>
  	  	<param name="-oldapidir" value="latest-api-diffs"/>	  	
@@ -54,7 +54,7 @@ index b499839..4bec3cc 100644
               bootclasspath="${java.home}/lib/rt.jar"
               maxmemory="512M"
 -    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
-+    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-13.0.1.jar">
++    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
        <fileset dir="${src.dir}" defaultexcludes="yes">
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
@@ -167,7 +167,7 @@ index 07f11b0..f4f51cc 100644
        <groupId>com.google.guava</groupId>
        <artifactId>guava</artifactId>
 -      <version>11.0.1</version>
-+      <version>13.0.1</version>
++      <version>11.0.2</version>
      </dependency>
      <dependency>
        <groupId>cglib</groupId>
@@ -187,7 +187,7 @@ index 77ab8fa..8a43584 100644
    static final String AOPALLIANCE_JAR = System.getProperty("aopalliance.jar", "lib/aopalliance.jar");
  /*end[AOP]*/
    static final String JAVAX_INJECT_JAR = System.getProperty("javax.inject.jar", "lib/javax.inject.jar");
-+  static final String GUAVA_JAR = System.getProperty("guava.jar", "lib/guava-13.0.1.jar");
++  static final String GUAVA_JAR = System.getProperty("guava.jar", "lib/guava-11.0.2.jar");
  
    // dynamically build test bundles
    @Override protected void setUp()
@@ -231,7 +231,7 @@ index 53b2d05..db17707 100644
 +    <orderEntry type="module-library" exported="">
 +      <library>
 +        <CLASSES>
-+          <root url="jar://$MODULE_DIR$/lib/guava-13.0.1.jar!/" />
++          <root url="jar://$MODULE_DIR$/lib/guava-11.0.2.jar!/" />
 +        </CLASSES>
 +        <JAVADOC />
 +        <SOURCES />
@@ -244,10 +244,10 @@ diff --git a/lib/build/guava-11.0.1.jar b/lib/build/guava-11.0.1.jar
 deleted file mode 100644
 index af4a383..0000000
 Binary files a/lib/build/guava-11.0.1.jar and /dev/null differ
-diff --git a/lib/guava-13.0.1.jar b/lib/guava-13.0.1.jar
+diff --git a/lib/guava-11.0.2.jar b/lib/guava-11.0.2.jar
 new file mode 100644
 index 0000000..09c5449
-Binary files /dev/null and b/lib/guava-13.0.1.jar differ
+Binary files /dev/null and b/lib/guava-11.0.2.jar differ
 diff --git a/pom.xml b/pom.xml
 index 91e2a83..c8b0722 100644
 --- a/pom.xml
