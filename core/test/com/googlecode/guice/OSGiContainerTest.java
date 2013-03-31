@@ -88,6 +88,12 @@ public class OSGiContainerTest
     buildBundle("javax.inject", instructions, JAVAX_INJECT_JAR);
     instructions.clear();
 
+    // early versions of guava did not ship with OSGi metadata
+    instructions.setProperty("Export-Package", "com.google.common.*");
+    instructions.setProperty("Import-Package", "*;resolution:=optional");
+    buildBundle("guava", instructions, GUAVA_JAR);
+    instructions.clear();
+
     // strict imports to make sure test bundle only has access to these packages
     instructions.setProperty("Import-Package", "org.osgi.framework,"
 /*if[AOP]*/
@@ -146,7 +152,7 @@ public class OSGiContainerTest
       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/aopalliance.jar");
 /*end[AOP]*/
       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/javax.inject.jar");
-      systemContext.installBundle("reference:file:" + GUAVA_JAR);
+      systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/guava.jar");
       systemContext.installBundle("reference:file:" + GUICE_JAR);
       systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/osgitests.jar").start();
 

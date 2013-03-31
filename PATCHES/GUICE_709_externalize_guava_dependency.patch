@@ -1,7 +1,7 @@
 Description: Pull out embedded Guava and expose it as an external dependency
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=709
-Last-Update: 2012-08-03
+Last-Update: 2013-03-31
 
 diff --git a/build.properties b/build.properties
 index a76a5ab..d8bf543 100644
@@ -14,7 +14,7 @@ index a76a5ab..d8bf543 100644
 -imports=!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.common.*
 +imports=!net.sf.cglib.*,!org.objectweb.asm.*
 diff --git a/build.xml b/build.xml
-index b499839..c56400b 100644
+index b499839..4bec3cc 100644
 --- a/build.xml
 +++ b/build.xml
 @@ -89,11 +89,12 @@
@@ -159,7 +159,7 @@ index a3e2202..0000000
 -
 -chmod +w -R $srcdir $testdir
 diff --git a/core/pom.xml b/core/pom.xml
-index 12ed258..5da2ff7 100644
+index 07f11b0..f4f51cc 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -31,7 +31,7 @@
@@ -180,7 +180,7 @@ index 12ed258..5da2ff7 100644
                </includes>
              </configuration>
 diff --git a/core/test/com/googlecode/guice/OSGiContainerTest.java b/core/test/com/googlecode/guice/OSGiContainerTest.java
-index 77ab8fa..63b5bb2 100644
+index 77ab8fa..8a43584 100644
 --- a/core/test/com/googlecode/guice/OSGiContainerTest.java
 +++ b/core/test/com/googlecode/guice/OSGiContainerTest.java
 @@ -58,6 +58,7 @@ public class OSGiContainerTest
@@ -199,16 +199,29 @@ index 77ab8fa..63b5bb2 100644
  
      Properties instructions = new Properties();
  
-@@ -144,6 +146,7 @@ public class OSGiContainerTest
+@@ -86,6 +88,12 @@ public class OSGiContainerTest
+     buildBundle("javax.inject", instructions, JAVAX_INJECT_JAR);
+     instructions.clear();
+ 
++    // early versions of guava did not ship with OSGi metadata
++    instructions.setProperty("Export-Package", "com.google.common.*");
++    instructions.setProperty("Import-Package", "*;resolution:=optional");
++    buildBundle("guava", instructions, GUAVA_JAR);
++    instructions.clear();
++
+     // strict imports to make sure test bundle only has access to these packages
+     instructions.setProperty("Import-Package", "org.osgi.framework,"
+ /*if[AOP]*/
+@@ -144,6 +152,7 @@ public class OSGiContainerTest
        systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/aopalliance.jar");
  /*end[AOP]*/
        systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/javax.inject.jar");
-+      systemContext.installBundle("reference:file:" + GUAVA_JAR);
++      systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/guava.jar");
        systemContext.installBundle("reference:file:" + GUICE_JAR);
        systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/osgitests.jar").start();
  
 diff --git a/guice.iml b/guice.iml
-index 53b2d05..2185a54 100644
+index 53b2d05..db17707 100644
 --- a/guice.iml
 +++ b/guice.iml
 @@ -87,6 +87,15 @@
@@ -233,10 +246,10 @@ index af4a383..0000000
 Binary files a/lib/build/guava-11.0.1.jar and /dev/null differ
 diff --git a/lib/guava-13.0.1.jar b/lib/guava-13.0.1.jar
 new file mode 100644
-index 0000000..b185ee6
+index 0000000..09c5449
 Binary files /dev/null and b/lib/guava-13.0.1.jar differ
 diff --git a/pom.xml b/pom.xml
-index 3b76484..1c8165a 100644
+index 91e2a83..c8b0722 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -220,25 +220,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
