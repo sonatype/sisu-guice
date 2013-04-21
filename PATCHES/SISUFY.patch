@@ -420,7 +420,7 @@ index 2cf1023..5ece9d7 100644
 -    <version>5</version>
 +    <groupId>org.sonatype.forge</groupId>
 +    <artifactId>forge-parent</artifactId>
-+    <version>31</version>
++    <version>35</version>
    </parent>
  
    <packaging>pom</packaging>
