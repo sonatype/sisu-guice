@@ -37,9 +37,15 @@
       <version>11.0.2</version>
     </dependency>
     <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>4.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
-      <version>2.2.2</version>
+      <version>3.0</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -222,6 +228,15 @@
                 <include>*:cglib</include>
               </includes>
               <rules>
+                <!-- workaround for missing TraceClassVisitor in CGLIB 3.0 -->
+                <zap>
+                  <pattern>net.sf.cglib.core.DefaultGeneratorStrategy</pattern>
+                </zap>
+                <rule>
+                  <pattern>net.sf.cglib.core.DefaultGeneratorStrategy</pattern>
+                  <result>com.google.inject.internal.CGLIBStrategy</result>
+                </rule>
+                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                 <rule>
                   <pattern>net.sf.cglib.*</pattern>
                   <result>com.google.inject.internal.cglib.$@1</result>
