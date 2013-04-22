@@ -5,7 +5,7 @@
 
   <parent>
     <groupId>org.sonatype.sisu.inject</groupId>
-    <artifactId>guice-extensions</artifactId>
+    <artifactId>extensions-parent</artifactId>
     <version>3.2.0-SNAPSHOT</version>
   </parent>
 

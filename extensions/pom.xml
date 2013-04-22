@@ -11,7 +11,7 @@
 
   <packaging>pom</packaging>
 
-  <artifactId>guice-extensions</artifactId>
+  <artifactId>extensions-parent</artifactId>
 
   <name>Sisu Guice - Extensions</name>
 
