@@ -44,6 +44,10 @@
 
     <property name="Export-Package" value="!${module}.internal.*,${module}.*;version=${api.version}"/>
 
+    <condition property="DynamicImport-Package" value="org.slf4j">
+      <equals arg1="${module}" arg2="com.google.inject"/>
+    </condition>
+
     <condition property="Eclipse-ExtensibleAPI" value="true">
       <equals arg1="${module}" arg2="com.google.inject"/>
     </condition>

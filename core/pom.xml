@@ -25,6 +25,12 @@
       <version>1</version>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.4</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
       <version>1.0</version>
@@ -89,6 +95,12 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!--
+           | Run core tests without SLF4J on the classpath
+          -->
+          <classpathDependencyExcludes>
+            <exclude>org.slf4j:slf4j-api</exclude>
+          </classpathDependencyExcludes>
+          <!--
            | Temporarily excluded tests
           -->
           <excludes>
@@ -106,6 +118,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
+            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
           </instructions>
         </configuration>

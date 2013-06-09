@@ -1,0 +1,173 @@
+Description: Provide built-in injection of SLF4J loggers
+Author: Stuart McCulloch <mcculls@gmail.com>
+Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=492
+Last-Update: 2012-07-29
+
+diff --git a/common.xml b/common.xml
+index 1102481..b0cae0c 100644
+--- a/common.xml
++++ b/common.xml
+@@ -44,6 +44,10 @@
+ 
+     <property name="Export-Package" value="!${module}.internal.*,${module}.*;version=${api.version}"/>
+ 
++    <condition property="DynamicImport-Package" value="org.slf4j">
++      <equals arg1="${module}" arg2="com.google.inject"/>
++    </condition>
++
+     <condition property="Eclipse-ExtensibleAPI" value="true">
+       <equals arg1="${module}" arg2="com.google.inject"/>
+     </condition>
+diff --git a/core/pom.xml b/core/pom.xml
+index 43570f2..5a04460 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -25,6 +25,12 @@
+       <version>1</version>
+     </dependency>
+     <dependency>
++      <groupId>org.slf4j</groupId>
++      <artifactId>slf4j-api</artifactId>
++      <version>1.6.4</version>
++      <optional>true</optional>
++    </dependency>
++    <dependency>
+       <groupId>aopalliance</groupId>
+       <artifactId>aopalliance</artifactId>
+       <version>1.0</version>
+@@ -89,6 +95,12 @@
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+           <!--
++           | Run core tests without SLF4J on the classpath
++          -->
++          <classpathDependencyExcludes>
++            <exclude>org.slf4j:slf4j-api</exclude>
++          </classpathDependencyExcludes>
++          <!--
+            | Temporarily excluded tests
+           -->
+           <excludes>
+@@ -106,6 +118,7 @@
+         <artifactId>maven-bundle-plugin</artifactId>
+         <configuration>
+           <instructions>
++            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
+             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
+           </instructions>
+         </configuration>
+diff --git a/core/src/com/google/inject/internal/InjectorShell.java b/core/src/com/google/inject/internal/InjectorShell.java
+index 043fdcf..f727a5e 100644
+--- a/core/src/com/google/inject/internal/InjectorShell.java
++++ b/core/src/com/google/inject/internal/InjectorShell.java
+@@ -252,6 +252,15 @@ final class InjectorShell {
+         new ProviderInstanceBindingImpl<Logger>(injector, key,
+             SourceProvider.UNKNOWN_SOURCE, loggerFactory, Scoping.UNSCOPED,
+             loggerFactory, ImmutableSet.<InjectionPoint>of()));
++
++    try {
++      Key<org.slf4j.Logger> slf4jKey = Key.get(org.slf4j.Logger.class);
++      SLF4JLoggerFactory slf4jLoggerFactory = new SLF4JLoggerFactory(injector);
++      injector.state.putBinding(slf4jKey,
++          new ProviderInstanceBindingImpl<org.slf4j.Logger>(injector, slf4jKey,
++              SourceProvider.UNKNOWN_SOURCE, slf4jLoggerFactory, Scoping.UNSCOPED,
++              slf4jLoggerFactory, ImmutableSet.<InjectionPoint>of()));
++    } catch (Throwable e) {}
+   }
+ 
+   private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
+@@ -271,6 +280,44 @@ final class InjectorShell {
+     }
+   }
+ 
++  private static class SLF4JLoggerFactory implements InternalFactory<org.slf4j.Logger>, Provider<org.slf4j.Logger> {
++    private final Injector injector;
++
++    private org.slf4j.ILoggerFactory loggerFactory;
++
++    SLF4JLoggerFactory(Injector injector) {
++      this.injector = injector;
++    }
++
++    org.slf4j.ILoggerFactory loggerFactory() {
++      if (loggerFactory == null) {
++        try {
++          loggerFactory = injector.getInstance(org.slf4j.ILoggerFactory.class);
++        } catch (Throwable e) {}
++        if (loggerFactory == null) {
++          loggerFactory = org.slf4j.LoggerFactory.getILoggerFactory();
++        }
++      }
++      return loggerFactory;
++    }
++
++    public org.slf4j.Logger get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked) {
++      InjectionPoint injectionPoint = dependency.getInjectionPoint();
++      if (injectionPoint != null) {
++        return loggerFactory().getLogger(injectionPoint.getMember().getDeclaringClass().getName());
++      }
++      return loggerFactory().getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
++    }
++
++    public org.slf4j.Logger get() {
++      return loggerFactory().getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
++    }
++
++    public String toString() {
++      return "Provider<org.slf4j.Logger>";
++    }
++  }
++
+   private static void bindStage(InjectorImpl injector, Stage stage) {
+     Key<Stage> key = Key.get(Stage.class);
+     InstanceBindingImpl<Stage> stageBinding = new InstanceBindingImpl<Stage>(
+diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
+index 60e197d..f4fd4c5 100644
+--- a/extensions/persist/pom.xml
++++ b/extensions/persist/pom.xml
+@@ -29,7 +29,7 @@
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-simple</artifactId>
+-      <version>1.6.1</version>
++      <version>1.6.4</version>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+diff --git a/guice.iml b/guice.iml
+index 53b2d05..2abdea0 100644
+--- a/guice.iml
++++ b/guice.iml
+@@ -87,6 +87,15 @@
+         <SOURCES />
+       </library>
+     </orderEntry>
++    <orderEntry type="module-library" exported="">
++      <library>
++        <CLASSES>
++          <root url="jar://$MODULE_DIR$/lib/build/slf4j-api-1.6.4.jar!/" />
++        </CLASSES>
++        <JAVADOC />
++        <SOURCES />
++      </library>
++    </orderEntry>
+   </component>
+ </module>
+ 
+diff --git a/lib/build/slf4j-api-1.6.4.jar b/lib/build/slf4j-api-1.6.4.jar
+new file mode 100644
+index 0000000..76ef305
+Binary files /dev/null and b/lib/build/slf4j-api-1.6.4.jar differ
+diff --git a/pom.xml b/pom.xml
+index 91e2a83..9bfe995 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -269,7 +269,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         </plugin>
+         <plugin>
+           <artifactId>maven-surefire-plugin</artifactId>
+-          <version>2.5</version>
++          <version>2.6</version>
+           <configuration>
+             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+           </configuration>
