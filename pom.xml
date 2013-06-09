@@ -220,24 +220,11 @@ See the Apache License Version 2.0 for the specific language governing permissio
                 <pattern>org.objectweb.asm.**.*</pattern>
                 <result>com.google.inject.internal.asm.@1.$@2</result>
               </rule>
-              <rule>
-                <pattern>com.google.common.*</pattern>
-                <result>com.google.inject.internal.guava.$@1</result>
-              </rule>
-              <rule>
-                <pattern>com.google.common.**.*</pattern>
-                <result>com.google.inject.internal.guava.@1.$@2</result>
-              </rule>
               <keep>
                 <pattern>com.google.inject.**</pattern>
               </keep>
               <keep>
                 <pattern>com.googlecode.**</pattern>
-              </keep>
-              <keep>
-                <!-- the servlet extension uses this but core doesn't,
-                     so we explicitly instruct the build to keep it. -->
-                <pattern>com.google.common.base.Throwables</pattern>
               </keep>
             </rules>
           </configuration>
@@ -304,6 +291,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                 Ignore-Package,Bnd-LastModified
               </_removeheaders>
             </instructions>
+            <!--
+             | Exclude from version calculations, as it doesn't use semantic versioning
+            -->
+            <excludeDependencies>guava</excludeDependencies>
           </configuration>
           <executions>
             <execution>

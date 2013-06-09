@@ -89,11 +89,12 @@
       <classpath>
         <pathelement location="${build.dir}/guice-${version}-tests.jar"/>
         <pathelement location="${build.dir}/dist/guice-${version}.jar"/>
+        <pathelement location="lib/javax.inject.jar"/>
         <pathelement location="lib/aopalliance.jar"/>
+        <pathelement location="lib/guava-11.0.2.jar"/>
         <pathelement location="lib/build/junit.jar"/>
         <pathelement location="lib/build/servlet-api-2.5.jar"/>
         <pathelement location="lib/build/easymock.jar"/>
-        <pathelement location="lib/javax.inject.jar"/>
         <pathelement location="lib/build/javax.inject-tck.jar"/>
         <pathelement location="lib/build/bnd-0.0.384.jar"/>
         <pathelement location="lib/build/felix-2.0.5.jar"/>
@@ -120,7 +121,7 @@
     <javadoc packagenames="com.google.*"
 	         docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
              maxmemory="512M"
-    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
+    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
       <fileset dir="${src.dir}" defaultexcludes="yes">
         <include name="com/google/**"/>
         <exclude name="com/google/inject/internal/**"/>
@@ -149,7 +150,7 @@
 		     docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
 	         maxmemory="512M"
 		     sourcefiles="${jdiff.home}/Null.java"
-  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
+  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
 	  <doclet name="jdiff.JDiff">
 	  	<param name="-oldapi" value="${old.api}"/>
 	  	<param name="-oldapidir" value="latest-api-diffs"/>	  	
@@ -169,7 +170,7 @@
     	     docletpath="lib/build/doclava.jar"
              bootclasspath="${java.home}/lib/rt.jar"
              maxmemory="512M"
-    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
+    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
       <fileset dir="${src.dir}" defaultexcludes="yes">
         <include name="com/google/**"/>
         <exclude name="com/google/inject/internal/**"/>
