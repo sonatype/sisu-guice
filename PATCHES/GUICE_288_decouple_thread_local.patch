@@ -4,10 +4,10 @@ Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=288
 Last-Update: 2012-08-07
 
 diff --git a/core/src/com/google/inject/internal/InjectorImpl.java b/core/src/com/google/inject/internal/InjectorImpl.java
-index ee5e2d6..f40bc0f 100644
+index 03f1d06..a2c746e 100644
 --- a/core/src/com/google/inject/internal/InjectorImpl.java
 +++ b/core/src/com/google/inject/internal/InjectorImpl.java
-@@ -125,12 +125,7 @@ final class InjectorImpl implements Injector, Lookups {
+@@ -128,12 +128,7 @@ final class InjectorImpl implements Injector, Lookups {
      if (parent != null) {
        localContext = parent.localContext;
      } else {
@@ -21,7 +21,7 @@ index ee5e2d6..f40bc0f 100644
      }
    }
  
-@@ -1037,11 +1032,15 @@ final class InjectorImpl implements Injector, Lookups {
+@@ -1040,11 +1035,15 @@ final class InjectorImpl implements Injector, Lookups {
      return getProvider(type).get();
    }
  

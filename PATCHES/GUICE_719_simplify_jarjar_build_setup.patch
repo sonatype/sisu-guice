@@ -4,7 +4,7 @@ Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=719
 Last-Update: 2012-07-29
 
 diff --git a/build.xml b/build.xml
-index c56400b..fa2d666 100644
+index 6aa5037..c66a0c2 100644
 --- a/build.xml
 +++ b/build.xml
 @@ -31,34 +31,34 @@
@@ -62,7 +62,7 @@ index c56400b..fa2d666 100644
      <java fork="true" 
          classname="junit.textui.TestRunner"
 diff --git a/common.xml b/common.xml
-index 574b668..576ead3 100644
+index 9ed0f8b..79ce94f 100644
 --- a/common.xml
 +++ b/common.xml
 @@ -123,7 +123,7 @@
@@ -83,7 +83,7 @@ index 574b668..576ead3 100644
        <keep pattern="com.google.inject.**"/>
        <keep pattern="com.googlecode.**"/>
      </jarjar>
-@@ -159,24 +157,4 @@
+@@ -160,24 +158,4 @@
        <keep pattern="com.google.inject.**"/>
      </jarjar>
    </target>
@@ -95,7 +95,7 @@ index 574b668..576ead3 100644
 -    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
 -        classpath="${common.basedir}/lib/build/jarjar-1.1.jar"/>
 -    <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
--      <zipfileset src="${common.basedir}/lib/build/cglib-2.2.2.jar">
+-      <zipfileset src="${common.basedir}/lib/build/cglib-3.0.jar">
 -        <include name="LICENSE"/>
 -        <include name="NOTICE"/>
 -      </zipfileset>
@@ -109,31 +109,39 @@ index 574b668..576ead3 100644
 -  </target>
  </project>
 diff --git a/core/pom.xml b/core/pom.xml
-index 7f76bf9..4289914 100644
+index 06decf9..4a1c6ca 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -13,10 +13,6 @@
+@@ -13,11 +13,6 @@
  
    <name>Google Guice - Core Library</name>
  
 -  <properties>
--    <cglib.version>2.2.2</cglib.version>
+-    <cglib.version>3.0</cglib.version>
+-    <asm.version>4.0</asm.version>
 -  </properties>
 -
    <dependencies>
      <dependency>
        <groupId>javax.inject</groupId>
-@@ -42,7 +38,8 @@
+@@ -43,12 +38,14 @@
      <dependency>
        <groupId>cglib</groupId>
        <artifactId>cglib</artifactId>
 -      <version>${cglib.version}</version>
-+      <version>2.2.2</version>
++      <version>3.0</version>
++      <optional>true</optional>
+     </dependency>
+     <dependency>
+       <groupId>org.ow2.asm</groupId>
+       <artifactId>asm-util</artifactId>
+-      <version>${asm.version}</version>
++      <version>4.0</version>
 +      <optional>true</optional>
      </dependency>
      <dependency>
        <groupId>javax.inject</groupId>
-@@ -210,45 +207,65 @@
+@@ -216,51 +213,65 @@
            <value>!false</value>
          </property>
        </activation>
@@ -147,6 +155,12 @@ index 7f76bf9..4289914 100644
 -          <version>${cglib.version}</version>
 -          <optional>true</optional>
 -        </dependency>
+-        <dependency>
+-          <groupId>org.ow2.asm</groupId>
+-          <artifactId>asm-util</artifactId>
+-          <version>${asm.version}</version>
+-          <optional>true</optional>
+-        </dependency>
 -      </dependencies>
        <build>
          <plugins>
@@ -157,7 +171,7 @@ index 7f76bf9..4289914 100644
              <configuration>
 +              <overwrite>true</overwrite>
                <includes>
-                 <include>*:asm</include>
+                 <include>*:asm*</include>
                  <include>*:cglib</include>
 -                <include>*:jsr305</include>
                </includes>
@@ -220,7 +234,7 @@ index 7f76bf9..4289914 100644
                  </configuration>
                </execution>
              </executions>
-@@ -256,6 +273,43 @@
+@@ -268,6 +279,43 @@
          </plugins>
        </build>
      </profile>
@@ -373,10 +387,10 @@ index 9be40c8..764c726 100644
    </target>
  
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index 309e092..6a4dc58 100644
+index eeb12c9..62b1d27 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
-@@ -89,41 +89,22 @@
+@@ -89,41 +89,28 @@
    <profiles>
      <profile>
        <!--
@@ -404,7 +418,13 @@ index 309e092..6a4dc58 100644
 -          <optional>true</optional>
 +          <groupId>cglib</groupId>
 +          <artifactId>cglib</artifactId>
-+          <version>2.2.2</version>
++          <version>3.0</version>
++          <scope>test</scope>
++        </dependency>
++        <dependency>
++          <groupId>org.ow2.asm</groupId>
++          <artifactId>asm-util</artifactId>
++          <version>4.0</version>
 +          <scope>test</scope>
          </dependency>
        </dependencies>
@@ -497,7 +517,7 @@ index 9d36431..27c20e0 100644
    </target>
  
 diff --git a/pom.xml b/pom.xml
-index 402abd7..2c5dee0 100644
+index 331f9a2..e368ed8 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -195,65 +195,6 @@ See the Apache License Version 2.0 for the specific language governing permissio

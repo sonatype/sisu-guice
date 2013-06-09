@@ -4,7 +4,7 @@ Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=723
 Last-Update: 2012-08-08
 
 diff --git a/core/src/com/google/inject/internal/InjectorShell.java b/core/src/com/google/inject/internal/InjectorShell.java
-index 6f3ade3..65d215f 100644
+index f727a5e..61a4d50 100644
 --- a/core/src/com/google/inject/internal/InjectorShell.java
 +++ b/core/src/com/google/inject/internal/InjectorShell.java
 @@ -147,7 +147,7 @@ final class InjectorShell {

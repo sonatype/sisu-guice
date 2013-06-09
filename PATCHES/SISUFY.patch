@@ -11,7 +11,7 @@ index 0000000..ad2843d
 +Patched build of http://code.google.com/p/google-guice/ - see PATCHES for the exact differences.
 diff --git a/.gitignore b/.gitignore
 new file mode 100644
-index 0000000..6efbfff
+index 0000000..0f4a3a1
 --- /dev/null
 +++ b/.gitignore
 @@ -0,0 +1,20 @@
@@ -36,7 +36,7 @@ index 0000000..6efbfff
 +.project
 +.settings/
 diff --git a/core/pom.xml b/core/pom.xml
-index 8dc1fda..a649feb 100644
+index e23c381..69e0550 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,14 +4,15 @@
@@ -60,7 +60,7 @@ index 8dc1fda..a649feb 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/assistedinject/pom.xml b/extensions/assistedinject/pom.xml
-index 745d6b4..4959704 100644
+index 87fc3c5..eacf244 100644
 --- a/extensions/assistedinject/pom.xml
 +++ b/extensions/assistedinject/pom.xml
 @@ -4,13 +4,13 @@
@@ -81,7 +81,7 @@ index 745d6b4..4959704 100644
  
  </project>
 diff --git a/extensions/grapher/pom.xml b/extensions/grapher/pom.xml
-index 015db56..3e20d17 100644
+index 991c0ce..8c7ce54 100644
 --- a/extensions/grapher/pom.xml
 +++ b/extensions/grapher/pom.xml
 @@ -4,23 +4,23 @@
@@ -114,7 +114,7 @@ index 015db56..3e20d17 100644
        <version>${project.version}</version>
      </dependency>
 diff --git a/extensions/jmx/pom.xml b/extensions/jmx/pom.xml
-index d8188ca..1bb98a8 100644
+index e5d4ee4..c528d06 100644
 --- a/extensions/jmx/pom.xml
 +++ b/extensions/jmx/pom.xml
 @@ -4,13 +4,13 @@
@@ -135,7 +135,7 @@ index d8188ca..1bb98a8 100644
  
  </project>
 diff --git a/extensions/jndi/pom.xml b/extensions/jndi/pom.xml
-index ff04c5f..f186f1c 100644
+index b88f4f0..9030d8c 100644
 --- a/extensions/jndi/pom.xml
 +++ b/extensions/jndi/pom.xml
 @@ -4,13 +4,13 @@
@@ -163,7 +163,7 @@ index 0000000..8d1c8b6
 @@ -0,0 +1 @@
 + 
 diff --git a/extensions/mini/pom.xml b/extensions/mini/pom.xml
-index 3fa7032..69e979b 100644
+index 03f5c01..213a9ee 100644
 --- a/extensions/mini/pom.xml
 +++ b/extensions/mini/pom.xml
 @@ -4,13 +4,13 @@
@@ -184,7 +184,7 @@ index 3fa7032..69e979b 100644
  
  </project>
 diff --git a/extensions/multibindings/pom.xml b/extensions/multibindings/pom.xml
-index b49283c..48cf744 100644
+index be00c3e..a5ca2ed 100644
 --- a/extensions/multibindings/pom.xml
 +++ b/extensions/multibindings/pom.xml
 @@ -4,13 +4,13 @@
@@ -205,7 +205,7 @@ index b49283c..48cf744 100644
  
  </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index d894b0b..37b168c 100644
+index f4fd4c5..adc9656 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -4,14 +4,14 @@
@@ -227,7 +227,7 @@ index d894b0b..37b168c 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index 6a4dc58..823c103 100644
+index 62b1d27..2951556 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -4,17 +4,16 @@
@@ -282,7 +282,7 @@ index 6a4dc58..823c103 100644
          </configuration>
        </plugin>
 diff --git a/extensions/service/pom.xml b/extensions/service/pom.xml
-index d4efef8..df91f36 100644
+index 8dd4001..9eede3e 100644
 --- a/extensions/service/pom.xml
 +++ b/extensions/service/pom.xml
 @@ -4,13 +4,13 @@
@@ -303,7 +303,7 @@ index d4efef8..df91f36 100644
  
  </project>
 diff --git a/extensions/servlet/pom.xml b/extensions/servlet/pom.xml
-index 4f34f2f..9017372 100644
+index fc976ad..3531280 100644
 --- a/extensions/servlet/pom.xml
 +++ b/extensions/servlet/pom.xml
 @@ -4,14 +4,14 @@
@@ -325,7 +325,7 @@ index 4f34f2f..9017372 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/spring/pom.xml b/extensions/spring/pom.xml
-index f81f6ad..b39aae8 100644
+index 7dac2a3..9ab2759 100644
 --- a/extensions/spring/pom.xml
 +++ b/extensions/spring/pom.xml
 @@ -4,14 +4,14 @@
@@ -347,7 +347,7 @@ index f81f6ad..b39aae8 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/struts2/pom.xml b/extensions/struts2/pom.xml
-index 38d313a..9603846 100644
+index f07a7f8..19fb83f 100644
 --- a/extensions/struts2/pom.xml
 +++ b/extensions/struts2/pom.xml
 @@ -4,18 +4,18 @@
@@ -374,7 +374,7 @@ index 38d313a..9603846 100644
        <version>${project.version}</version>
      </dependency>
 diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
-index bd67158..e89521e 100644
+index 43540d1..7aca18c 100644
 --- a/extensions/throwingproviders/pom.xml
 +++ b/extensions/throwingproviders/pom.xml
 @@ -4,13 +4,13 @@
@@ -394,8 +394,11 @@ index bd67158..e89521e 100644
 +  <name>Sisu Guice - Extensions - ThrowingProviders</name>
  
  </project>
+diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
+index 6abed4b..6f66dac 100644
+Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
 diff --git a/pom.xml b/pom.xml
-index 2cf1023..5ece9d7 100644
+index 96d815b..ed104d5 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -458,7 +461,7 @@ index 2cf1023..5ece9d7 100644
                <Bundle-RequiredExecutionEnvironment>
                  J2SE-1.5,JavaSE-1.6
                </Bundle-RequiredExecutionEnvironment>
-@@ -271,6 +272,34 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -271,6 +271,34 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
            <version>2.7</version>
@@ -493,7 +496,7 @@ index 2cf1023..5ece9d7 100644
          </plugin>
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
-@@ -278,46 +307,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -278,46 +306,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
          <plugin>
            <artifactId>maven-gpg-plugin</artifactId>

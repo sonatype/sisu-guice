@@ -14,7 +14,7 @@ index a76a5ab..d8bf543 100644
 -imports=!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.common.*
 +imports=!net.sf.cglib.*,!org.objectweb.asm.*
 diff --git a/build.xml b/build.xml
-index b499839..4bec3cc 100644
+index 16e63df..6aa5037 100644
 --- a/build.xml
 +++ b/build.xml
 @@ -89,11 +89,12 @@
@@ -59,10 +59,10 @@ index b499839..4bec3cc 100644
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
 diff --git a/common.xml b/common.xml
-index 943d385..2dc84b1 100644
+index b0cae0c..9ed0f8b 100644
 --- a/common.xml
 +++ b/common.xml
-@@ -131,8 +131,6 @@
+@@ -135,8 +135,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
@@ -71,10 +71,10 @@ index 943d385..2dc84b1 100644
        <rule pattern="javax.annotation.*.class" result="com.google.inject.internal.jsr305.$@1"/>
        <rule pattern="javax.annotation.**.*.class" result="com.google.inject.internal.jsr305.@1.$@2"/>
        <keep pattern="com.google.inject.**"/>
-@@ -150,17 +148,11 @@
-       <fileset dir="${build.dir}/classes"/>
-       <zipfileset src="${common.basedir}/lib/build/cglib-2.2.2.jar"/>
-       <zipfileset src="${common.basedir}/lib/build/asm-3.3.1.jar"/>
+@@ -155,17 +153,11 @@
+       <zipfileset src="${common.basedir}/lib/build/cglib-3.0.jar"/>
+       <zipfileset src="${common.basedir}/lib/build/asm-4.0.jar"/>
+       <zipfileset src="${common.basedir}/lib/build/asm-util-4.0.jar"/>
 -      <zipfileset src="${common.basedir}/lib/build/guava-11.0.1.jar"/>
        <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
@@ -89,7 +89,7 @@ index 943d385..2dc84b1 100644
      </jarjar>
    </target>
  
-@@ -180,8 +172,6 @@
+@@ -185,8 +177,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
@@ -159,10 +159,10 @@ index a3e2202..0000000
 -
 -chmod +w -R $srcdir $testdir
 diff --git a/core/pom.xml b/core/pom.xml
-index 07f11b0..f4f51cc 100644
+index 5a04460..06decf9 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -31,7 +31,7 @@
+@@ -38,7 +38,7 @@
      <dependency>
        <groupId>com.google.guava</groupId>
        <artifactId>guava</artifactId>
@@ -171,16 +171,16 @@ index 07f11b0..f4f51cc 100644
      </dependency>
      <dependency>
        <groupId>cglib</groupId>
-@@ -217,7 +217,6 @@
+@@ -242,7 +242,6 @@
                <includes>
-                 <include>*:asm</include>
+                 <include>*:asm*</include>
                  <include>*:cglib</include>
 -                <include>*:guava</include>
                  <include>*:jsr305</include>
                </includes>
              </configuration>
 diff --git a/core/test/com/googlecode/guice/OSGiContainerTest.java b/core/test/com/googlecode/guice/OSGiContainerTest.java
-index 77ab8fa..8a43584 100644
+index 77ab8fa..6cb2b1b 100644
 --- a/core/test/com/googlecode/guice/OSGiContainerTest.java
 +++ b/core/test/com/googlecode/guice/OSGiContainerTest.java
 @@ -58,6 +58,7 @@ public class OSGiContainerTest
@@ -221,10 +221,10 @@ index 77ab8fa..8a43584 100644
        systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/osgitests.jar").start();
  
 diff --git a/guice.iml b/guice.iml
-index 53b2d05..db17707 100644
+index 2abdea0..ca98987 100644
 --- a/guice.iml
 +++ b/guice.iml
-@@ -87,6 +87,15 @@
+@@ -96,6 +96,15 @@
          <SOURCES />
        </library>
      </orderEntry>
@@ -246,10 +246,10 @@ index af4a383..0000000
 Binary files a/lib/build/guava-11.0.1.jar and /dev/null differ
 diff --git a/lib/guava-11.0.2.jar b/lib/guava-11.0.2.jar
 new file mode 100644
-index 0000000..09c5449
+index 0000000..c8c8d5d
 Binary files /dev/null and b/lib/guava-11.0.2.jar differ
 diff --git a/pom.xml b/pom.xml
-index 91e2a83..c8b0722 100644
+index 9bfe995..331f9a2 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -220,25 +220,12 @@ See the Apache License Version 2.0 for the specific language governing permissio

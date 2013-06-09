@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Binding;
@@ -41,6 +42,7 @@ import com.google.inject.internal.Annotations;
 import com.google.inject.internal.BytecodeGen;
 import com.google.inject.internal.Errors;
 import com.google.inject.internal.ErrorsException;
+import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.internal.util.Classes;
 import com.google.inject.spi.BindingTargetVisitor;
 import com.google.inject.spi.Dependency;
@@ -65,6 +67,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The newer implementation of factory provider. This implementation uses a child injector to
@@ -77,6 +81,12 @@ import java.util.Set;
  */
 final class FactoryProvider2 <F> implements InvocationHandler,
     ProviderWithExtensionVisitor<F>, HasDependencies, AssistedInjectBinding<F> {
+
+  /** A constant annotation to denote the return value, instead of creating a new one each time. */
+  static final Annotation RETURN_ANNOTATION = UniqueAnnotations.create();
+
+  // use the logger under a well-known name, not FactoryProvider2
+  static final Logger logger = Logger.getLogger(AssistedInject.class.getName());
 
   /** if a factory method parameter isn't annotated, it gets this annotation. */
   static final Assisted DEFAULT_ANNOTATION = new Assisted() {
@@ -241,6 +251,15 @@ final class FactoryProvider2 <F> implements InvocationHandler,
         if(implementation == null) {
           implementation = returnType.getTypeLiteral();
         }
+        Class<? extends Annotation> scope =
+            Annotations.findScopeAnnotation(errors, implementation.getRawType());
+        if (scope != null) {
+          errors.addMessage("Found scope annotation [%s] on implementation class "
+              + "[%s] of AssistedInject factory [%s].\nThis is not allowed, please"
+              + " remove the scope annotation.",
+              scope, implementation.getRawType(), factoryType);
+        }
+        
         InjectionPoint ctorInjectionPoint;
         try {
           ctorInjectionPoint =
@@ -259,7 +278,7 @@ final class FactoryProvider2 <F> implements InvocationHandler,
         // all injections directly inject the object itself (and not a Provider of the object,
         // or an Injector), because it caches a single child injector and mutates the Provider
         // of the arguments in a ThreadLocal.
-        if(isValidForOptimizedAssistedInject(deps)) {
+        if(isValidForOptimizedAssistedInject(deps, implementation.getRawType(), factoryType)) {
           ImmutableList.Builder<ThreadLocalProvider> providerListBuilder = ImmutableList.builder();
           for(int i = 0; i < params.size(); i++) {
             providerListBuilder.add(new ThreadLocalProvider());
@@ -487,11 +506,25 @@ final class FactoryProvider2 <F> implements InvocationHandler,
    * the assisted bindings are immediately provided. This looks for hints that the values may be
    * lazily retrieved, by looking for injections of Injector or a Provider for the assisted values.
    */
-  private boolean isValidForOptimizedAssistedInject(Set<Dependency<?>> dependencies) {
+  private boolean isValidForOptimizedAssistedInject(Set<Dependency<?>> dependencies,
+      Class<?> implementation, TypeLiteral<?> factoryType) {
+    Set<Dependency<?>> badDeps = null; // optimization: create lazily
     for (Dependency<?> dep : dependencies) {
       if (isInjectorOrAssistedProvider(dep)) {
-        return false;
+        if (badDeps == null) {
+          badDeps = Sets.newHashSet();
+        }
+        badDeps.add(dep);
       }
+    }
+    if (badDeps != null && !badDeps.isEmpty()) {
+      logger.log(Level.WARNING, "AssistedInject factory {0} will be slow "
+          + "because {1} has assisted Provider dependencies or injects the Injector. "
+          + "Stop injecting @Assisted Provider<T> (instead use @Assisted T) "
+          + "or Injector to speed things up. (It will be a ~6500% speed bump!)  "
+          + "The exact offending deps are: {2}",
+          new Object[] {factoryType, implementation, badDeps} );
+      return false;
     }
     return true;
   }
@@ -567,7 +600,7 @@ final class FactoryProvider2 <F> implements InvocationHandler,
     final Key<?> returnType = data.returnType;
 
     // We ignore any pre-existing binding annotation.
-    final Key<?> assistedReturnType = Key.get(returnType.getTypeLiteral(), Assisted.class);
+    final Key<?> returnKey = Key.get(returnType.getTypeLiteral(), RETURN_ANNOTATION);
 
     Module assistedModule = new AbstractModule() {
       @Override @SuppressWarnings("unchecked") // raw keys are necessary for the args array and return value
@@ -592,7 +625,7 @@ final class FactoryProvider2 <F> implements InvocationHandler,
         // but if it isn't, we'll end up throwing a fairly good error
         // message for the user.
         if(constructor != null) {
-          binder.bind(assistedReturnType)
+          binder.bind(returnKey)
               .toConstructor(constructor, (TypeLiteral)data.implementationType)
               .in(Scopes.NO_SCOPE); // make sure we erase any scope on the implementation type
         }
@@ -600,7 +633,7 @@ final class FactoryProvider2 <F> implements InvocationHandler,
     };
 
     Injector forCreate = injector.createChildInjector(assistedModule);
-    Binding binding = forCreate.getBinding(assistedReturnType);
+    Binding binding = forCreate.getBinding(returnKey);
     // If we have providers cached in data, cache the binding for future optimizations.
     if(data.optimized) {
       data.cachedBinding = binding;

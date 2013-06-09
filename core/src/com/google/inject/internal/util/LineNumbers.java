@@ -22,7 +22,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
@@ -145,33 +144,80 @@ final class LineNumbers {
       }
       pendingMethod = name + desc;
       line = -1;
-      return new MethodVisitor(Opcodes.ASM4) {
-          @Override
-          public void visitLineNumber(int line, Label start) {
-            if (line < firstLine) {
-              firstLine = line;
-            }
-
-            LineNumberReader.this.line = line;
-            if (pendingMethod != null) {
-              lines.put(pendingMethod, line);
-              pendingMethod = null;
-            }
-          }
-
-          @Override
-          public void visitFieldInsn(int opcode, String owner, String name,
-              String desc) {
-            if (opcode == Opcodes.PUTFIELD && LineNumberReader.this.name.equals(owner)
-                && !lines.containsKey(name) && line != -1) {
-              lines.put(name, line);
-            }
-          }
-      };
+      return new LineNumberMethodVisitor();
     }
 
     public void visitSource(String source, String debug) {
       LineNumbers.this.source = source;
     }
+
+    public void visitLineNumber(int line, Label start) {
+      if (line < firstLine) {
+        firstLine = line;
+      }
+
+      this.line = line;
+      if (pendingMethod != null) {
+        lines.put(pendingMethod, line);
+        pendingMethod = null;
+      }
+    }
+
+    public FieldVisitor visitField(int access, String name, String desc,
+        String signature, Object value) {
+      return null;
+    }
+
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+      return new LineNumberAnnotationVisitor();
+    }
+
+    public AnnotationVisitor visitParameterAnnotation(int parameter,
+        String desc, boolean visible) {
+      return new LineNumberAnnotationVisitor();
+    }
+
+    class LineNumberMethodVisitor extends MethodVisitor {
+      LineNumberMethodVisitor() {
+        super(Opcodes.ASM4);
+    }
+
+      public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        return new LineNumberAnnotationVisitor();
+    }
+
+      public AnnotationVisitor visitAnnotationDefault() {
+        return new LineNumberAnnotationVisitor();
+    }
+
+      public void visitFieldInsn(int opcode, String owner, String name,
+          String desc) {
+        if (opcode == Opcodes.PUTFIELD && LineNumberReader.this.name.equals(owner)
+            && !lines.containsKey(name) && line != -1) {
+          lines.put(name, line);
+    }
+    }
+
+      public void visitLineNumber(int line, Label start) {
+        LineNumberReader.this.visitLineNumber(line, start);
+    }
+    }
+
+    class LineNumberAnnotationVisitor extends AnnotationVisitor {
+      LineNumberAnnotationVisitor() {
+        super(Opcodes.ASM4);
+    }
+      public AnnotationVisitor visitAnnotation(String name, String desc) {
+        return this;
+    }
+      public AnnotationVisitor visitArray(String name) {
+        return this;
+    }
+    public void visitLocalVariable(String name, String desc, String signature,
+        Label start, Label end, int index) {
+    }
+
+    }
+
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Google Inc.
+ * Copyright (C) 2012 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package com.google.inject.internal;
+package com.google.inject.servlet;
 
-/*if[AOP]*/
-// workaround for missing TraceClassVisitor in CGLIB 3.0 
-public final class CGLIBStrategy
-  implements net.sf.cglib.core.GeneratorStrategy {
-  public static final CGLIBStrategy INSTANCE = new CGLIBStrategy();
-  public byte[] generate(net.sf.cglib.core.ClassGenerator cg) throws Exception {
-    org.objectweb.asm.ClassWriter cw = new org.objectweb.asm.ClassWriter(
-        org.objectweb.asm.ClassWriter.COMPUTE_MAXS);
-    cg.generateClass(cw);
-    return cw.toByteArray();
+/**
+ * Exception thrown when there was a failure entering request scope.
+ *
+ * @author Chris Nokleberg
+ */
+public final class ScopingException extends IllegalStateException {
+  public ScopingException(String message) {
+    super(message);
   }
 }
-/*end[AOP]*/
