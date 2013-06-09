@@ -4,14 +4,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.inject</groupId>
+    <groupId>org.sonatype.sisu.inject</groupId>
     <artifactId>guice-parent</artifactId>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guice</artifactId>
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-guice</artifactId>
 
-  <name>Google Guice - Core Library</name>
+  <name>Sisu Guice - Core Library</name>
 
   <dependencies>
     <dependency>
