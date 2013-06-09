@@ -123,7 +123,7 @@
       depends="source.jar, jar"
       description="Build jar files"/>
 
-  <target name="test.compile-with-deps" depends="test.compile"
+  <target name="test.withdeps" depends="test.compile"
       description="Build a jar of tests with internal.util refocused.">
     <mkdir dir="${build.dir}/dist"/>
     <dirname property="common.basedir" file="${ant.file.common}"/>
@@ -135,8 +135,6 @@
       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
       <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
-      <rule pattern="javax.annotation.*.class" result="com.google.inject.internal.jsr305.$@1"/>
-      <rule pattern="javax.annotation.**.*.class" result="com.google.inject.internal.jsr305.@1.$@2"/>
       <keep pattern="com.google.inject.**"/>
       <keep pattern="com.googlecode.**"/>
     </jarjar>
@@ -153,26 +151,6 @@
       <zipfileset src="${common.basedir}/lib/build/cglib-3.0.jar"/>
       <zipfileset src="${common.basedir}/lib/build/asm-4.0.jar"/>
       <zipfileset src="${common.basedir}/lib/build/asm-util-4.0.jar"/>
-      <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
-      <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
-      <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
-      <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
-      <keep pattern="com.google.inject.**"/>
-    </jarjar>
-  </target>
-
-  <target name="jar.withrenameddeps" depends="compile"
-      description="Build jar with dependencies embedded.">
-    <mkdir dir="${build.dir}/dist"/>
-    <dirname property="common.basedir" file="${ant.file.common}"/>
-    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
-        classpath="${common.basedir}/lib/build/jarjar-1.1.jar"/>
-    <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
-      <zipfileset src="${common.basedir}/lib/build/cglib-3.0.jar">
-        <include name="LICENSE"/>
-        <include name="NOTICE"/>
-      </zipfileset>
-      <fileset dir="${build.dir}/classes"/>
       <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>

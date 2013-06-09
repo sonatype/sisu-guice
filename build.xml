@@ -31,34 +31,34 @@
   	<ant antfile="extensions/grapher/build.xml" target="distjars" inheritAll="false"/>
 
     <copy toDir="${build.dir}/dist"> 
-      <fileset dir="extensions/servlet/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/servlet/build" includes="*.jar"/>
     </copy>
     <copy toDir="${build.dir}/dist"> 
-      <fileset dir="extensions/spring/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/spring/build" includes="*.jar"/>
     </copy>
     <copy toDir="${build.dir}/dist">
-      <fileset dir="extensions/struts2/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/struts2/build" includes="*.jar"/>
     </copy>
     <copy toDir="${build.dir}/dist">
-      <fileset dir="extensions/assistedinject/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/assistedinject/build" includes="*.jar"/>
     </copy>
     <copy toDir="${build.dir}/dist">
-      <fileset dir="extensions/jmx/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/jmx/build" includes="*.jar"/>
     </copy>
     <copy toDir="${build.dir}/dist">
-      <fileset dir="extensions/jndi/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/jndi/build" includes="*.jar"/>
     </copy>
     <copy toDir="${build.dir}/dist">
-      <fileset dir="extensions/throwingproviders/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/throwingproviders/build" includes="*.jar"/>
     </copy>
     <copy toDir="${build.dir}/dist">
-      <fileset dir="extensions/multibindings/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/multibindings/build" includes="*.jar"/>
     </copy>
     <copy toDir="${build.dir}/dist">
-      <fileset dir="extensions/persist/build" includes="*.jar" excludes="*-with-deps.jar"/>
+      <fileset dir="extensions/persist/build" includes="*.jar"/>
     </copy>
   	<copy toDir="${build.dir}/dist">
-  	  <fileset dir="extensions/grapher/build" includes="*.jar" excludes="*-with-deps.jar"/>
+  	  <fileset dir="extensions/grapher/build" includes="*.jar"/>
   	</copy>    	
 
     <copy toDir="${build.dir}/dist" file="COPYING"/> 
@@ -80,7 +80,7 @@
   </target>
   
   <target name="test.dist"
-      depends="jar, test.compile-with-deps"
+      depends="jar, test.withdeps"
       description="Execute JUnit tests against distribution jar.">
     <java fork="true" 
         classname="junit.textui.TestRunner"
