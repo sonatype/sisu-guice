@@ -55,7 +55,7 @@ index e368ed8..96d815b 100644
 -    <url>http://code.google.com/p/google-guice/source/browse</url>
 +    <connection>scm:git:https://code.google.com/p/google-guice/</connection>
 +    <developerConnection>scm:git:https://code.google.com/p/google-guice/</developerConnection>
-+    <url>https://code.google.com/p/google-guice/</url>
++    <url>http://code.google.com/p/google-guice/source/browse/</url>
    </scm>
  
    <issueManagement>

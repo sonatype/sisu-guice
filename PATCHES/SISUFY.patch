@@ -436,7 +436,7 @@ index 96d815b..ed104d5 100644
    <scm>
 -    <connection>scm:git:https://code.google.com/p/google-guice/</connection>
 -    <developerConnection>scm:git:https://code.google.com/p/google-guice/</developerConnection>
--    <url>https://code.google.com/p/google-guice/</url>
+-    <url>http://code.google.com/p/google-guice/source/browse/</url>
 +    <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
 +    <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
 +    <url>http://github.com/sonatype/sisu-guice</url>
