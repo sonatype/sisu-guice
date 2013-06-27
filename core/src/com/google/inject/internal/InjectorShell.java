@@ -279,7 +279,7 @@ final class InjectorShell {
       return "Provider<Logger>";
     }
   }
-
+  
   private static class SLF4JLoggerFactory implements InternalFactory<org.slf4j.Logger>, Provider<org.slf4j.Logger> {
     private final Injector injector;
 
@@ -328,7 +328,7 @@ final class InjectorShell {
         ImmutableSet.<InjectionPoint>of(),
         stage);
     injector.state.putBinding(key, stageBinding);
-    }
+  }
 
   private static class RootModule implements Module {
     public void configure(Binder binder) {
