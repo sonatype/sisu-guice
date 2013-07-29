@@ -18,3 +18,8 @@ out/
 .classpath
 .project
 .settings/
+bin/
+
+*~
+*.orig
+*.new
