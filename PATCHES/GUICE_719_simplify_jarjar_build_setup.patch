@@ -8,7 +8,7 @@ index 6aa5037..c66a0c2 100644
 --- a/build.xml
 +++ b/build.xml
 @@ -31,34 +31,34 @@
-   	<ant antfile="extensions/grapher/build.xml" target="distjars" inheritAll="false"/>
+         <ant antfile="extensions/grapher/build.xml" target="distjars" inheritAll="false"/>
  
      <copy toDir="${build.dir}/dist"> 
 -      <fileset dir="extensions/servlet/build" includes="*.jar" excludes="*-with-deps.jar"/>
@@ -46,10 +46,10 @@ index 6aa5037..c66a0c2 100644
 -      <fileset dir="extensions/persist/build" includes="*.jar" excludes="*-with-deps.jar"/>
 +      <fileset dir="extensions/persist/build" includes="*.jar"/>
      </copy>
-   	<copy toDir="${build.dir}/dist">
--  	  <fileset dir="extensions/grapher/build" includes="*.jar" excludes="*-with-deps.jar"/>
-+  	  <fileset dir="extensions/grapher/build" includes="*.jar"/>
-   	</copy>    	
+         <copy toDir="${build.dir}/dist">
+-          <fileset dir="extensions/grapher/build" includes="*.jar" excludes="*-with-deps.jar"/>
++          <fileset dir="extensions/grapher/build" includes="*.jar"/>
+         </copy>
  
      <copy toDir="${build.dir}/dist" file="COPYING"/> 
 @@ -80,7 +80,7 @@
@@ -65,7 +65,7 @@ diff --git a/common.xml b/common.xml
 index 9ed0f8b..79ce94f 100644
 --- a/common.xml
 +++ b/common.xml
-@@ -123,7 +123,7 @@
+@@ -119,7 +119,7 @@
        depends="source.jar, jar"
        description="Build jar files"/>
  
@@ -74,7 +74,7 @@ index 9ed0f8b..79ce94f 100644
        description="Build a jar of tests with internal.util refocused.">
      <mkdir dir="${build.dir}/dist"/>
      <dirname property="common.basedir" file="${ant.file.common}"/>
-@@ -135,8 +135,6 @@
+@@ -131,8 +131,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
@@ -83,7 +83,7 @@ index 9ed0f8b..79ce94f 100644
        <keep pattern="com.google.inject.**"/>
        <keep pattern="com.googlecode.**"/>
      </jarjar>
-@@ -160,24 +158,4 @@
+@@ -156,24 +154,4 @@
        <keep pattern="com.google.inject.**"/>
      </jarjar>
    </target>
@@ -124,7 +124,7 @@ index 06decf9..4a1c6ca 100644
    <dependencies>
      <dependency>
        <groupId>javax.inject</groupId>
-@@ -43,12 +38,14 @@
+@@ -37,12 +32,14 @@
      <dependency>
        <groupId>cglib</groupId>
        <artifactId>cglib</artifactId>
@@ -141,7 +141,7 @@ index 06decf9..4a1c6ca 100644
      </dependency>
      <dependency>
        <groupId>javax.inject</groupId>
-@@ -216,51 +213,65 @@
+@@ -215,51 +212,65 @@
            <value>!false</value>
          </property>
        </activation>
@@ -234,7 +234,7 @@ index 06decf9..4a1c6ca 100644
                  </configuration>
                </execution>
              </executions>
-@@ -268,6 +279,43 @@
+@@ -267,6 +278,43 @@
          </plugins>
        </build>
      </profile>
@@ -390,7 +390,7 @@ diff --git a/extensions/pom.xml b/extensions/pom.xml
 index eeb12c9..62b1d27 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
-@@ -89,41 +89,28 @@
+@@ -101,41 +101,28 @@
    <profiles>
      <profile>
        <!--
@@ -520,7 +520,7 @@ diff --git a/pom.xml b/pom.xml
 index 331f9a2..e368ed8 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -195,65 +195,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -196,65 +196,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
              </execution>
            </executions>
          </plugin>
@@ -585,4 +585,4 @@ index 331f9a2..e368ed8 100644
 -        </plugin>
          <plugin>
            <artifactId>maven-surefire-plugin</artifactId>
-           <version>2.6</version>
+           <version>2.5</version>

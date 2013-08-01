@@ -33,28 +33,28 @@ index 16e63df..6aa5037 100644
          <pathelement location="lib/build/felix-2.0.5.jar"/>
 @@ -120,7 +121,7 @@
      <javadoc packagenames="com.google.*"
- 	         docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
+                  docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
               maxmemory="512M"
--    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
-+    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
+-             classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
++             classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
        <fileset dir="${src.dir}" defaultexcludes="yes">
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
 @@ -149,7 +150,7 @@
- 		     docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
- 	         maxmemory="512M"
- 		     sourcefiles="${jdiff.home}/Null.java"
--  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
-+  	         classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
- 	  <doclet name="jdiff.JDiff">
- 	  	<param name="-oldapi" value="${old.api}"/>
- 	  	<param name="-oldapidir" value="latest-api-diffs"/>	  	
+                      docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
+                  maxmemory="512M"
+                      sourcefiles="${jdiff.home}/Null.java"
+-                 classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
++                 classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
+           <doclet name="jdiff.JDiff">
+                 <param name="-oldapi" value="${old.api}"/>
+                 <param name="-oldapidir" value="latest-api-diffs"/>             
 @@ -169,7 +170,7 @@
-     	     docletpath="lib/build/doclava.jar"
+              docletpath="lib/build/doclava.jar"
               bootclasspath="${java.home}/lib/rt.jar"
               maxmemory="512M"
--    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
-+    	     classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
+-             classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar">
++             classpath="lib/javax.inject.jar${path.separator}lib/aopalliance.jar${path.separator}guava-11.0.2.jar">
        <fileset dir="${src.dir}" defaultexcludes="yes">
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
@@ -62,7 +62,7 @@ diff --git a/common.xml b/common.xml
 index b0cae0c..9ed0f8b 100644
 --- a/common.xml
 +++ b/common.xml
-@@ -135,8 +135,6 @@
+@@ -131,8 +131,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
@@ -71,7 +71,7 @@ index b0cae0c..9ed0f8b 100644
        <rule pattern="javax.annotation.*.class" result="com.google.inject.internal.jsr305.$@1"/>
        <rule pattern="javax.annotation.**.*.class" result="com.google.inject.internal.jsr305.@1.$@2"/>
        <keep pattern="com.google.inject.**"/>
-@@ -155,17 +153,11 @@
+@@ -151,17 +149,11 @@
        <zipfileset src="${common.basedir}/lib/build/cglib-3.0.jar"/>
        <zipfileset src="${common.basedir}/lib/build/asm-4.0.jar"/>
        <zipfileset src="${common.basedir}/lib/build/asm-util-4.0.jar"/>
@@ -89,7 +89,7 @@ index b0cae0c..9ed0f8b 100644
      </jarjar>
    </target>
  
-@@ -185,8 +177,6 @@
+@@ -181,8 +173,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
@@ -162,7 +162,7 @@ diff --git a/core/pom.xml b/core/pom.xml
 index 5a04460..06decf9 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -38,7 +38,7 @@
+@@ -32,7 +32,7 @@
      <dependency>
        <groupId>com.google.guava</groupId>
        <artifactId>guava</artifactId>
@@ -171,7 +171,7 @@ index 5a04460..06decf9 100644
      </dependency>
      <dependency>
        <groupId>cglib</groupId>
-@@ -242,7 +242,6 @@
+@@ -241,7 +241,6 @@
                <includes>
                  <include>*:asm*</include>
                  <include>*:cglib</include>
@@ -224,7 +224,7 @@ diff --git a/guice.iml b/guice.iml
 index 2abdea0..ca98987 100644
 --- a/guice.iml
 +++ b/guice.iml
-@@ -96,6 +96,15 @@
+@@ -87,6 +87,15 @@
          <SOURCES />
        </library>
      </orderEntry>
@@ -252,7 +252,7 @@ diff --git a/pom.xml b/pom.xml
 index 9bfe995..331f9a2 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -220,25 +220,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -221,25 +221,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
                  <pattern>org.objectweb.asm.**.*</pattern>
                  <result>com.google.inject.internal.asm.@1.$@2</result>
                </rule>
@@ -278,7 +278,7 @@ index 9bfe995..331f9a2 100644
              </rules>
            </configuration>
            <!--
-@@ -304,6 +291,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -305,6 +292,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                  Ignore-Package,Bnd-LastModified
                </_removeheaders>
              </instructions>

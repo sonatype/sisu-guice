@@ -48,14 +48,14 @@ index 43570f2..5a04460 100644
             | Temporarily excluded tests
            -->
            <excludes>
-@@ -106,6 +118,7 @@
-         <artifactId>maven-bundle-plugin</artifactId>
+@@ -107,6 +119,7 @@
          <configuration>
            <instructions>
-+            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
              <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
++            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
            </instructions>
          </configuration>
+       </plugin>
 diff --git a/core/src/com/google/inject/internal/InjectorShell.java b/core/src/com/google/inject/internal/InjectorShell.java
 index 043fdcf..f727a5e 100644
 --- a/core/src/com/google/inject/internal/InjectorShell.java
@@ -79,7 +79,7 @@ index 043fdcf..f727a5e 100644
 @@ -271,6 +280,44 @@ final class InjectorShell {
      }
    }
- 
+   
 +  private static class SLF4JLoggerFactory implements InternalFactory<org.slf4j.Logger>, Provider<org.slf4j.Logger> {
 +    private final Injector injector;
 +
@@ -162,7 +162,7 @@ diff --git a/pom.xml b/pom.xml
 index 91e2a83..9bfe995 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -269,7 +269,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -270,7 +270,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
          <plugin>
            <artifactId>maven-surefire-plugin</artifactId>

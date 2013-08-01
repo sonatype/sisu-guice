@@ -34,7 +34,7 @@ diff --git a/core/pom.xml b/core/pom.xml
 index 4a1c6ca..e23c381 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -115,6 +115,7 @@
+@@ -103,6 +103,7 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
            <instructions>
@@ -68,12 +68,3 @@ index e368ed8..96d815b 100644
    </ciManagement>
  
    <licenses>
-@@ -97,7 +97,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
-     <!--
-      | The spec version of the public Guice API
-     -->
--    <guice.api.version>1.3</guice.api.version>
-+    <guice.api.version>1.4</guice.api.version>
-     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-     <!--
-      | Use "-Dguice.with.jarjar=false" to build without jarjar

@@ -9,34 +9,8 @@ index 0000000..ad2843d
 +++ b/README
 @@ -0,0 +1 @@
 +Patched build of http://code.google.com/p/google-guice/ - see PATCHES for the exact differences.
-diff --git a/.gitignore b/.gitignore
-new file mode 100644
-index 0000000..0f4a3a1
---- /dev/null
-+++ b/.gitignore
-@@ -0,0 +1,20 @@
-+# Maven
-+target/
-+*.ser
-+*.ec
-+
-+# Ant
-+build/
-+!lib/build/
-+
-+# IntelliJ Idea
-+.idea/
-+out/
-+*.ipr
-+*.iws
-+*.iml
-+
-+# Eclipse
-+.classpath
-+.project
-+.settings/
 diff --git a/core/pom.xml b/core/pom.xml
-index e23c381..69e0550 100644
+index 633b933..69c4b1a 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,14 +4,15 @@
@@ -46,8 +20,7 @@ index e23c381..69e0550 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
 -  <artifactId>guice</artifactId>
@@ -59,8 +32,27 @@ index e23c381..69e0550 100644
  
    <dependencies>
      <dependency>
+@@ -133,18 +134,6 @@
+           </excludes>
+         </configuration>
+       </plugin>
+-      <!--
+-       | Generate sources jar
+-      -->
+-      <plugin>
+-        <artifactId>maven-source-plugin</artifactId>
+-      </plugin>
+-      <!--
+-       | Generate javadoc jar
+-      -->
+-      <plugin>
+-        <artifactId>maven-javadoc-plugin</artifactId>
+-      </plugin>
+     </plugins>
+   </build>
+ 
 diff --git a/extensions/assistedinject/pom.xml b/extensions/assistedinject/pom.xml
-index 87fc3c5..eacf244 100644
+index 601f24e..38f360e 100644
 --- a/extensions/assistedinject/pom.xml
 +++ b/extensions/assistedinject/pom.xml
 @@ -4,13 +4,13 @@
@@ -70,8 +62,7 @@ index 87fc3c5..eacf244 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-assistedinject</artifactId>
@@ -81,7 +72,7 @@ index 87fc3c5..eacf244 100644
  
  </project>
 diff --git a/extensions/grapher/pom.xml b/extensions/grapher/pom.xml
-index 991c0ce..8c7ce54 100644
+index 6f63452..920f7ba 100644
 --- a/extensions/grapher/pom.xml
 +++ b/extensions/grapher/pom.xml
 @@ -4,23 +4,23 @@
@@ -91,8 +82,7 @@ index 991c0ce..8c7ce54 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-grapher</artifactId>
@@ -114,7 +104,7 @@ index 991c0ce..8c7ce54 100644
        <version>${project.version}</version>
      </dependency>
 diff --git a/extensions/jmx/pom.xml b/extensions/jmx/pom.xml
-index e5d4ee4..c528d06 100644
+index 62c7d17..b6d53bf 100644
 --- a/extensions/jmx/pom.xml
 +++ b/extensions/jmx/pom.xml
 @@ -4,13 +4,13 @@
@@ -124,8 +114,7 @@ index e5d4ee4..c528d06 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-jmx</artifactId>
@@ -135,7 +124,7 @@ index e5d4ee4..c528d06 100644
  
  </project>
 diff --git a/extensions/jndi/pom.xml b/extensions/jndi/pom.xml
-index b88f4f0..9030d8c 100644
+index fb9bc3c..f78153a 100644
 --- a/extensions/jndi/pom.xml
 +++ b/extensions/jndi/pom.xml
 @@ -4,13 +4,13 @@
@@ -145,8 +134,7 @@ index b88f4f0..9030d8c 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-jndi</artifactId>
@@ -184,7 +172,7 @@ index 03f5c01..213a9ee 100644
  
  </project>
 diff --git a/extensions/multibindings/pom.xml b/extensions/multibindings/pom.xml
-index be00c3e..a5ca2ed 100644
+index 8875e39..9eb7ee9 100644
 --- a/extensions/multibindings/pom.xml
 +++ b/extensions/multibindings/pom.xml
 @@ -4,13 +4,13 @@
@@ -194,8 +182,7 @@ index be00c3e..a5ca2ed 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-multibindings</artifactId>
@@ -205,7 +192,7 @@ index be00c3e..a5ca2ed 100644
  
  </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index f4fd4c5..adc9656 100644
+index 72d36bf..2ef23f5 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -4,14 +4,14 @@
@@ -215,8 +202,7 @@ index f4fd4c5..adc9656 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-persist</artifactId>
@@ -227,7 +213,7 @@ index f4fd4c5..adc9656 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index 62b1d27..2951556 100644
+index 9a45b1d..f349015 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -4,17 +4,16 @@
@@ -237,8 +223,7 @@ index 62b1d27..2951556 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <packaging>pom</packaging>
@@ -272,7 +257,7 @@ index 62b1d27..2951556 100644
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
-@@ -79,7 +78,7 @@
+@@ -79,22 +78,10 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
            <instructions>
@@ -281,6 +266,21 @@ index 62b1d27..2951556 100644
            </instructions>
          </configuration>
        </plugin>
+-      <!--
+-       | Generate sources jar
+-      -->
+-      <plugin>
+-        <artifactId>maven-source-plugin</artifactId>
+-      </plugin>
+-      <!--
+-       | Generate javadoc jar
+-      -->
+-      <plugin>
+-        <artifactId>maven-javadoc-plugin</artifactId>
+-      </plugin>
+     </plugins>
+   </build>
+ 
 diff --git a/extensions/service/pom.xml b/extensions/service/pom.xml
 index 8dd4001..9eede3e 100644
 --- a/extensions/service/pom.xml
@@ -303,7 +303,7 @@ index 8dd4001..9eede3e 100644
  
  </project>
 diff --git a/extensions/servlet/pom.xml b/extensions/servlet/pom.xml
-index fc976ad..3531280 100644
+index b4117ab..abd6e44 100644
 --- a/extensions/servlet/pom.xml
 +++ b/extensions/servlet/pom.xml
 @@ -4,14 +4,14 @@
@@ -313,8 +313,7 @@ index fc976ad..3531280 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-servlet</artifactId>
@@ -325,7 +324,7 @@ index fc976ad..3531280 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/spring/pom.xml b/extensions/spring/pom.xml
-index 7dac2a3..9ab2759 100644
+index e1bf819..391fd83 100644
 --- a/extensions/spring/pom.xml
 +++ b/extensions/spring/pom.xml
 @@ -4,14 +4,14 @@
@@ -335,8 +334,7 @@ index 7dac2a3..9ab2759 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-spring</artifactId>
@@ -347,7 +345,7 @@ index 7dac2a3..9ab2759 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/struts2/pom.xml b/extensions/struts2/pom.xml
-index f07a7f8..19fb83f 100644
+index cf987cf..2a60ebd 100644
 --- a/extensions/struts2/pom.xml
 +++ b/extensions/struts2/pom.xml
 @@ -4,18 +4,18 @@
@@ -357,8 +355,7 @@ index f07a7f8..19fb83f 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-struts2</artifactId>
@@ -374,7 +371,7 @@ index f07a7f8..19fb83f 100644
        <version>${project.version}</version>
      </dependency>
 diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
-index 43540d1..7aca18c 100644
+index cd866cc..d086054 100644
 --- a/extensions/throwingproviders/pom.xml
 +++ b/extensions/throwingproviders/pom.xml
 @@ -4,13 +4,13 @@
@@ -384,8 +381,7 @@ index 43540d1..7aca18c 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-throwingproviders</artifactId>
@@ -394,11 +390,8 @@ index 43540d1..7aca18c 100644
 +  <name>Sisu Guice - Extensions - ThrowingProviders</name>
  
  </project>
-diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
-index 6abed4b..6f66dac 100644
-Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
 diff --git a/pom.xml b/pom.xml
-index 96d815b..ed104d5 100644
+index b03046b..bfc1c00 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -418,8 +411,7 @@ index 96d815b..ed104d5 100644
 -  <groupId>com.google.inject</groupId>
 +  <groupId>org.sonatype.sisu.inject</groupId>
    <artifactId>guice-parent</artifactId>
--  <version>3.1.0-SNAPSHOT</version>
-+  <version>3.2.0-SNAPSHOT</version>
+   <version>4.0-SNAPSHOT</version>
  
 -  <name>Google Guice</name>
 +  <name>Sisu Guice</name>
@@ -452,7 +444,15 @@ index 96d815b..ed104d5 100644
    </ciManagement>
  
    <licenses>
-@@ -216,7 +216,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -107,7 +107,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+      | Use "-Dguice.with.no_aop=false" to skip the no-AOP variant
+     -->
+     <guice.with.no_aop>true</guice.with.no_aop>
+-    <gpg.skip>true</gpg.skip>
+   </properties>
+ 
+   <dependencies>
+@@ -217,7 +216,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
@@ -461,10 +461,18 @@ index 96d815b..ed104d5 100644
                <Bundle-RequiredExecutionEnvironment>
                  J2SE-1.5,JavaSE-1.6
                </Bundle-RequiredExecutionEnvironment>
-@@ -271,6 +271,34 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -272,82 +271,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
            <version>2.7</version>
+-          <executions>
+-            <execution>
+-              <phase>package</phase>
+-              <goals>
+-                <goal>jar</goal>
+-              </goals>
+-            </execution>
+-          </executions>
 +          <configuration>
 +            <doclet>com.google.doclava.Doclava</doclet>
 +            <docletPath>
@@ -496,11 +504,19 @@ index 96d815b..ed104d5 100644
          </plugin>
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
-@@ -278,46 +306,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
-         </plugin>
-         <plugin>
-           <artifactId>maven-gpg-plugin</artifactId>
--          <version>1.1</version>
+           <version>2.1.2</version>
+-          <executions>
+-            <execution>
+-              <phase>package</phase>
+-              <goals>
+-                <goal>jar</goal>
+-                <goal>test-jar</goal>
+-              </goals>
+-            </execution>
+-          </executions>
++        </plugin>
++        <plugin>
++          <artifactId>maven-gpg-plugin</artifactId>
 +          <version>1.4</version>
          </plugin>
          <plugin>
@@ -518,6 +534,22 @@ index 96d815b..ed104d5 100644
          </plugin>
        </plugins>
      </pluginManagement>
+-    <plugins>
+-      <!--
+-       | Sign artifacts.
+-      -->
+-      <plugin>
+-        <artifactId>maven-gpg-plugin</artifactId>
+-        <version>1.4</version>
+-        <executions>
+-          <execution>
+-            <id>sign-artifacts</id>
+-            <phase>verify</phase>
+-            <goals><goal>sign</goal></goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-    </plugins>
    </build>
  
 -  <profiles>

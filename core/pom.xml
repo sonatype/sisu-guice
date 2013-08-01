@@ -117,8 +117,8 @@
         <configuration>
           <instructions>
             <Bundle-Name>${project.artifactId}$(if;$(classes;NAMED;*.MethodAspect);; (no_aop))</Bundle-Name>
-            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
+            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
