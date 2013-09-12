@@ -16,9 +16,9 @@
 
 package com.google.inject.internal;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -124,7 +123,7 @@ public final class BytecodeGen {
    * Weak cache of bridge class loaders that make the Guice implementation
    * classes visible to various code-generated proxies of client classes.
    */
-  private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
+  private static final LoadingCache<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
 
   static {
     boolean customLoaderEnabled;
@@ -136,9 +135,9 @@ public final class BytecodeGen {
     CUSTOM_LOADER_ENABLED = customLoaderEnabled;
 
     if (CUSTOM_LOADER_ENABLED) {
-      CLASS_LOADER_CACHE = new MapMaker().weakKeys().weakValues().makeComputingMap(
-          new Function<ClassLoader, ClassLoader>() {
-            public ClassLoader apply(final ClassLoader typeClassLoader) {
+      CLASS_LOADER_CACHE = CacheBuilder.newBuilder().weakKeys().weakValues().build(
+          new CacheLoader<ClassLoader, ClassLoader>() {
+            public ClassLoader load(final ClassLoader typeClassLoader) {
               logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
               return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                 public ClassLoader run() {
@@ -148,7 +147,7 @@ public final class BytecodeGen {
             }
           });
     } else {
-      CLASS_LOADER_CACHE = ImmutableMap.of();
+      CLASS_LOADER_CACHE = null;
     }
   }
 
@@ -188,9 +187,9 @@ public final class BytecodeGen {
 
     // don't try bridging private types as it won't work
     if (Visibility.forType(type) == Visibility.PUBLIC) {
-      if (delegate != SystemBridgeHolder.SYSTEM_BRIDGE.getParent()) {
+      if (CLASS_LOADER_CACHE != null && delegate != SystemBridgeHolder.SYSTEM_BRIDGE.getParent()) {
         // delegate guaranteed to be non-null here
-        return CLASS_LOADER_CACHE.get(delegate);
+        return CLASS_LOADER_CACHE.getUnchecked(delegate);
       }
       // delegate may or may not be null here
       return SystemBridgeHolder.SYSTEM_BRIDGE;
