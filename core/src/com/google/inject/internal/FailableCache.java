@@ -16,10 +16,12 @@
 
 package com.google.inject.internal;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import java.util.concurrent.ExecutionException;
 
-import java.util.Map;
+import com.google.common.base.Function;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Lazily creates (and caches) values for keys. If creating the value fails (with errors), an
@@ -29,7 +31,7 @@ import java.util.Map;
  */
 public abstract class FailableCache<K, V> {
   
-  private final Map<K, Object> delegate = new MapMaker().makeComputingMap(
+  private final LoadingCache<K, Object> delegate = CacheBuilder.newBuilder().build(CacheLoader.from(
       new Function<K, Object>() {
         public Object apply(K key) {
           Errors errors = new Errors();
@@ -41,12 +43,17 @@ public abstract class FailableCache<K, V> {
           }
           return errors.hasErrors() ? errors : result;
         }
-      });
+      }));
 
   protected abstract V create(K key, Errors errors) throws ErrorsException;
   
   public V get(K key, Errors errors) throws ErrorsException {
-    Object resultOrError = delegate.get(key);
+    Object resultOrError;
+    try {
+      resultOrError = delegate.get(key);
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e.getCause());
+    }
     if (resultOrError instanceof Errors) {
       errors.merge((Errors) resultOrError);
       throw errors.toException();
@@ -58,6 +65,8 @@ public abstract class FailableCache<K, V> {
   }
   
   boolean remove(K key) {
-    return delegate.remove(key) != null;
+    boolean contains = delegate.getIfPresent(key) != null;
+    delegate.invalidate(key);
+    return contains;
   }
 }

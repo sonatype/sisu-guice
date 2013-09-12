@@ -20,8 +20,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.base.Preconditions;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Key;
@@ -41,6 +43,7 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Qualifier;
 
@@ -69,11 +72,11 @@ public class Annotations {
     return hasMethods;
   }
 
-  private static final Map<Class<? extends Annotation>, Annotation> cache =
-      new MapMaker().weakKeys().makeComputingMap(
-          new Function<Class<? extends Annotation>, Annotation>() {
+  private static final LoadingCache<Class<? extends Annotation>, Annotation> cache =
+      CacheBuilder.newBuilder().weakKeys().build(
+          new CacheLoader<Class<? extends Annotation>, Annotation>() {
             @Override
-            public Annotation apply(Class<? extends Annotation> input) {
+            public Annotation load(Class<? extends Annotation> input) {
               return generateAnnotationImpl(input);
             }
           });
@@ -85,7 +88,11 @@ public class Annotations {
   public static <T extends Annotation> T generateAnnotation(Class<T> annotationType) {
     Preconditions.checkState(
         isAllDefaultMethods(annotationType), "%s is not all default methods", annotationType);
-    return (T)cache.get(annotationType);
+    try {
+      return (T)cache.get(annotationType);
+    } catch (ExecutionException e) {
+      throw new RuntimeException("Failed to load from the cache", e.getCause());
+    }
   }
 
   private static <T extends Annotation> T generateAnnotationImpl(final Class<T> annotationType) {
@@ -218,8 +225,7 @@ public class Annotations {
       }
     };
 
-    final Map<Class<? extends Annotation>, Boolean> cache = new MapMaker().weakKeys()
-        .makeComputingMap(hasAnnotations);
+    final LoadingCache<Class<? extends Annotation>, Boolean> cache = CacheBuilder.newBuilder().weakKeys().build(CacheLoader.from(hasAnnotations));
 
     /**
      * Constructs a new checker that looks for annotations of the given types.
@@ -232,7 +238,11 @@ public class Annotations {
      * Returns true if the given type has one of the desired annotations.
      */
     boolean hasAnnotations(Class<? extends Annotation> annotated) {
-      return cache.get(annotated);
+      try {
+        return cache.get(annotated);
+      } catch (ExecutionException e) {
+        throw new RuntimeException("Failed to load from the cache", e.getCause());
+      }
     }
   }
 

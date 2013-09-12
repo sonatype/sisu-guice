@@ -16,13 +16,16 @@
 
 package com.google.inject.internal.util;
 
-import com.google.common.base.Function;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.MapMaker;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Creates stack trace elements for members.
@@ -32,9 +35,9 @@ import java.util.Map;
 public class StackTraceElements {
 
   /*if[AOP]*/
-  static final Map<Class<?>, LineNumbers> lineNumbersCache = new MapMaker().weakKeys().softValues()
-      .makeComputingMap(new Function<Class<?>, LineNumbers>() {
-        public LineNumbers apply(Class<?> key) {
+  static final LoadingCache<Class<?>, LineNumbers> lineNumbersCache = CacheBuilder.newBuilder().weakKeys().softValues()
+      .build(new CacheLoader<Class<?>, LineNumbers>() {
+        public LineNumbers load(Class<?> key) {
           try {
             return new LineNumbers(key);
           }
@@ -56,7 +59,12 @@ public class StackTraceElements {
     Class declaringClass = member.getDeclaringClass();
 
     /*if[AOP]*/
-    LineNumbers lineNumbers = lineNumbersCache.get(declaringClass);
+    LineNumbers lineNumbers;
+    try {
+      lineNumbers = lineNumbersCache.get(declaringClass);
+    } catch (ExecutionException e) {
+      throw new RuntimeException("Failed to load from the cache", e.getCause());
+    }
     String fileName = lineNumbers.getSource();
     Integer lineNumberOrNull = lineNumbers.getLineNumber(member);
     int lineNumber = lineNumberOrNull == null ? lineNumbers.getFirstLine() : lineNumberOrNull;
@@ -73,7 +81,12 @@ public class StackTraceElements {
 
   public static Object forType(Class<?> implementation) {
     /*if[AOP]*/
-    LineNumbers lineNumbers = lineNumbersCache.get(implementation);
+    LineNumbers lineNumbers;
+    try {
+      lineNumbers = lineNumbersCache.get(implementation);
+    } catch (ExecutionException e) {
+      throw new RuntimeException("Failed to load from the cache", e.getCause());
+    }
     int lineNumber = lineNumbers.getFirstLine();
     String fileName = lineNumbers.getSource();
     /*end[AOP]*/
