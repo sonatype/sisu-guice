@@ -21,7 +21,6 @@ import com.google.inject.Binding;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.spi.BindingScopingVisitor;
-import com.google.inject.spi.ElementSource;
 import com.google.inject.spi.ElementVisitor;
 import com.google.inject.spi.InstanceBinding;
 
@@ -58,9 +57,6 @@ public abstract class BindingImpl<T> implements Binding<T> {
   }
 
   public Object getSource() {
-    if (source instanceof ElementSource) {
-      return ((ElementSource) source).getDeclaringSource();
-    }
     return source;
   }
 
@@ -106,6 +102,10 @@ public abstract class BindingImpl<T> implements Binding<T> {
   }
 
   protected BindingImpl<T> withKey(Key<T> key) {
+    throw new AssertionError();
+  }
+  
+  public BindingImpl<T> withRehashedKeys() {
     throw new AssertionError();
   }
 
