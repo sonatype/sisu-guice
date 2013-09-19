@@ -65,6 +65,17 @@ import java.util.Set;
  */
 public final class Elements {
 
+  static String INCLUDE_STACK_TRACES;
+  static {
+    String includeStackTraces;
+    try {
+      includeStackTraces = System.getProperty("guice_include_stack_traces");
+    } catch (Throwable e) {
+      includeStackTraces = null;
+    }
+    INCLUDE_STACK_TRACES = includeStackTraces;
+  }
+
   private enum IncludeStackTraceFlagValues {
     // Minimum stack trace collection
     DEFAULT,
@@ -141,7 +152,7 @@ public final class Elements {
 
   private static boolean collectCompleteStackTrace() {
     return IncludeStackTraceFlagValues.COMPLETE.name().equals(
-        System.getProperty("guice_include_stack_traces"));
+        INCLUDE_STACK_TRACES);
   }
 
   private static class RecordingBinder implements Binder, PrivateBinder, RehashableKeys {

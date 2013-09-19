@@ -27,7 +27,7 @@ public class ElementSourceTest extends TestCase {
 
   @Override
   protected void tearDown() throws Exception {
-    System.clearProperty("guice_include_stack_traces");
+    Elements.INCLUDE_STACK_TRACES = null;
   }
 
   public void testCallStackSize() {
@@ -45,7 +45,7 @@ public class ElementSourceTest extends TestCase {
   }
 
   public void testGetCallStack_IntegrationTest_Default() throws Exception {
-    System.setProperty("guice_include_stack_traces", "DEFAULT");
+    Elements.INCLUDE_STACK_TRACES = "DEFAULT";
     List<Element> elements = Elements.getElements(new A());
     for (Element element : elements) {
       if (element instanceof Binding) {
@@ -72,7 +72,7 @@ public class ElementSourceTest extends TestCase {
   }
 
   public void testGetCallStack_IntegrationTest_Complete() throws Exception {
-    System.setProperty("guice_include_stack_traces", "COMPLETE");
+    Elements.INCLUDE_STACK_TRACES = "COMPLETE";
     List<Element> elements = Elements.getElements(new A());
     for (Element element : elements) {
       if (element instanceof Binding) {
