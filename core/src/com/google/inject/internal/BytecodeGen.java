@@ -82,7 +82,7 @@ public final class BytecodeGen {
     @Override protected String getTag() {
       return "ByGuice";
     }
-    
+
     @Override
     public String getClassName(String prefix, String source, Object key,
         net.sf.cglib.core.Predicate names) {
@@ -93,7 +93,7 @@ public final class BytecodeGen {
       return super.getClassName(prefix, "FastClass", key, names);
     }
   };
-  
+
   static final net.sf.cglib.core.NamingPolicy ENHANCER_NAMING_POLICY
       = new net.sf.cglib.core.DefaultNamingPolicy() {
     @Override
@@ -134,21 +134,21 @@ public final class BytecodeGen {
     }
     CUSTOM_LOADER_ENABLED = customLoaderEnabled;
 
-    if (CUSTOM_LOADER_ENABLED) {
-      CLASS_LOADER_CACHE = CacheBuilder.newBuilder().weakKeys().weakValues().build(
-          new CacheLoader<ClassLoader, ClassLoader>() {
-            public ClassLoader load(final ClassLoader typeClassLoader) {
-              logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
-              return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                public ClassLoader run() {
-                  return new BridgeClassLoader(typeClassLoader);
-                }
-              });
-            }
-          });
-    } else {
-      CLASS_LOADER_CACHE = null;
+    CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().weakKeys().weakValues();
+    if (!CUSTOM_LOADER_ENABLED) {
+      builder.maximumSize(0);
     }
+    CLASS_LOADER_CACHE = builder.build(
+        new CacheLoader<ClassLoader, ClassLoader>() {
+          public ClassLoader load(final ClassLoader typeClassLoader) {
+            logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
+            return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+              public ClassLoader run() {
+                return new BridgeClassLoader(typeClassLoader);
+              }
+            });
+          }
+        });
   }
 
   /**
@@ -172,7 +172,7 @@ public final class BytecodeGen {
     if (!CUSTOM_LOADER_ENABLED) {
       return delegate;
     }
-    
+
     // java.* types can be seen everywhere
     if (type.getName().startsWith("java.")) {
       return GUICE_CLASS_LOADER;
@@ -187,7 +187,7 @@ public final class BytecodeGen {
 
     // don't try bridging private types as it won't work
     if (Visibility.forType(type) == Visibility.PUBLIC) {
-      if (CLASS_LOADER_CACHE != null && delegate != SystemBridgeHolder.SYSTEM_BRIDGE.getParent()) {
+      if (delegate != SystemBridgeHolder.SYSTEM_BRIDGE.getParent()) {
         // delegate guaranteed to be non-null here
         return CLASS_LOADER_CACHE.getUnchecked(delegate);
       }

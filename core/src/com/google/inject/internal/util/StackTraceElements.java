@@ -34,22 +34,23 @@ import java.util.Map;
 public class StackTraceElements {
 
   /*if[AOP]*/
-  static final LoadingCache<Class<?>, LineNumbers> lineNumbersCache = CacheBuilder.newBuilder().weakKeys().softValues()
-      .build(new CacheLoader<Class<?>, LineNumbers>() {
-        public LineNumbers load(Class<?> key) {
-          try {
-            return new LineNumbers(key);
-          }
-          catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-        }
-      });
+  static final LoadingCache<Class<?>, LineNumbers> lineNumbersCache =
+      CacheBuilder.newBuilder().weakKeys().softValues().build(
+          new CacheLoader<Class<?>, LineNumbers>() {
+            public LineNumbers load(Class<?> key) {
+              try {
+                return new LineNumbers(key);
+              }
+              catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            }
+          });
   /*end[AOP]*/
-  
+
   private static Map<Object, Object> cache = new MapMaker().makeMap();
   private static final String UNKNOWN_SOURCE = "Unknown Source";
-  
+
   public static Object forMember(Member member) {
     if (member == null) {
       return SourceProvider.UNKNOWN_SOURCE;

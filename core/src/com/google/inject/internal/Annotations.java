@@ -307,7 +307,7 @@ public class Annotations {
    */
   public static Annotation canonicalizeIfNamed(Annotation annotation) {
     if(annotation instanceof javax.inject.Named) {
-      return Names.named(((javax.inject.Named)annotation).value());       
+      return Names.named(((javax.inject.Named)annotation).value());
     } else {
       return annotation;
     }
