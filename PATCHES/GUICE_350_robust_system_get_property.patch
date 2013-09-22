@@ -1,13 +1,13 @@
 Description: Wrap System.getProperty call in case security is enabled
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=350
-Last-Update: 2013-09-19
+Last-Update: 2013-09-22
 
 diff --git a/core/src/com/google/inject/internal/BytecodeGen.java b/core/src/com/google/inject/internal/BytecodeGen.java
-index d0a14fc..55ad161 100644
+index ad7764b..f0ebc0a 100644
 --- a/core/src/com/google/inject/internal/BytecodeGen.java
 +++ b/core/src/com/google/inject/internal/BytecodeGen.java
-@@ -118,8 +118,7 @@ public final class BytecodeGen {
+@@ -117,8 +117,7 @@ public final class BytecodeGen {
    end[NO_AOP]*/
  
    /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
@@ -17,8 +17,8 @@ index d0a14fc..55ad161 100644
  
    /**
     * Weak cache of bridge class loaders that make the Guice implementation
-@@ -128,6 +127,14 @@ public final class BytecodeGen {
-   private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
+@@ -127,6 +126,14 @@ public final class BytecodeGen {
+   private static final LoadingCache<ClassLoader, ClassLoader> CLASS_LOADER_CACHE;
  
    static {
 +    boolean customLoaderEnabled;
@@ -29,11 +29,11 @@ index d0a14fc..55ad161 100644
 +    }
 +    CUSTOM_LOADER_ENABLED = customLoaderEnabled;
 +
-     if (CUSTOM_LOADER_ENABLED) {
-       CLASS_LOADER_CACHE = new MapMaker().weakKeys().weakValues().makeComputingMap(
-           new Function<ClassLoader, ClassLoader>() {
+     CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().weakKeys().weakValues();
+     if (!CUSTOM_LOADER_ENABLED) {
+       builder.maximumSize(0);
 diff --git a/core/src/com/google/inject/spi/Elements.java b/core/src/com/google/inject/spi/Elements.java
-index 03887d9..94746e2 100644
+index 03887d9..ee00921 100644
 --- a/core/src/com/google/inject/spi/Elements.java
 +++ b/core/src/com/google/inject/spi/Elements.java
 @@ -65,6 +65,17 @@ import java.util.Set;
