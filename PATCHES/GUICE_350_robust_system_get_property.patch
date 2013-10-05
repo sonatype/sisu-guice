@@ -1,7 +1,7 @@
 Description: Wrap System.getProperty call in case security is enabled
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=350
-Last-Update: 2013-09-22
+Last-Update: 2013-10-06
 
 diff --git a/core/src/com/google/inject/internal/BytecodeGen.java b/core/src/com/google/inject/internal/BytecodeGen.java
 index ad7764b..f0ebc0a 100644
@@ -32,65 +32,42 @@ index ad7764b..f0ebc0a 100644
      CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().weakKeys().weakValues();
      if (!CUSTOM_LOADER_ENABLED) {
        builder.maximumSize(0);
-diff --git a/core/src/com/google/inject/spi/Elements.java b/core/src/com/google/inject/spi/Elements.java
-index 03887d9..ee00921 100644
---- a/core/src/com/google/inject/spi/Elements.java
-+++ b/core/src/com/google/inject/spi/Elements.java
-@@ -65,6 +65,17 @@ import java.util.Set;
+diffdiff --git a/core/src/com/google/inject/internal/InternalFlags.java b/core/src/com/google/inject/internal/InternalFlags.
+index 9458281..78d56ae 100644
+--- a/core/src/com/google/inject/internal/InternalFlags.java
++++ b/core/src/com/google/inject/internal/InternalFlags.java
+@@ -6,6 +6,18 @@ package com.google.inject.internal;
   */
- public final class Elements {
+ public class InternalFlags {
  
-+  static String INCLUDE_STACK_TRACES;
++  private static final IncludeStackTraceOption INCLUDE_STACK_TRACES;
 +  static {
-+    String includeStackTraces;
++    IncludeStackTraceOption includeStackTraces;
 +    try {
-+      includeStackTraces = System.getProperty("guice_include_stack_traces");
++      includeStackTraces = IncludeStackTraceOption.valueOf(
++          System.getProperty("guice_include_stack_traces"));
 +    } catch (Throwable e) {
-+      includeStackTraces = null;
++      includeStackTraces = IncludeStackTraceOption.ONLY_FOR_DECLARING_SOURCE;
 +    }
 +    INCLUDE_STACK_TRACES = includeStackTraces;
 +  }
 +
-   private enum IncludeStackTraceFlagValues {
-     // Minimum stack trace collection
-     DEFAULT,
-@@ -141,7 +152,7 @@ public final class Elements {
+   /**
+    * The options for Guice stack trace collection.
+    */
+@@ -20,14 +32,6 @@ public class InternalFlags {
  
-   private static boolean collectCompleteStackTrace() {
-     return IncludeStackTraceFlagValues.COMPLETE.name().equals(
--        System.getProperty("guice_include_stack_traces"));
-+        INCLUDE_STACK_TRACES);
+ 
+   public static IncludeStackTraceOption getIncludeStackTraceOption() {
+-    String propertyValue = System.getProperty(
+-        "guice_include_stack_traces");
+-    if (IncludeStackTraceOption.OFF.name().equals(propertyValue)) {
+-        return IncludeStackTraceOption.OFF;
+-    }
+-    if (IncludeStackTraceOption.COMPLETE.name().equals(propertyValue)) {
+-        return IncludeStackTraceOption.COMPLETE;
+-    }
+-    return IncludeStackTraceOption.ONLY_FOR_DECLARING_SOURCE;
++    return INCLUDE_STACK_TRACES;
    }
- 
-   private static class RecordingBinder implements Binder, PrivateBinder, RehashableKeys {
-diff --git a/core/test/com/google/inject/spi/ElementSourceTest.java b/core/test/com/google/inject/spi/ElementSourceTest.java
-index 5c63f4a..6d41ca4 100644
---- a/core/test/com/google/inject/spi/ElementSourceTest.java
-+++ b/core/test/com/google/inject/spi/ElementSourceTest.java
-@@ -27,7 +27,7 @@ public class ElementSourceTest extends TestCase {
- 
-   @Override
-   protected void tearDown() throws Exception {
--    System.clearProperty("guice_include_stack_traces");
-+    Elements.INCLUDE_STACK_TRACES = null;
-   }
- 
-   public void testCallStackSize() {
-@@ -45,7 +45,7 @@ public class ElementSourceTest extends TestCase {
-   }
- 
-   public void testGetCallStack_IntegrationTest_Default() throws Exception {
--    System.setProperty("guice_include_stack_traces", "DEFAULT");
-+    Elements.INCLUDE_STACK_TRACES = "DEFAULT";
-     List<Element> elements = Elements.getElements(new A());
-     for (Element element : elements) {
-       if (element instanceof Binding) {
-@@ -72,7 +72,7 @@ public class ElementSourceTest extends TestCase {
-   }
- 
-   public void testGetCallStack_IntegrationTest_Complete() throws Exception {
--    System.setProperty("guice_include_stack_traces", "COMPLETE");
-+    Elements.INCLUDE_STACK_TRACES = "COMPLETE";
-     List<Element> elements = Elements.getElements(new A());
-     for (Element element : elements) {
-       if (element instanceof Binding) {
+ }

@@ -1,7 +1,7 @@
 Description: Isolate jarjar instructions to core build, extensions no longer need jarjar
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=719
-Last-Update: 2012-07-29
+Last-Update: 2013-10-06
 
 diff --git a/build.xml b/build.xml
 index 6aa5037..c66a0c2 100644
@@ -52,14 +52,14 @@ index 6aa5037..c66a0c2 100644
          </copy>
  
      <copy toDir="${build.dir}/dist" file="COPYING"/> 
-@@ -80,7 +80,7 @@
+@@ -93,7 +93,7 @@
    </target>
-   
-   <target name="test.dist"
--      depends="jar, test.compile-with-deps"
-+      depends="jar, test.withdeps"
-       description="Execute JUnit tests against distribution jar.">
-     <java fork="true" 
+ 
+   <target name="test.dist.run"
+-    depends="jar, test.compile-with-deps"
++    depends="jar, test.withdeps"
+     description="Execute JUnit tests against distribution jar with the given jvmarg.">
+     <java fork="true"
          classname="junit.textui.TestRunner"
 diff --git a/common.xml b/common.xml
 index 9ed0f8b..79ce94f 100644
