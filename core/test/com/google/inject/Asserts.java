@@ -17,9 +17,16 @@
 
 package com.google.inject;
 
+import static com.google.inject.internal.InternalFlags.IncludeStackTraceOption;
+import static com.google.inject.internal.InternalFlags.getIncludeStackTraceOption;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import junit.framework.Assert;
 
@@ -35,6 +42,47 @@ import java.io.ObjectOutputStream;
  */
 public class Asserts {
   private Asserts() {}
+
+  /**
+   * Returns the String that would appear in an error message for this chain of classes 
+   * as modules.
+   */
+  public static String asModuleChain(Class... classes) {
+    return Joiner.on(" -> ").appendTo(new StringBuilder(" (via modules: "),
+        Iterables.transform(ImmutableList.copyOf(classes), new Function<Class, String>() {
+          @Override
+          public String apply(Class input) {
+            return input.getName();
+          }
+        })).append(")").toString();
+  }
+
+  /**
+   * Returns the source file appears in error messages based on {@link 
+   * #getIncludeStackTraceOption()} value.
+   */
+  public static String getDeclaringSourcePart(Class clazz) {
+    if (getIncludeStackTraceOption() == IncludeStackTraceOption.OFF) {
+      return ".configure(Unknown Source";
+    }
+    return ".configure(" + clazz.getSimpleName() + ".java:";
+  }
+
+  /**
+   * Returns true if {@link #getIncludeStackTraceOption()} returns {@link
+   * IncludeStackTraceOption#OFF}.
+   */
+  public static boolean isIncludeStackTraceOff() {
+    return getIncludeStackTraceOption() == IncludeStackTraceOption.OFF;
+  }
+
+  /**
+   * Returns true if {@link #getIncludeStackTraceOption()} returns {@link
+   * IncludeStackTraceOption#COMPLETE}.
+   */
+  public static boolean isIncludeStackTraceComplete() {
+    return getIncludeStackTraceOption() == IncludeStackTraceOption.COMPLETE;
+  }
 
   /**
    * Fails unless {@code expected.equals(actual)}, {@code

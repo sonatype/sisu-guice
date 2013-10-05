@@ -16,7 +16,9 @@
 
 package com.google.inject;
 
+import static com.google.inject.Asserts.asModuleChain;
 import static com.google.inject.Asserts.assertContains;
+import static com.google.inject.Asserts.getDeclaringSourcePart;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import com.google.common.collect.Iterables;
@@ -73,7 +75,7 @@ public class TypeConversionTest extends TestCase {
 
   public void testOneConstantInjection() throws CreationException {
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         bindConstant().annotatedWith(NumericValue.class).to("5");
         bind(Simple.class);
       }
@@ -89,7 +91,7 @@ public class TypeConversionTest extends TestCase {
 
   public void testConstantInjection() throws CreationException {
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         bindConstant().annotatedWith(NumericValue.class).to("5");
         bindConstant().annotatedWith(BooleanValue.class).to("true");
         bindConstant().annotatedWith(EnumValue.class).to("TEE");
@@ -120,7 +122,7 @@ public class TypeConversionTest extends TestCase {
 
   public void testConstantInjectionWithExplicitBindingsRequired() throws CreationException {
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         binder().requireExplicitBindings();
         bind(Foo.class);
         bindConstant().annotatedWith(NumericValue.class).to("5");
@@ -157,20 +159,31 @@ public class TypeConversionTest extends TestCase {
     }
   }
 
-  public void testInvalidInteger() throws CreationException {
-    Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
-        bindConstant().annotatedWith(NumericValue.class).to("invalid");
-      }
-    });
+  static class OuterErrorModule extends AbstractModule {
+    @Override protected void configure() {
+      install(new InnerErrorModule());
+    }
+  }
 
+  static class InnerErrorModule extends AbstractModule {
+    @Override protected void configure() {
+      bindConstant().annotatedWith(NumericValue.class).to("invalid");
+    }
+  }
+
+  public void testInvalidInteger() throws CreationException {
+    Injector injector = Guice.createInjector(new OuterErrorModule());
     try {
       injector.getInstance(InvalidInteger.class);
       fail();
     } catch (ConfigurationException expected) {
-      assertContains(expected.getMessage(), "Error converting 'invalid'");
-      assertContains(expected.getMessage(), "bound at " + getClass().getName());
-      assertContains(expected.getMessage(), "to java.lang.Integer");
+      assertContains(expected.getMessage(),
+          "Error converting 'invalid' (bound at " + InnerErrorModule.class.getName()
+              + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterErrorModule.class, InnerErrorModule.class),
+          "using TypeConverter<Integer> which matches identicalTo(class java.lang.Integer)"
+              + " (bound at [unknown source]).",
+          "Reason: java.lang.RuntimeException: For input string: \"invalid\"");
     }
   }
 
@@ -180,7 +193,7 @@ public class TypeConversionTest extends TestCase {
 
   public void testInvalidCharacter() throws CreationException {
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         bindConstant().annotatedWith(NumericValue.class).to("invalid");
       }
     });
@@ -201,7 +214,7 @@ public class TypeConversionTest extends TestCase {
 
   public void testInvalidEnum() throws CreationException {
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         bindConstant().annotatedWith(NumericValue.class).to("invalid");
       }
     });
@@ -222,7 +235,7 @@ public class TypeConversionTest extends TestCase {
 
   public void testToInstanceIsTreatedLikeConstant() throws CreationException {
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         bind(String.class).toInstance("5");
         bind(LongHolder.class);
       }
@@ -239,7 +252,7 @@ public class TypeConversionTest extends TestCase {
     final Date result = new Date();
 
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         convertToTypes(Matchers.only(TypeLiteral.get(Date.class)) , mockTypeConverter(result));
         bindConstant().annotatedWith(NumericValue.class).to("Today");
         bind(DateHolder.class);
@@ -257,15 +270,16 @@ public class TypeConversionTest extends TestCase {
     assertTrue(injector.getTypeConverterBindings().contains(converterBinding));
   }
 
-  public void testInvalidCustomValue() throws CreationException {
-    Module module = new AbstractModule() {
-      protected void configure() {
-        convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), failingTypeConverter());
-        bindConstant().annotatedWith(NumericValue.class).to("invalid");
-        bind(DateHolder.class);
-      }
-    };
+  static class InvalidCustomValueModule extends AbstractModule {
+    @Override protected void configure() {
+      convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), failingTypeConverter());
+      bindConstant().annotatedWith(NumericValue.class).to("invalid");
+      bind(DateHolder.class);
+    }
+  }
 
+  public void testInvalidCustomValue() throws CreationException {
+    Module module = new InvalidCustomValueModule();
     try {
       Guice.createInjector(module);
       fail();
@@ -274,56 +288,88 @@ public class TypeConversionTest extends TestCase {
       assertTrue(cause instanceof UnsupportedOperationException);
       assertContains(expected.getMessage(),
           "1) Error converting 'invalid' (bound at ", getClass().getName(),
-          ".configure(TypeConversionTest.java:", "to java.util.Date",
+          getDeclaringSourcePart(getClass()), "to java.util.Date",
           "using BrokenConverter which matches only(java.util.Date) ",
-          "(bound at " + getClass().getName(), ".configure(TypeConversionTest.java:",
+          "(bound at " + getClass().getName(), getDeclaringSourcePart(getClass()),
           "Reason: java.lang.UnsupportedOperationException: Cannot convert",
           "at " + DateHolder.class.getName() + ".date(TypeConversionTest.java:");
     }
   }
 
-  public void testNullCustomValue() {
-    Module module = new AbstractModule() {
-      protected void configure() {
-        convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), mockTypeConverter(null));
-        bindConstant().annotatedWith(NumericValue.class).to("foo");
-        bind(DateHolder.class);
-      }
-    };
+  static class OuterModule extends AbstractModule {
+    private final Module converterModule;
+    OuterModule(Module converterModule) {
+      this.converterModule = converterModule;
+    }
 
+    @Override protected void configure() {
+      install(new InnerModule(converterModule));
+    }
+  }
+
+  static class InnerModule extends AbstractModule {
+    private final Module converterModule;
+    InnerModule(Module converterModule) {
+      this.converterModule = converterModule;
+    }
+
+    @Override protected void configure() {
+      install(converterModule);
+      bindConstant().annotatedWith(NumericValue.class).to("foo");
+      bind(DateHolder.class);
+    }
+  }
+
+  class ConverterNullModule extends AbstractModule {
+    @Override protected void configure() {
+      convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), mockTypeConverter(null));
+    }
+  }
+
+  public void testNullCustomValue() {
     try {
-      Guice.createInjector(module);
+      Guice.createInjector(new OuterModule(new ConverterNullModule()));
       fail();
     } catch (CreationException expected) {
       assertContains(expected.getMessage(),
-          "1) Received null converting 'foo' (bound at ", getClass().getName(),
-          ".configure(TypeConversionTest.java:", "to java.util.Date",
+          "1) Received null converting 'foo' (bound at ",
+          getClass().getName(),
+          getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterModule.class, InnerModule.class),
+          "to java.util.Date",
           "using CustomConverter which matches only(java.util.Date) ",
-          "(bound at " + getClass().getName(), ".configure(TypeConversionTest.java:",
-          "at " + DateHolder.class.getName() + ".date(TypeConversionTest.java:");
+          "(bound at " + getClass().getName(),
+          getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterModule.class, InnerModule.class, ConverterNullModule.class),
+          "at " + DateHolder.class.getName() + ".date(TypeConversionTest.java:",
+          asModuleChain(OuterModule.class, InnerModule.class));
+    }
+  }
+
+  class ConverterCustomModule extends AbstractModule {
+    @Override protected void configure() {
+      convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), mockTypeConverter(-1));
     }
   }
 
   public void testCustomValueTypeMismatch() {
-    Module module = new AbstractModule() {
-      protected void configure() {
-        convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), mockTypeConverter(-1));
-        bindConstant().annotatedWith(NumericValue.class).to("foo");
-        bind(DateHolder.class);
-      }
-    };
-
     try {
-      Guice.createInjector(module);
+      Guice.createInjector(new OuterModule(new ConverterCustomModule()));
       fail();
     } catch (CreationException expected) {
       assertContains(expected.getMessage(),
-          "1) Type mismatch converting 'foo' (bound at ", getClass().getName(),
-          ".configure(TypeConversionTest.java:", "to java.util.Date",
+          "1) Type mismatch converting 'foo' (bound at ",
+          getClass().getName(),
+          getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterModule.class, InnerModule.class),
+          "to java.util.Date",
           "using CustomConverter which matches only(java.util.Date) ",
-          "(bound at " + getClass().getName(), ".configure(TypeConversionTest.java:",
+          "(bound at " + getClass().getName(),
+          getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterModule.class, InnerModule.class, ConverterCustomModule.class),
           "Converter returned -1.",
-          "at " + DateHolder.class.getName() + ".date(TypeConversionTest.java:");
+          "at " + DateHolder.class.getName() + ".date(TypeConversionTest.java:",
+          asModuleChain(OuterModule.class, InnerModule.class));
     }
   }
 
@@ -340,7 +386,7 @@ public class TypeConversionTest extends TestCase {
     };
 
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), converter);
         bindConstant().annotatedWith(NumericValue.class).to("unused");
       }
@@ -351,25 +397,54 @@ public class TypeConversionTest extends TestCase {
     assertSame(first, second);
   }
 
-  public void testAmbiguousTypeConversion() {
-    Module module = new AbstractModule() {
-      protected void configure() {
-        convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), mockTypeConverter(new Date()));
-        convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), mockTypeConverter(new Date()));
-        bindConstant().annotatedWith(NumericValue.class).to("foo");
-        bind(DateHolder.class);
-      }
-    };
+  class OuterAmbiguousModule extends AbstractModule {
+    @Override protected void configure() {
+      install(new InnerAmbiguousModule());
+    }
+  }
 
+  class InnerAmbiguousModule extends AbstractModule {
+    @Override protected void configure() {
+      install(new Ambiguous1Module());
+      install(new Ambiguous2Module());
+      bindConstant().annotatedWith(NumericValue.class).to("foo");
+      bind(DateHolder.class);
+    }
+  }
+
+  class Ambiguous1Module extends AbstractModule {
+    @Override protected void configure() {
+      convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), mockTypeConverter(new Date()));
+    }
+  }
+
+  class Ambiguous2Module extends AbstractModule {
+    @Override protected void configure() {
+      convertToTypes(Matchers.only(TypeLiteral.get(Date.class)), mockTypeConverter(new Date()));
+    }
+  }
+
+  public void testAmbiguousTypeConversion() {
     try {
-      Guice.createInjector(module);
+      Guice.createInjector(new OuterAmbiguousModule());
       fail();
     } catch (CreationException expected) {
       assertContains(expected.getMessage(),
           "1) Multiple converters can convert 'foo' (bound at ", getClass().getName(),
-          ".configure(TypeConversionTest.java:", "to java.util.Date:",
-          "CustomConverter which matches only(java.util.Date)", "and",
-          "CustomConverter which matches only(java.util.Date)",
+          getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterAmbiguousModule.class, InnerAmbiguousModule.class),
+          "to java.util.Date:",
+          "CustomConverter which matches only(java.util.Date) (bound at "
+              + Ambiguous1Module.class.getName()
+              + getDeclaringSourcePart(getClass()),
+          asModuleChain(
+              OuterAmbiguousModule.class, InnerAmbiguousModule.class, Ambiguous1Module.class),
+          "and",
+          "CustomConverter which matches only(java.util.Date) (bound at "
+              + Ambiguous2Module.class.getName()
+              + getDeclaringSourcePart(getClass()),
+          asModuleChain(
+              OuterAmbiguousModule.class, InnerAmbiguousModule.class, Ambiguous2Module.class),
           "Please adjust your type converter configuration to avoid overlapping matches.",
           "at " + DateHolder.class.getName() + ".date(TypeConversionTest.java:");
     }
@@ -387,7 +462,7 @@ public class TypeConversionTest extends TestCase {
     };
   }
 
-  private TypeConverter failingTypeConverter() {
+  private static TypeConverter failingTypeConverter() {
     return new TypeConverter() {
       public Object convert(String value, TypeLiteral<?> toType) {
         throw new UnsupportedOperationException("Cannot convert");
@@ -404,7 +479,7 @@ public class TypeConversionTest extends TestCase {
 
   public void testCannotConvertUnannotatedBindings() {
     Injector injector = Guice.createInjector(new AbstractModule() {
-      protected void configure() {
+      @Override protected void configure() {
         bind(String.class).toInstance("55");
       }
     });

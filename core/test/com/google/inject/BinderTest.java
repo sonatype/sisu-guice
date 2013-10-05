@@ -16,8 +16,11 @@
 
 package com.google.inject;
 
+import static com.google.inject.Asserts.asModuleChain;
 import static com.google.inject.Asserts.assertContains;
 import static com.google.inject.Asserts.assertNotSerializable;
+import static com.google.inject.Asserts.getDeclaringSourcePart;
+import static com.google.inject.Asserts.isIncludeStackTraceOff;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -98,16 +101,27 @@ public class BinderTest extends TestCase {
       });
     } catch (CreationException e) {
       assertEquals(4, e.getErrorMessages().size());
-      assertContains(e.getMessage(),
-          "1) No implementation for java.lang.Runnable was bound.",
-          "at " + getClass().getName(),
-          "2) No implementation for " + Comparator.class.getName() + " was bound.",
-          "at " + getClass().getName(),
-          "3) No implementation for java.util.concurrent.Callable<java.lang.String> was bound.",
-          "at " + getClass().getName(),
-          "4) No implementation for java.util.Date annotated with @"
-              + Named.class.getName() + "(value=date) was bound.",
-          "at " + getClass().getName());
+      String segment1 = "No implementation for " + Comparator.class.getName() + " was bound.";
+      String segment2 = "No implementation for java.util.Date annotated with @"
+          + Named.class.getName() + "(value=date) was bound.";
+      String segment3 = "No implementation for java.lang.Runnable was bound.";
+      String segment4 = " No implementation for java.util.concurrent.Callable<java.lang.String> was"
+          + " bound.";
+      String atSegment = "at " + getClass().getName();
+      String sourceFileName = getDeclaringSourcePart(getClass());
+      if (isIncludeStackTraceOff()) {
+        assertContains(e.getMessage(),
+            segment1, atSegment, sourceFileName,
+            segment2, atSegment, sourceFileName,
+            segment3, atSegment, sourceFileName,
+            segment4, atSegment, sourceFileName);
+      } else {
+        assertContains(e.getMessage(),
+            segment3, atSegment, sourceFileName,
+            segment1, atSegment, sourceFileName,
+            segment4, atSegment, sourceFileName,
+            segment2, atSegment, sourceFileName);
+      } 
     }
   }
 
@@ -124,7 +138,7 @@ public class BinderTest extends TestCase {
       assertContains(e.getMessage(),
           "No implementation for java.lang.Runnable was bound.",
           "for field at " + NeedsRunnable.class.getName(), ".runnable(BinderTest.java:",
-          "at " + getClass().getName(), ".configure(BinderTest.java:");
+          "at " + getClass().getName(), getDeclaringSourcePart(getClass()));
     }
   }
 
@@ -158,7 +172,7 @@ public class BinderTest extends TestCase {
     } catch (CreationException expected) {
       assertContains(expected.getMessage(),
           "1) Binding points to itself.",
-          "at " + getClass().getName(), ".configure(BinderTest.java:");
+          "at " + getClass().getName(), getDeclaringSourcePart(getClass()));
     }
   }
 
@@ -262,7 +276,7 @@ public class BinderTest extends TestCase {
     } catch (CreationException expected) {
       assertContains(expected.getMessage(),
           "1) A binding to java.lang.String[] was already configured at " + getClass().getName(),
-          "at " + getClass().getName(), ".configure(BinderTest.java:");
+          "at " + getClass().getName(), getDeclaringSourcePart(getClass()));
       assertContains(expected.getMessage(), "1 error");
     }
     
@@ -279,23 +293,45 @@ public class BinderTest extends TestCase {
     assertSame(strings, injector.getInstance(String[].class));
   }
   
+  static class ParentModule extends AbstractModule {
+    @Override protected void configure() {
+      install(new FooModule());
+      install(new BarModule());
+    }
+  }
+  static class FooModule extends AbstractModule {
+    @Override protected void configure() {
+      install(new ConstantModule("foo"));
+    }
+  }
+  static class BarModule extends AbstractModule {
+    @Override protected void configure() {
+      install(new ConstantModule("bar"));
+    }
+  }
+  static class ConstantModule extends AbstractModule {
+    private final String constant;
+    ConstantModule(String constant) {
+      this.constant = constant;
+    }
+    @Override protected void configure() {
+      bind(String.class).toInstance(constant);
+    }
+  }
+  
   /**
    * Binding something to two different things should give an error.
    */
   public void testSettingBindingTwice() {
     try {
-      Guice.createInjector(new AbstractModule() {
-        @Override
-        protected void configure() {
-          bind(String.class).toInstance("foo");
-          bind(String.class).toInstance("bar");
-        }
-      });
+      Guice.createInjector(new ParentModule());
       fail();
     } catch(CreationException expected) {
       assertContains(expected.getMessage(),
-        "1) A binding to java.lang.String was already configured at " + getClass().getName(),
-        "at " + getClass().getName(), ".configure(BinderTest.java:");
+        "1) A binding to java.lang.String was already configured at " + ConstantModule.class.getName(),
+        asModuleChain(ParentModule.class, FooModule.class, ConstantModule.class),
+        "at " + ConstantModule.class.getName(), getDeclaringSourcePart(getClass()),
+        asModuleChain(ParentModule.class, BarModule.class, ConstantModule.class));
       assertContains(expected.getMessage(), "1 error");
     }
   }
@@ -318,7 +354,7 @@ public class BinderTest extends TestCase {
       assertContains(expected.getMessage(),
         "1) A binding to " + HasImplementedBy1.class.getName()
         + " was already configured at " + getClass().getName(),
-        "at " + getClass().getName(), ".configure(BinderTest.java:");
+        "at " + getClass().getName(), getDeclaringSourcePart(getClass()));
       assertContains(expected.getMessage(), "1 error");
     }
   }
@@ -436,45 +472,82 @@ public class BinderTest extends TestCase {
     } catch (CreationException expected) {
       assertContains(expected.getMessage(),
           "1) Binding to Provider is not allowed.",
-          "at " + BinderTest.class.getName(), "configure(BinderTest.java:");
+          "at " + BinderTest.class.getName(), getDeclaringSourcePart(getClass()));
     }
   }
 
-  public void testCannotBindToGuiceTypes() {
+  static class OuterCoreModule extends AbstractModule {
+    @Override protected void configure() {
+      install(new InnerCoreModule());
+    }
+  }
+  static class InnerCoreModule extends AbstractModule {
     final Named red = Names.named("red");
 
+    @Override protected void configure() {
+      bind(AbstractModule.class).annotatedWith(red)
+      .toProvider(Providers.<AbstractModule>of(null));
+      bind(Binder.class).annotatedWith(red).toProvider(Providers.<Binder>of(null));
+      bind(Binding.class).annotatedWith(red).toProvider(Providers.<Binding>of(null));
+      bind(Injector.class).annotatedWith(red).toProvider(Providers.<Injector>of(null));
+      bind(Key.class).annotatedWith(red).toProvider(Providers.<Key>of(null));
+      bind(Module.class).annotatedWith(red).toProvider(Providers.<Module>of(null));
+      bind(Provider.class).annotatedWith(red).toProvider(Providers.<Provider>of(null));
+      bind(Scope.class).annotatedWith(red).toProvider(Providers.<Scope>of(null));
+      bind(Stage.class).annotatedWith(red).toProvider(Providers.<Stage>of(null));
+      bind(TypeLiteral.class).annotatedWith(red).toProvider(Providers.<TypeLiteral>of(null));
+      bind(new TypeLiteral<Key<String>>() {}).toProvider(Providers.<Key<String>>of(null));
+    }
+  }
+  public void testCannotBindToGuiceTypes() {
     try {
-      Guice.createInjector(new AbstractModule() {
-        @Override
-        protected void configure() {
-          bind(AbstractModule.class).annotatedWith(red)
-              .toProvider(Providers.<AbstractModule>of(null));
-          bind(Binder.class).annotatedWith(red).toProvider(Providers.<Binder>of(null));
-          bind(Binding.class).annotatedWith(red).toProvider(Providers.<Binding>of(null));
-          bind(Injector.class).annotatedWith(red).toProvider(Providers.<Injector>of(null));
-          bind(Key.class).annotatedWith(red).toProvider(Providers.<Key>of(null));
-          bind(Module.class).annotatedWith(red).toProvider(Providers.<Module>of(null));
-          bind(Provider.class).annotatedWith(red).toProvider(Providers.<Provider>of(null));
-          bind(Scope.class).annotatedWith(red).toProvider(Providers.<Scope>of(null));
-          bind(Stage.class).annotatedWith(red).toProvider(Providers.<Stage>of(null));
-          bind(TypeLiteral.class).annotatedWith(red).toProvider(Providers.<TypeLiteral>of(null));
-          bind(new TypeLiteral<Key<String>>() {}).toProvider(Providers.<Key<String>>of(null));
-        }
-      });
+      Guice.createInjector(new OuterCoreModule());
       fail();
     } catch (CreationException expected) {
       assertContains(expected.getMessage(),
           "Binding to core guice framework type is not allowed: AbstractModule.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to core guice framework type is not allowed: Binder.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to core guice framework type is not allowed: Binding.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to core guice framework type is not allowed: Injector.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to core guice framework type is not allowed: Key.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to core guice framework type is not allowed: Module.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to Provider is not allowed.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to core guice framework type is not allowed: Scope.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to core guice framework type is not allowed: Stage.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
           "Binding to core guice framework type is not allowed: TypeLiteral.",
-          "Binding to core guice framework type is not allowed: Key.");
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class),
+          
+          "Binding to core guice framework type is not allowed: Key.",
+          "at " + InnerCoreModule.class.getName() + getDeclaringSourcePart(getClass()),
+          asModuleChain(OuterCoreModule.class, InnerCoreModule.class));
     }
   }
 
