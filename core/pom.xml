@@ -37,15 +37,9 @@
       <version>11.0.2</version>
     </dependency>
     <dependency>
-      <groupId>cglib</groupId>
+      <groupId>org.sonatype.sisu.inject</groupId>
       <artifactId>cglib</artifactId>
-      <version>3.0</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm-util</artifactId>
-      <version>4.0</version>
+      <version>3.1.1</version>
       <optional>true</optional>
     </dependency>
     <dependency>

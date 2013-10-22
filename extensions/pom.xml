@@ -98,15 +98,9 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>cglib</groupId>
+          <groupId>org.sonatype.sisu.inject</groupId>
           <artifactId>cglib</artifactId>
-          <version>3.0</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.ow2.asm</groupId>
-          <artifactId>asm-util</artifactId>
-          <version>4.0</version>
+          <version>3.1.1</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
