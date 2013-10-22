@@ -1,0 +1,49 @@
+Description: Upgrade ASM to 5.0_BETA (via patched cglib)
+Author: Stuart McCulloch <mcculls@gmail.com>
+Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=759
+Last-Update: 2013-10-22
+
+diff --git a/core/pom.xml b/core/pom.xml
+index 282be74..5bfbc7b 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -37,15 +37,9 @@
+       <version>11.0.2</version>
+     </dependency>
+     <dependency>
+-      <groupId>cglib</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>cglib</artifactId>
+-      <version>3.0</version>
+-      <optional>true</optional>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.ow2.asm</groupId>
+-      <artifactId>asm-util</artifactId>
+-      <version>4.0</version>
++      <version>3.1.1</version>
+       <optional>true</optional>
+     </dependency>
+     <dependency>
+diff --git a/extensions/pom.xml b/extensions/pom.xml
+index f349015..511e719 100644
+--- a/extensions/pom.xml
++++ b/extensions/pom.xml
+@@ -98,15 +98,9 @@
+       </activation>
+       <dependencies>
+         <dependency>
+-          <groupId>cglib</groupId>
++          <groupId>org.sonatype.sisu.inject</groupId>
+           <artifactId>cglib</artifactId>
+-          <version>3.0</version>
+-          <scope>test</scope>
+-        </dependency>
+-        <dependency>
+-          <groupId>org.ow2.asm</groupId>
+-          <artifactId>asm-util</artifactId>
+-          <version>4.0</version>
++          <version>3.1.1</version>
+           <scope>test</scope>
+         </dependency>
+       </dependencies>
