@@ -30,6 +30,7 @@ NO DOC BLOCK: com.google.inject.throwingproviders.ThrowingProviderBinder Method 
 NO DOC BLOCK: com.google.inject.throwingproviders.ThrowingProviderBinder Method bind(java.lang.Class<P>, java.lang.Class<T>)
 OK: com.google.inject.AbstractModule Method bindListener(com.google.inject.matcher.Matcher<? super com.google.inject.Binding<?>>, com.google.inject.spi.ProvisionListener[])
 OK: com.google.inject.Binder Method bindListener(com.google.inject.matcher.Matcher<? super com.google.inject.Binding<?>>, com.google.inject.spi.ProvisionListener[])
+MISSING @SINCE TAG: com.google.inject.PrivateModule Method bindListener(com.google.inject.matcher.Matcher<? super com.google.inject.Binding<?>>, com.google.inject.spi.ProvisionListener[])
 NO DOC BLOCK: com.google.inject.grapher.BindingEdge Method copy(com.google.inject.grapher.NodeId, com.google.inject.grapher.NodeId)
 NO DOC BLOCK: com.google.inject.grapher.DependencyEdge Method copy(com.google.inject.grapher.NodeId, com.google.inject.grapher.NodeId)
 NO DOC BLOCK: com.google.inject.grapher.ImplementationNode Method copy(com.google.inject.grapher.NodeId)

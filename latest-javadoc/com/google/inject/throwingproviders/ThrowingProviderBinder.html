@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -212,13 +212,14 @@
     <li><h2>Classes</h2>
       <ul>
           <li class="selected api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html">ThrowingProviderBinder</a></li>
-          <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">ThrowingProviderBinder.SecondaryBinder</a>&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>&gt;</li>
+          <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">ThrowingProviderBinder.SecondaryBinder</a>&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>,&nbsp;T&gt;</li>
       </ul>
     </li>
               
     <li><h2>Annotations</h2>
       <ul>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/throwingproviders/CheckedProvides.html">CheckedProvides</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingInject.html">ThrowingInject</a></li>
       </ul>
     </li>
               
@@ -386,6 +387,13 @@ Summary:
      return creator.getCustomerOrThrow();
    }
  }
+ </code></pre>
+ You also can declare that a CheckedProvider construct
+ a particular class whose constructor throws an exception:
+ <pre><code>ThrowingProviderBinder.create(binder())
+    .bind(RemoteProvider.class, Customer.class)
+    .providing(CustomerImpl.class)
+    .in(RequestScope.class);
  </code></pre></p>
 
 
@@ -428,7 +436,7 @@ Summary:
          
         
         class</nobr></td>
-      <td class="jd-linkcol"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">ThrowingProviderBinder.SecondaryBinder</a>&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>&gt;</td>
+      <td class="jd-linkcol"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">ThrowingProviderBinder.SecondaryBinder</a>&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>,&nbsp;T&gt;</td>
       <td class="jd-descrcol" width="100%">&nbsp;</td>
     </tr>
     
@@ -466,6 +474,38 @@ Summary:
 
 
 	 
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            &lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>,&nbsp;T&gt;
+            <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;T&gt;</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html#bind(java.lang.Class<P>, com.google.inject.TypeLiteral<T>)">bind</a></span>(Class&lt;P&gt; interfaceType, <a href="../../../../com/google/inject/TypeLiteral.html">TypeLiteral</a>&lt;T&gt; typeLiteral)</nobr>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            &lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>,&nbsp;T&gt;
+            <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;T&gt;</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html#bind(java.lang.Class<P>, java.lang.Class<T>)">bind</a></span>(Class&lt;P&gt; interfaceType, Class&lt;T&gt; clazz)</nobr>
+        
+  </td></tr>
+
+
+	 
     <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
@@ -473,11 +513,17 @@ Summary:
             
             
             &lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>&gt;
-            <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P&gt;</nobr>
+            <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;?&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html#bind(java.lang.Class<P>, java.lang.reflect.Type)">bind</a></span>(Class&lt;P&gt; interfaceType, Type valueType)</nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html#bind(java.lang.Class<P>, java.lang.reflect.Type)">bind</a></span>(Class&lt;P&gt; interfaceType, Type clazz)</nobr>
         
+        <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      Use <code><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html#bind(java.lang.Class<P>, java.lang.Class<T>)">bind(Class, Class)</a></code> or <code><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html#bind(java.lang.Class<P>, com.google.inject.TypeLiteral<T>)">bind(Class, TypeLiteral)</a></code> instead. 
+</em></div>
+  
   </td></tr>
 
 
@@ -773,6 +819,72 @@ From class
 
 
 
+<A NAME="bind(java.lang.Class<P>, com.google.inject.TypeLiteral<T>)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;T&gt;
+      </span>
+      <span class="sympad">bind</span>
+      <span class="normal">(Class&lt;P&gt; interfaceType, <a href="../../../../com/google/inject/TypeLiteral.html">TypeLiteral</a>&lt;T&gt; typeLiteral)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="bind(java.lang.Class<P>, java.lang.Class<T>)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;T&gt;
+      </span>
+      <span class="sympad">bind</span>
+      <span class="normal">(Class&lt;P&gt; interfaceType, Class&lt;T&gt; clazz)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
 <A NAME="bind(java.lang.Class<P>, java.lang.reflect.Type)"></A>
 
 <div class="jd-details api apilevel-Guice_2.0"> 
@@ -783,10 +895,10 @@ From class
          
          
          
-        <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P&gt;
+        <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;?&gt;
       </span>
       <span class="sympad">bind</span>
-      <span class="normal">(Class&lt;P&gt; interfaceType, Type valueType)</span>
+      <span class="normal">(Class&lt;P&gt; interfaceType, Type clazz)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -799,7 +911,12 @@ From class
 
       </div>
     <div class="jd-details-descr">
-      
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> Use <code><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html#bind(java.lang.Class<P>, java.lang.Class<T>)">bind(Class, Class)</a></code> or <code><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html#bind(java.lang.Class<P>, com.google.inject.TypeLiteral<T>)">bind(Class, TypeLiteral)</a></code> instead. 
+
+  </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>

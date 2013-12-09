@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -204,28 +204,30 @@
               
     <li><h2>Interfaces</h2>
       <ul>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.Factory.html">BindingEdge.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/DependencyEdge.Factory.html">DependencyEdge.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ImplementationNode.Factory.html">ImplementationNode.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InterfaceNode.Factory.html">InterfaceNode.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;&gt;</li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/AliasCreator.html">AliasCreator</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/EdgeCreator.html">EdgeCreator</a></li>
+        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></li>
         <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NameFactory.html">NameFactory</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NodeAliasFactory.html">NodeAliasFactory</a>&lt;K&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NodeIdFactory.html">NodeIdFactory</a>&lt;K&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/Renderer.html">Renderer</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/NodeCreator.html">NodeCreator</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/RootKeySetCreator.html">RootKeySetCreator</a></li>
       </ul>
     </li>
               
     <li><h2>Classes</h2>
       <ul>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/GrapherModule.html">GrapherModule</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/GraphingVisitor.html">GraphingVisitor</a>&lt;K,&nbsp;N&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;,&nbsp;M&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;,&nbsp;B&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;,&nbsp;D&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/AbstractInjectorGrapher.html">AbstractInjectorGrapher</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/AbstractInjectorGrapher.GrapherParameters.html">AbstractInjectorGrapher.GrapherParameters</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/Alias.html">Alias</a></li>
+        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/DefaultRootKeySetCreator.html">DefaultRootKeySetCreator</a></li>
+        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/Edge.html">Edge</a></li>
+        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/InstanceNode.html">InstanceNode</a></li>
+        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/Node.html">Node</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/NodeId.html">NodeId</a></li>
         <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ShortNameFactory.html">ShortNameFactory</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/StringNodeIdFactory.html">StringNodeIdFactory</a></li>
         <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html">TransitiveDependencyVisitor</a></li>
       </ul>
     </li>
@@ -234,6 +236,7 @@
     <li><h2>Enums</h2>
       <ul>
         <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.Type.html">BindingEdge.Type</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/NodeId.NodeType.html">NodeId.NodeType</a></li>
       </ul>
     </li>
               
@@ -306,58 +309,30 @@
     <div class="jd-sumtable">
     
   <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/AliasCreator.html">AliasCreator</a></td>
+              <td class="jd-descrcol" width="100%">Creator of node aliases.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/EdgeCreator.html">EdgeCreator</a></td>
+              <td class="jd-descrcol" width="100%">Creator of graph edges to render.&nbsp;</td>
+          </tr>
         <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;</td>
-              <td class="jd-descrcol" width="100%">Interface for an edge that connects an interface to the type or instance
- that is bound to implement it.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></td>
+              <td class="jd-descrcol" width="100%">Guice injector grapher.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/BindingEdge.Factory.html">BindingEdge.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">Factory interface for <code><a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a></code>s.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;</td>
-              <td class="jd-descrcol" width="100%">Interface for an edge from a class or <code><a href="../../../../com/google/inject/spi/InjectionPoint.html">InjectionPoint</a></code> to the
- interface node that will satisfy the dependency.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/DependencyEdge.Factory.html">DependencyEdge.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">Factory interface for <code><a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a></code>s.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;</td>
-              <td class="jd-descrcol" width="100%">Node for classes and instances that have Dependencys and are
- bound to <code><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a></code>s.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/ImplementationNode.Factory.html">ImplementationNode.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">Factory interface for <code><a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a></code>s.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;</td>
-              <td class="jd-descrcol" width="100%">Node for an interface class that has been bound to an implementation class
- or instance.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/InterfaceNode.Factory.html">InterfaceNode.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">Factory interface for <code><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a></code>s.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/NameFactory.html">NameFactory</a></td>
               <td class="jd-descrcol" width="100%">Interface for a service that provides nice Strings that we can
  display in the graph for the types that come up in Bindings.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/NodeAliasFactory.html">NodeAliasFactory</a>&lt;K&gt;</td>
-              <td class="jd-descrcol" width="100%">Factory for aliasing one node ID to another.&nbsp;</td>
+        <tr class="alt-color api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/NodeCreator.html">NodeCreator</a></td>
+              <td class="jd-descrcol" width="100%">Creator of graph nodes.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/NodeIdFactory.html">NodeIdFactory</a>&lt;K&gt;</td>
-              <td class="jd-descrcol" width="100%">Factory for abstract identifiers for elements on the graph.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/Renderer.html">Renderer</a></td>
-              <td class="jd-descrcol" width="100%">Interface for the service that renders the graph.&nbsp;</td>
+        <tr class=" api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/RootKeySetCreator.html">RootKeySetCreator</a></td>
+              <td class="jd-descrcol" width="100%">Creator of the default starting set of keys to graph.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -369,31 +344,64 @@
     <div class="jd-sumtable">
     
   <table class="jd-sumtable-expando">
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/GrapherModule.html">GrapherModule</a></td>
-              <td class="jd-descrcol" width="100%">Module for the common bindings for <code><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></code>.&nbsp;</td>
+        <tr class="alt-color api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/AbstractInjectorGrapher.html">AbstractInjectorGrapher</a></td>
+              <td class="jd-descrcol" width="100%">Abstract injector grapher that builds the dependency graph but doesn't render it.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/AbstractInjectorGrapher.GrapherParameters.html">AbstractInjectorGrapher.GrapherParameters</a></td>
+              <td class="jd-descrcol" width="100%">Parameters used to override default settings of the grapher.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/Alias.html">Alias</a></td>
+              <td class="jd-descrcol" width="100%">Alias between two nodes.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/GraphingVisitor.html">GraphingVisitor</a>&lt;K,&nbsp;N&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;,&nbsp;M&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;,&nbsp;B&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;,&nbsp;D&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%"><code><a href="../../../../com/google/inject/spi/BindingTargetVisitor.html">BindingTargetVisitor</a></code> that adds nodes and edges to the graph based on
- the visited <code><a href="../../../../com/google/inject/Binding.html">Binding</a></code>.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a></td>
+              <td class="jd-descrcol" width="100%">Edge that connects an interface to the type or instance that is bound to implement it.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></td>
-              <td class="jd-descrcol" width="100%">Root class for graphing an <code><a href="../../../../com/google/inject/Injector.html">Injector</a></code>.&nbsp;</td>
+        <tr class="alt-color api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/DefaultRootKeySetCreator.html">DefaultRootKeySetCreator</a></td>
+              <td class="jd-descrcol" width="100%">Root key set creator that starts with all types that are not Guice internal types or the
+ Logger type.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-Guice_3.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a></td>
+              <td class="jd-descrcol" width="100%">Edge from a class or <code><a href="../../../../com/google/inject/spi/InjectionPoint.html">InjectionPoint</a></code> to the interface node that will satisfy the
+ dependency.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/Edge.html">Edge</a></td>
+              <td class="jd-descrcol" width="100%">Edge in a guice dependency graph.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-Guice_3.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a></td>
+              <td class="jd-descrcol" width="100%">Node for types that have Dependencys and are bound to <code><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a></code>s.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/InstanceNode.html">InstanceNode</a></td>
+              <td class="jd-descrcol" width="100%">Node for instances.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-Guice_3.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a></td>
+              <td class="jd-descrcol" width="100%">Node for an interface type that has been bound to an implementation class or instance.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/Node.html">Node</a></td>
+              <td class="jd-descrcol" width="100%">Node in a guice dependency graph.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/NodeId.html">NodeId</a></td>
+              <td class="jd-descrcol" width="100%">ID of a node in the graph.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/ShortNameFactory.html">ShortNameFactory</a></td>
               <td class="jd-descrcol" width="100%">Reasonable implementation for <code><a href="../../../../com/google/inject/grapher/NameFactory.html">NameFactory</a></code>.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/StringNodeIdFactory.html">StringNodeIdFactory</a></td>
-              <td class="jd-descrcol" width="100%">IdFactory implementation that for String node IDs.&nbsp;</td>
-          </tr>
         <tr class=" api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html">TransitiveDependencyVisitor</a></td>
-              <td class="jd-descrcol" width="100%"><code><a href="../../../../com/google/inject/spi/BindingTargetVisitor.html">BindingTargetVisitor</a></code> that returns a Collection of the
- <code><a href="../../../../com/google/inject/Key.html">Key</a></code>s of each Binding's dependencies.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">BindingTargetVisitor that returns a Collection of the
+ <code><a href="../../../../com/google/inject/Key.html">Key</a></code>s of each <code><a href="../../../../com/google/inject/Binding.html">Binding</a></code>'s dependencies.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -408,6 +416,10 @@
         <tr class="alt-color api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/BindingEdge.Type.html">BindingEdge.Type</a></td>
               <td class="jd-descrcol" width="100%">Classification for what kind of binding this edge represents.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/NodeId.NodeType.html">NodeId.NodeType</a></td>
+              <td class="jd-descrcol" width="100%">Type of node.&nbsp;</td>
           </tr>
   </table>
     </div>

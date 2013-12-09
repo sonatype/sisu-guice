@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -836,7 +836,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an injector for the given set of modules.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an injector for the given set of modules. This is equivalent to
+ calling #createInjector(Stage, Module...) with Stage.DEVELOPMENT.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">  
@@ -970,7 +971,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an injector for the given set of modules.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an injector for the given set of modules. This is equivalent to
+ calling <code><a href="../../../com/google/inject/Guice.html#createInjector(com.google.inject.Stage, java.lang.Iterable<? extends com.google.inject.Module>)">createInjector(Stage, Iterable)</a></code> with Stage.DEVELOPMENT.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">  

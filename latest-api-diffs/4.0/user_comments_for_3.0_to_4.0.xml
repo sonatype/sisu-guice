@@ -124,6 +124,18 @@
   </text>
 </comment>
 <comment>
+  <identifier id="com.google.inject.PrivateModule"/>
+  <text>
+    InsertCommentsHere
+  </text>
+</comment>
+<comment>
+  <identifier id="com.google.inject.PrivateModule.bindListener_added(com.google.inject.matcher.Matcher&lt;? super com.google.inject.Binding&lt;?&gt;&gt;, com.google.inject.spi.ProvisionListener[])"/>
+  <text>
+    InsertCommentsHere
+  </text>
+</comment>
+<comment>
   <identifier id="com.google.inject.Provides"/>
   <text>
     InsertCommentsHere

@@ -1797,6 +1797,21 @@
  deprecated="not deprecated"
  visibility="protected"
 >
+<parameter name="bindingMatcher" type="com.google.inject.matcher.Matcher&lt;? super com.google.inject.Binding&lt;?&gt;&gt;">
+</parameter>
+<parameter name="listeners" type="com.google.inject.spi.ProvisionListener...">
+</parameter>
+</method>
+<method name="bindListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
 <parameter name="typeMatcher" type="com.google.inject.matcher.Matcher&lt;? super com.google.inject.TypeLiteral&lt;?&gt;&gt;">
 </parameter>
 <parameter name="listener" type="com.google.inject.spi.TypeListener">
@@ -8521,17 +8536,6 @@
 </method>
 <method name="getStackTrace"
  return="java.lang.StackTraceElement[]"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="isStackTraceRetained"
- return="boolean"
  abstract="false"
  native="false"
  synchronized="false"

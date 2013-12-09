@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -204,28 +204,30 @@
               
     <li><h2>Interfaces</h2>
       <ul>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.Factory.html">BindingEdge.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/DependencyEdge.Factory.html">DependencyEdge.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ImplementationNode.Factory.html">ImplementationNode.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InterfaceNode.Factory.html">InterfaceNode.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/AliasCreator.html">AliasCreator</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/EdgeCreator.html">EdgeCreator</a></li>
+          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NameFactory.html">NameFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NodeAliasFactory.html">NodeAliasFactory</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NodeIdFactory.html">NodeIdFactory</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/Renderer.html">Renderer</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/NodeCreator.html">NodeCreator</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/RootKeySetCreator.html">RootKeySetCreator</a></li>
       </ul>
     </li>
               
     <li><h2>Classes</h2>
       <ul>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/GrapherModule.html">GrapherModule</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/GraphingVisitor.html">GraphingVisitor</a>&lt;K,&nbsp;N&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;,&nbsp;M&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;,&nbsp;B&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;,&nbsp;D&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/AbstractInjectorGrapher.html">AbstractInjectorGrapher</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/AbstractInjectorGrapher.GrapherParameters.html">AbstractInjectorGrapher.GrapherParameters</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/Alias.html">Alias</a></li>
+          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/DefaultRootKeySetCreator.html">DefaultRootKeySetCreator</a></li>
+          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/Edge.html">Edge</a></li>
+          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/InstanceNode.html">InstanceNode</a></li>
+          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/Node.html">Node</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/NodeId.html">NodeId</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ShortNameFactory.html">ShortNameFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/StringNodeIdFactory.html">StringNodeIdFactory</a></li>
           <li class="selected api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html">TransitiveDependencyVisitor</a></li>
       </ul>
     </li>
@@ -234,6 +236,7 @@
     <li><h2>Enums</h2>
       <ul>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.Type.html">BindingEdge.Type</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/grapher/NodeId.NodeType.html">NodeId.NodeType</a></li>
       </ul>
     </li>
               
@@ -274,6 +277,13 @@
 <div id="api-info-block">
 
 
+
+  
+   
+  
+  
+  
+  
 
   
    
@@ -343,17 +353,16 @@ Summary:
 
 
   
-    extends Object<br/>
+  
+  
+
+  
+    extends <a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html">DefaultBindingTargetVisitor</a>&lt;T,&nbsp;V&gt;<br/>
   
   
   
 
   
-  
-      implements 
-      
-        <a href="../../../../com/google/inject/spi/BindingTargetVisitor.html">BindingTargetVisitor</a>&lt;T,&nbsp;V&gt; 
-      
   
   
 
@@ -368,11 +377,21 @@ Summary:
 
     <tr>
          	
-        <td colspan="2" class="jd-inheritance-class-cell">java.lang.Object</td>
+        <td colspan="3" class="jd-inheritance-class-cell">java.lang.Object</td>
     </tr>
     
 
     <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
+         	
+        <td colspan="2" class="jd-inheritance-class-cell"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html">com.google.inject.spi.DefaultBindingTargetVisitor</a>&lt;T,&nbsp;V&gt;</td>
+    </tr>
+    
+
+    <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;</td>
         
             <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
          	
@@ -392,10 +411,10 @@ Summary:
 
 
 <h2>Class Overview</h2>
-<p><code><a href="../../../../com/google/inject/spi/BindingTargetVisitor.html">BindingTargetVisitor</a></code> that returns a Collection of the
- <code><a href="../../../../com/google/inject/Key.html">Key</a></code>s of each Binding's dependencies. Used by
- InjectorGropher to walk the dependency graph from a starting set of
- Bindings.</p>
+<p>BindingTargetVisitor that returns a Collection of the
+ <code><a href="../../../../com/google/inject/Key.html">Key</a></code>s of each <code><a href="../../../../com/google/inject/Binding.html">Binding</a></code>'s dependencies. Used by
+ <code><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></code> to walk the dependency graph from a starting set of
+ <code><a href="../../../../com/google/inject/Binding.html">Binding</a></code>s.</p>
 
 
 
@@ -492,6 +511,8 @@ Summary:
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.ConstructorBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ConstructorBinding.html">ConstructorBinding</a>&lt;?&gt; binding)</nobr>
         
+        <div class="jd-descrdiv">Visit a constructor binding.</div>
+  
   </td></tr>
 
 
@@ -508,27 +529,13 @@ Summary:
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.ConvertedConstantBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ConvertedConstantBinding.html">ConvertedConstantBinding</a>&lt;?&gt; binding)</nobr>
         
+        <div class="jd-descrdiv">Visit a binding created from converting a bound instance to a new type.</div>
+  
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-Guice_3.0" >
-        <td class="jd-typecol"><nobr>
-            
-            
-            
-            
-            
-            Collection&lt;<a href="../../../../com/google/inject/Key.html">Key</a>&lt;?&gt;&gt;</nobr>
-        </td>
-        <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.ExposedBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ExposedBinding.html">ExposedBinding</a>&lt;?&gt; binding)</nobr>
-        
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-Guice_3.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -540,11 +547,13 @@ Summary:
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.InstanceBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/InstanceBinding.html">InstanceBinding</a>&lt;?&gt; binding)</nobr>
         
+        <div class="jd-descrdiv">Visit a instance binding.</div>
+  
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_3.0" >
+    <tr class=" api apilevel-Guice_3.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -556,11 +565,13 @@ Summary:
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.LinkedKeyBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/LinkedKeyBinding.html">LinkedKeyBinding</a>&lt;?&gt; binding)</nobr>
         
+        <div class="jd-descrdiv">Visit a linked key binding.</div>
+  
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-Guice_3.0" >
+    <tr class="alt-color api apilevel-Guice_3.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -572,22 +583,9 @@ Summary:
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.ProviderBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProviderBinding.html">ProviderBinding</a>&lt;?&gt; binding)</nobr>
         
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-Guice_3.0" >
-        <td class="jd-typecol"><nobr>
-            
-            
-            
-            
-            
-            Collection&lt;<a href="../../../../com/google/inject/Key.html">Key</a>&lt;?&gt;&gt;</nobr>
-        </td>
-        <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.ProviderInstanceBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProviderInstanceBinding.html">ProviderInstanceBinding</a>&lt;?&gt; binding)</nobr>
-        
+        <div class="jd-descrdiv">Visit a binding to a <code><a href="../../../../com/google/inject/Provider.html">Provider</a></code> that delegates to the binding for the
+ provided type.</div>
+  
   </td></tr>
 
 
@@ -602,8 +600,10 @@ Summary:
             Collection&lt;<a href="../../../../com/google/inject/Key.html">Key</a>&lt;?&gt;&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.ProviderKeyBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProviderKeyBinding.html">ProviderKeyBinding</a>&lt;?&gt; binding)</nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.ProviderInstanceBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProviderInstanceBinding.html">ProviderInstanceBinding</a>&lt;?&gt; binding)</nobr>
         
+        <div class="jd-descrdiv">Visit a provider instance binding.</div>
+  
   </td></tr>
 
 
@@ -618,8 +618,28 @@ Summary:
             Collection&lt;<a href="../../../../com/google/inject/Key.html">Key</a>&lt;?&gt;&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.UntargettedBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/UntargettedBinding.html">UntargettedBinding</a>&lt;?&gt; binding)</nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visit(com.google.inject.spi.ProviderKeyBinding<?>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProviderKeyBinding.html">ProviderKeyBinding</a>&lt;?&gt; binding)</nobr>
         
+        <div class="jd-descrdiv">Visit a provider key binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            Collection&lt;<a href="../../../../com/google/inject/Key.html">Key</a>&lt;?&gt;&gt;</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html#visitOther(com.google.inject.Binding<?>)">visitOther</a></span>(<a href="../../../../com/google/inject/Binding.html">Binding</a>&lt;?&gt; binding)</nobr>
+        
+        <div class="jd-descrdiv">Default visit implementation.</div>
+  
   </td></tr>
 
 
@@ -636,6 +656,213 @@ Summary:
 <table id="inhmethods" class="jd-sumtable"><tr><th>
   <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
   <div style="clear:left;">Inherited Methods</div></th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-com.google.inject.spi.DefaultBindingTargetVisitor" class="jd-expando-trigger closed"
+          ><img id="inherited-methods-com.google.inject.spi.DefaultBindingTargetVisitor-trigger"
+          src="../../../../../javadoc/assets/images/triangle-closed.png"
+          class="jd-expando-trigger-img" /></a>
+From class
+
+  <a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html">com.google.inject.spi.DefaultBindingTargetVisitor</a>
+
+<div id="inherited-methods-com.google.inject.spi.DefaultBindingTargetVisitor">
+  <div id="inherited-methods-com.google.inject.spi.DefaultBindingTargetVisitor-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-com.google.inject.spi.DefaultBindingTargetVisitor-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.ConstructorBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ConstructorBinding.html">ConstructorBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; constructorBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a constructor binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.ConvertedConstantBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ConvertedConstantBinding.html">ConvertedConstantBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; convertedConstantBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a binding created from converting a bound instance to a new type.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.ExposedBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ExposedBinding.html">ExposedBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; exposedBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a binding to a key exposed from an enclosed private environment.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.InstanceBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/InstanceBinding.html">InstanceBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; instanceBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a instance binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.LinkedKeyBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/LinkedKeyBinding.html">LinkedKeyBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; linkedKeyBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a linked key binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.ProviderBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProviderBinding.html">ProviderBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; providerBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a binding to a <code><a href="../../../../com/google/inject/Provider.html">Provider</a></code> that delegates to the binding for the
+ provided type.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.ProviderInstanceBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProviderInstanceBinding.html">ProviderInstanceBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; providerInstanceBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a provider instance binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.ProviderKeyBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProviderKeyBinding.html">ProviderKeyBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; providerKeyBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a provider key binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visit(com.google.inject.spi.UntargettedBinding<? extends T>)">visit</a></span>(<a href="../../../../com/google/inject/spi/UntargettedBinding.html">UntargettedBinding</a>&lt;?&nbsp;extends&nbsp;T&gt; untargettedBinding)</nobr>
+        
+        <div class="jd-descrdiv">Visit an untargetted binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_2.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html#visitOther(com.google.inject.Binding<? extends T>)">visitOther</a></span>(<a href="../../../../com/google/inject/Binding.html">Binding</a>&lt;?&nbsp;extends&nbsp;T&gt; binding)</nobr>
+        
+        <div class="jd-descrdiv">Default visit implementation.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
 
 
 <tr class="api apilevel-" >
@@ -1137,7 +1364,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a constructor binding. To resolve injections, an instance is instantiated by invoking
+ <code>constructor</code>. This target is found only on injector bindings.
+</p></div>
 
     </div>
 </div>
@@ -1170,40 +1399,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    </div>
-</div>
-
-
-<A NAME="visit(com.google.inject.spi.ExposedBinding<?>)"></A>
-
-<div class="jd-details api apilevel-Guice_3.0"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-         
-         
-        Collection&lt;<a href="../../../../com/google/inject/Key.html">Key</a>&lt;?&gt;&gt;
-      </span>
-      <span class="sympad">visit</span>
-      <span class="normal">(<a href="../../../../com/google/inject/spi/ExposedBinding.html">ExposedBinding</a>&lt;?&gt; binding)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_3.0">API Level Guice_3.0</a>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a binding created from converting a bound instance to a new type. The source binding
+ has the same binding annotation but a different type. This target is found only on injector
+ bindings.
+</p></div>
 
     </div>
 </div>
@@ -1236,7 +1435,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a instance binding. The same instance is returned for every injection. This target is
+ found in both module and injector bindings.
+</p></div>
 
     </div>
 </div>
@@ -1269,7 +1470,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a linked key binding. The other key's binding is used to resolve injections. This
+ target is found in both module and injector bindings.
+</p></div>
 
     </div>
 </div>
@@ -1302,7 +1505,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a binding to a <code><a href="../../../../com/google/inject/Provider.html">Provider</a></code> that delegates to the binding for the
+ provided type. This target is found only on injector bindings.
+</p></div>
 
     </div>
 </div>
@@ -1335,7 +1540,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a provider instance binding. The provider's <code>get</code> method is invoked to resolve
+ injections. This target is found in both module and injector bindings.
+</p></div>
 
     </div>
 </div>
@@ -1368,15 +1575,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a provider key binding. To resolve injections, the provider key is first resolved, then
+ that provider's <code>get</code> method is invoked. This target is found in both module and injector
+ bindings.
+</p></div>
 
     </div>
 </div>
 
 
-<A NAME="visit(com.google.inject.spi.UntargettedBinding<?>)"></A>
+<A NAME="visitOther(com.google.inject.Binding<?>)"></A>
 
-<div class="jd-details api apilevel-Guice_3.0"> 
+<div class="jd-details api apilevel-Guice_4.0"> 
     <h4 class="jd-details-title">
       <span class="normal">
         public 
@@ -1386,13 +1596,13 @@ From interface
          
         Collection&lt;<a href="../../../../com/google/inject/Key.html">Key</a>&lt;?&gt;&gt;
       </span>
-      <span class="sympad">visit</span>
-      <span class="normal">(<a href="../../../../com/google/inject/spi/UntargettedBinding.html">UntargettedBinding</a>&lt;?&gt; binding)</span>
+      <span class="sympad">visitOther</span>
+      <span class="normal">(<a href="../../../../com/google/inject/Binding.html">Binding</a>&lt;?&gt; binding)</span>
     </h4>
       <div class="api-level">
         <div>
 
-  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_3.0">API Level Guice_3.0</a>
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
 
 </div>
         
@@ -1401,7 +1611,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Default visit implementation. Returns <code>null</code>.
+</p></div>
 
     </div>
 </div>

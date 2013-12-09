@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -772,7 +772,25 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            void</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../com/google/inject/Binder.html#bindListener(com.google.inject.matcher.Matcher<? super com.google.inject.Binding<?>>, com.google.inject.spi.ProvisionListener...)">bindListener</a></span>(<a href="../../../com/google/inject/matcher/Matcher.html">Matcher</a>&lt;?&nbsp;super&nbsp;<a href="../../../com/google/inject/Binding.html">Binding</a>&lt;?&gt;&gt; bindingMatcher, <a href="../../../com/google/inject/spi/ProvisionListener.html">ProvisionListener...</a> listeners)</nobr>
+        
+        <div class="jd-descrdiv">Registers listeners for provisioned objects.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -790,7 +808,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_1.0" >
+    <tr class="alt-color api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -808,7 +826,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -826,7 +844,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_1.0" >
+    <tr class="alt-color api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -844,7 +862,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_3.0" >
+    <tr class=" api apilevel-Guice_3.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -863,7 +881,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -882,7 +900,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -901,7 +919,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -919,7 +937,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -937,7 +955,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_1.0" >
+    <tr class="alt-color api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -955,7 +973,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -973,7 +991,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -992,7 +1010,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1011,7 +1029,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_1.0" >
+    <tr class="alt-color api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1030,7 +1048,44 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_3.0" >
+    <tr class=" api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            void</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../com/google/inject/Binder.html#requireAtInjectOnConstructors()">requireAtInjectOnConstructors</a></span>()</nobr>
+        
+        <div class="jd-descrdiv">Requires that a @<code><a href="../../../com/google/inject/Inject.html">Inject</a></code> annotation exists on a constructor in order for
+ Guice to consider it an eligible injectable class.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            void</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../com/google/inject/Binder.html#requireExactBindingAnnotations()">requireExactBindingAnnotations</a></span>()</nobr>
+        
+        <div class="jd-descrdiv">Requires that Guice finds an exactly matching binding annotation.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_3.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1049,7 +1104,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1068,7 +1123,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1427,8 +1482,60 @@ Summary:
         </tr>
         <tr>
           <th>interceptors</td>
-          <td>to bind
+          <td>to bind.  The interceptors are called in the order they
+     are given.
 </td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="bindListener(com.google.inject.matcher.Matcher<? super com.google.inject.Binding<?>>, com.google.inject.spi.ProvisionListener...)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+        abstract 
+         
+        void
+      </span>
+      <span class="sympad">bindListener</span>
+      <span class="normal">(<a href="../../../com/google/inject/matcher/Matcher.html">Matcher</a>&lt;?&nbsp;super&nbsp;<a href="../../../com/google/inject/Binding.html">Binding</a>&lt;?&gt;&gt; bindingMatcher, <a href="../../../com/google/inject/spi/ProvisionListener.html">ProvisionListener...</a> listeners)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Registers listeners for provisioned objects. Guice will notify the
+ listeners just before and after the object is provisioned. Provisioned
+ objects that are also injectable (everything except objects provided
+ through Providers) can also be notified through TypeListeners registered in
+ <code><a href="../../../com/google/inject/Binder.html#bindListener(com.google.inject.matcher.Matcher<? super com.google.inject.TypeLiteral<?>>, com.google.inject.spi.TypeListener)">bindListener(Matcher<? super TypeLiteral<?>>, TypeListener)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bindingMatcher</td>
+          <td>that matches bindings of provisioned objects the listener
+          should be notified of</td>
+        </tr>
+        <tr>
+          <th>listeners</td>
+          <td>for provisioned objects matched by bindingMatcher </td>
         </tr>
       </table>
   </div>
@@ -2002,6 +2109,81 @@ Summary:
         </tr>
       </table>
   </div>
+
+    </div>
+</div>
+
+
+<A NAME="requireAtInjectOnConstructors()"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+        abstract 
+         
+        void
+      </span>
+      <span class="sympad">requireAtInjectOnConstructors</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Requires that a @<code><a href="../../../com/google/inject/Inject.html">Inject</a></code> annotation exists on a constructor in order for
+ Guice to consider it an eligible injectable class. By default, Guice will inject classes that
+ have a no-args constructor if no @<code><a href="../../../com/google/inject/Inject.html">Inject</a></code> annotation exists on any
+ constructor.
+ <p>
+ If the class is bound using <code><a href="../../../com/google/inject/binder/LinkedBindingBuilder.html#toConstructor(java.lang.reflect.Constructor<S>)">toConstructor(Constructor<S>)</a></code>, Guice will still inject
+ that constructor regardless of annotations.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="requireExactBindingAnnotations()"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+        abstract 
+         
+        void
+      </span>
+      <span class="sympad">requireExactBindingAnnotations</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Requires that Guice finds an exactly matching binding annotation.  This disables the
+ error-prone feature in Guice where it can substitute a binding for
+ <code>@Named Foo</code> when attempting to inject
+ <code>@Named("foo") Foo</code>.</p></div>
 
     </div>
 </div>

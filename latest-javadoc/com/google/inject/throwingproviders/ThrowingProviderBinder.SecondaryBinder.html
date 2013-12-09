@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -212,13 +212,14 @@
     <li><h2>Classes</h2>
       <ul>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html">ThrowingProviderBinder</a></li>
-          <li class="selected api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">ThrowingProviderBinder.SecondaryBinder</a>&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>&gt;</li>
+          <li class="selected api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">ThrowingProviderBinder.SecondaryBinder</a>&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>,&nbsp;T&gt;</li>
       </ul>
     </li>
               
     <li><h2>Annotations</h2>
       <ul>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/throwingproviders/CheckedProvides.html">CheckedProvides</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingInject.html">ThrowingInject</a></li>
       </ul>
     </li>
               
@@ -350,7 +351,7 @@ Summary:
         
             <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
          	
-        <td colspan="1" class="jd-inheritance-class-cell">com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">com.google.inject.throwingproviders.CheckedProvider</a>&gt;</td>
+        <td colspan="1" class="jd-inheritance-class-cell">com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">com.google.inject.throwingproviders.CheckedProvider</a>,&nbsp;T&gt;</td>
     </tr>
     
 
@@ -455,7 +456,7 @@ Summary:
             
             
             
-            <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P&gt;</nobr>
+            <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;T&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html#annotatedWith(java.lang.Class<? extends java.lang.annotation.Annotation>)">annotatedWith</a></span>(Class&lt;?&nbsp;extends&nbsp;Annotation&gt; annotationType)</nobr>
@@ -471,10 +472,42 @@ Summary:
             
             
             
-            <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P&gt;</nobr>
+            <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;T&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html#annotatedWith(java.lang.annotation.Annotation)">annotatedWith</a></span>(Annotation annotation)</nobr>
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            <a href="../../../../com/google/inject/binder/ScopedBindingBuilder.html">ScopedBindingBuilder</a></nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html#providing(com.google.inject.TypeLiteral<? extends T>)">providing</a></span>(<a href="../../../../com/google/inject/TypeLiteral.html">TypeLiteral</a>&lt;?&nbsp;extends&nbsp;T&gt; cxtorLiteral)</nobr>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            <a href="../../../../com/google/inject/binder/ScopedBindingBuilder.html">ScopedBindingBuilder</a></nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html#providing(java.lang.Class<? extends T>)">providing</a></span>(Class&lt;?&nbsp;extends&nbsp;T&gt; cxtorClass)</nobr>
         
   </td></tr>
 
@@ -835,7 +868,7 @@ From class
          
          
          
-        <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P&gt;
+        <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;T&gt;
       </span>
       <span class="sympad">annotatedWith</span>
       <span class="normal">(Class&lt;?&nbsp;extends&nbsp;Annotation&gt; annotationType)</span>
@@ -868,7 +901,7 @@ From class
          
          
          
-        <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P&gt;
+        <a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">SecondaryBinder</a>&lt;P,&nbsp;T&gt;
       </span>
       <span class="sympad">annotatedWith</span>
       <span class="normal">(Annotation annotation)</span>
@@ -877,6 +910,72 @@ From class
         <div>
 
   Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_2.0">API Level Guice_2.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="providing(com.google.inject.TypeLiteral<? extends T>)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        <a href="../../../../com/google/inject/binder/ScopedBindingBuilder.html">ScopedBindingBuilder</a>
+      </span>
+      <span class="sympad">providing</span>
+      <span class="normal">(<a href="../../../../com/google/inject/TypeLiteral.html">TypeLiteral</a>&lt;?&nbsp;extends&nbsp;T&gt; cxtorLiteral)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="providing(java.lang.Class<? extends T>)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        <a href="../../../../com/google/inject/binder/ScopedBindingBuilder.html">ScopedBindingBuilder</a>
+      </span>
+      <span class="sympad">providing</span>
+      <span class="normal">(Class&lt;?&nbsp;extends&nbsp;T&gt; cxtorClass)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
 
 </div>
         

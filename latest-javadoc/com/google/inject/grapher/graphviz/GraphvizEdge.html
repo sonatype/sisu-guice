@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -210,18 +210,10 @@
               
     <li><h2>Classes</h2>
       <ul>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/BindingEdgeFactory.html">BindingEdgeFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/BindingEdgeFactory.GraphvizEdgeAdaptor.html">BindingEdgeFactory.GraphvizEdgeAdaptor</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/DependencyEdgeFactory.html">DependencyEdgeFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/DependencyEdgeFactory.GraphvizEdgeAdaptor.html">DependencyEdgeFactory.GraphvizEdgeAdaptor</a></li>
           <li class="selected api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html">GraphvizEdge</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizGrapher.html">GraphvizGrapher</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizModule.html">GraphvizModule</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizNode.html">GraphvizNode</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizRenderer.html">GraphvizRenderer</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/ImplementationNodeFactory.html">ImplementationNodeFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/ImplementationNodeFactory.GraphvizNodeAdaptor.html">ImplementationNodeFactory.GraphvizNodeAdaptor</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/InterfaceNodeFactory.html">InterfaceNodeFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/InterfaceNodeFactory.GraphvizNodeAdaptor.html">InterfaceNodeFactory.GraphvizNodeAdaptor</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/PortIdFactoryImpl.html">PortIdFactoryImpl</a></li>
       </ul>
     </li>
@@ -437,7 +429,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_3.0" >
+    <tr class="alt-color api apilevel-Guice_4.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -447,7 +439,7 @@ Summary:
             </nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html#GraphvizEdge(java.lang.String, java.lang.String)">GraphvizEdge</a></span>(String tailNodeId, String headNodeId)</nobr>
+        <span class="sympad"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html#GraphvizEdge(com.google.inject.grapher.NodeId, com.google.inject.grapher.NodeId)">GraphvizEdge</a></span>(<a href="../../../../../com/google/inject/grapher/NodeId.html">NodeId</a> tailNodeId, <a href="../../../../../com/google/inject/grapher/NodeId.html">NodeId</a> headNodeId)</nobr>
         
   </td></tr>
 
@@ -521,7 +513,7 @@ Summary:
             
             
             
-            String</nobr>
+            <a href="../../../../../com/google/inject/grapher/NodeId.html">NodeId</a></nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html#getHeadNodeId()">getHeadNodeId</a></span>()</nobr>
@@ -585,7 +577,7 @@ Summary:
             
             
             
-            String</nobr>
+            <a href="../../../../../com/google/inject/grapher/NodeId.html">NodeId</a></nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html#getTailNodeId()">getTailNodeId</a></span>()</nobr>
@@ -971,9 +963,9 @@ From class
 
 
 
-<A NAME="GraphvizEdge(java.lang.String, java.lang.String)"></A>
+<A NAME="GraphvizEdge(com.google.inject.grapher.NodeId, com.google.inject.grapher.NodeId)"></A>
 
-<div class="jd-details api apilevel-Guice_3.0"> 
+<div class="jd-details api apilevel-Guice_4.0"> 
     <h4 class="jd-details-title">
       <span class="normal">
         public 
@@ -984,12 +976,12 @@ From class
         
       </span>
       <span class="sympad">GraphvizEdge</span>
-      <span class="normal">(String tailNodeId, String headNodeId)</span>
+      <span class="normal">(<a href="../../../../../com/google/inject/grapher/NodeId.html">NodeId</a> tailNodeId, <a href="../../../../../com/google/inject/grapher/NodeId.html">NodeId</a> headNodeId)</span>
     </h4>
       <div class="api-level">
         <div>
 
-  Since: <a href="../../../../../guide/appendix/api-levels.html#levelGuice_3.0">API Level Guice_3.0</a>
+  Since: <a href="../../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
 
 </div>
         
@@ -1128,7 +1120,7 @@ From class
          
          
          
-        String
+        <a href="../../../../../com/google/inject/grapher/NodeId.html">NodeId</a>
       </span>
       <span class="sympad">getHeadNodeId</span>
       <span class="normal">()</span>
@@ -1260,7 +1252,7 @@ From class
          
          
          
-        String
+        <a href="../../../../../com/google/inject/grapher/NodeId.html">NodeId</a>
       </span>
       <span class="sympad">getTailNodeId</span>
       <span class="normal">()</span>

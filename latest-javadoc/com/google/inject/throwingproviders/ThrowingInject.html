@@ -55,7 +55,7 @@
 <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
 <title>
 
-  Renderer
+  ThrowingInject
 
 
 | Guice
@@ -85,7 +85,7 @@
 </noscript>
 </head>
 
-<body class="Guice_3.0">
+<body class="Guice_4.0">
 
 <div id="header">
     <div id="headerLeft">
@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -166,7 +166,7 @@
   <a href="../../../../com/google/inject/assistedinject/package-summary.html">com.google.inject.assistedinject</a></li>
     <li class="api apilevel-Guice_1.0">
   <a href="../../../../com/google/inject/binder/package-summary.html">com.google.inject.binder</a></li>
-    <li class="selected api apilevel-Guice_3.0">
+    <li class="api apilevel-Guice_3.0">
   <a href="../../../../com/google/inject/grapher/package-summary.html">com.google.inject.grapher</a></li>
     <li class="api apilevel-Guice_3.0">
   <a href="../../../../com/google/inject/grapher/graphviz/package-summary.html">com.google.inject.grapher.graphviz</a></li>
@@ -190,7 +190,7 @@
   <a href="../../../../com/google/inject/spi/package-summary.html">com.google.inject.spi</a></li>
     <li class="api apilevel-Guice_2.0">
   <a href="../../../../com/google/inject/spring/package-summary.html">com.google.inject.spring</a></li>
-    <li class="api apilevel-Guice_2.0">
+    <li class="selected api apilevel-Guice_2.0">
   <a href="../../../../com/google/inject/throwingproviders/package-summary.html">com.google.inject.throwingproviders</a></li>
     <li class="api apilevel-Guice_1.0">
   <a href="../../../../com/google/inject/tools/jmx/package-summary.html">com.google.inject.tools.jmx</a></li>
@@ -204,38 +204,25 @@
               
     <li><h2>Interfaces</h2>
       <ul>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.Factory.html">BindingEdge.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/DependencyEdge.Factory.html">DependencyEdge.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ImplementationNode.Factory.html">ImplementationNode.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InterfaceNode.Factory.html">InterfaceNode.Factory</a>&lt;K,&nbsp;T&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NameFactory.html">NameFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NodeAliasFactory.html">NodeAliasFactory</a>&lt;K&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/NodeIdFactory.html">NodeIdFactory</a>&lt;K&gt;</li>
-          <li class="selected api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/Renderer.html">Renderer</a></li>
+          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProvider.html">ThrowingProvider</a>&lt;T,&nbsp;E&nbsp;extends&nbsp;Exception&gt;</li>
       </ul>
     </li>
               
     <li><h2>Classes</h2>
       <ul>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/GrapherModule.html">GrapherModule</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/GraphingVisitor.html">GraphingVisitor</a>&lt;K,&nbsp;N&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;,&nbsp;M&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;,&nbsp;B&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;,&nbsp;D&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/ShortNameFactory.html">ShortNameFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/StringNodeIdFactory.html">StringNodeIdFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html">TransitiveDependencyVisitor</a></li>
+          <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.html">ThrowingProviderBinder</a></li>
+          <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingProviderBinder.SecondaryBinder.html">ThrowingProviderBinder.SecondaryBinder</a>&lt;P&nbsp;extends&nbsp;<a href="../../../../com/google/inject/throwingproviders/CheckedProvider.html">CheckedProvider</a>,&nbsp;T&gt;</li>
       </ul>
     </li>
               
-              
-    <li><h2>Enums</h2>
+    <li><h2>Annotations</h2>
       <ul>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/grapher/BindingEdge.Type.html">BindingEdge.Type</a></li>
+          <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/throwingproviders/CheckedProvides.html">CheckedProvides</a></li>
+          <li class="selected api apilevel-Guice_4.0"><a href="../../../../com/google/inject/throwingproviders/ThrowingInject.html">ThrowingInject</a></li>
       </ul>
     </li>
+              
               
               
             </ul><br/>
@@ -275,6 +262,13 @@
 
 
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="sum-details-links">
 
@@ -290,10 +284,9 @@ Summary:
 
 
 
-  <a href="#pubmethods">Methods</a>
-  
 
 
+  <a href="#inhmethods">Inherited Methods</a>
 
 &#124; <a href="#" onclick="return toggleAllClassInherited()" id="toggleAllClassInherited">[Expand All]</a>
 
@@ -301,7 +294,7 @@ Summary:
 <div class="api-level">
   
 
-  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_3.0">API Level Guice_3.0</a>
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
 
 
   
@@ -317,13 +310,18 @@ Summary:
     public
      
      
-    
-    interface
-<h1>Renderer</h1>
+    abstract
+    @interface
+<h1>ThrowingInject</h1>
 
 
 
   
+  
+      implements 
+      
+        Annotation 
+      
   
   
 
@@ -332,13 +330,13 @@ Summary:
 
 <div id="naMessage"></div>
 
-<div id="jd-content" class="api apilevel-Guice_3.0">
+<div id="jd-content" class="api apilevel-Guice_4.0">
 <table class="jd-inheritance-table">
 
 
     <tr>
          	
-        <td colspan="1" class="jd-inheritance-class-cell">com.google.inject.grapher.Renderer</td>
+        <td colspan="1" class="jd-inheritance-class-cell">com.google.inject.throwingproviders.ThrowingInject</td>
     </tr>
     
 
@@ -349,49 +347,17 @@ Summary:
 
 
 
-<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
-
-  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
-          ><img id="subclasses-indirect-trigger"
-          src="../../../../../javadoc/assets/images/triangle-closed.png"
-          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
-
-  <div id="subclasses-indirect">
-      <div id="subclasses-indirect-list"
-              class="jd-inheritedlinks"
-              
-              >
-          
-            
-              <a href="../../../../com/google/inject/grapher/graphviz/GraphvizRenderer.html">GraphvizRenderer</a>
-            
-          
-      </div>
-      <div id="subclasses-indirect-summary"
-              style="display: none;"
-              >
-  <table class="jd-sumtable-expando">
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/graphviz/GraphvizRenderer.html">GraphvizRenderer</a></td>
-              <td class="jd-descrcol" width="100%"><code><a href="../../../../com/google/inject/grapher/Renderer.html">Renderer</a></code> implementation that writes out a Graphviz DOT file of the
- graph.&nbsp;</td>
-          </tr>
-  </table>
-      </div>
-  </div>
-</td></tr></table>
-
 
 <div class="jd-descr">
 
 
 <h2>Class Overview</h2>
-<p>Interface for the service that renders the graph. It is assumed that the
- implementations for <code><a href="../../../../com/google/inject/grapher/BindingEdge.Factory.html">BindingEdge.Factory</a></code>,
- <code><a href="../../../../com/google/inject/grapher/ImplementationNode.Factory.html">ImplementationNode.Factory</a></code>, etc. will have direct access to the
- internals of the <code><a href="../../../../com/google/inject/grapher/Renderer.html">Renderer</a></code> implementation, so the only external
- interface needed is the <code><a href="../../../../com/google/inject/grapher/Renderer.html#render()">render()</a></code> call that <code><a href="../../../../com/google/inject/grapher/InjectorGrapher.html">InjectorGrapher</a></code>
- calls when it's done.</p>
+<p>A version of @<code><a href="../../../../com/google/inject/Inject.html">Inject</a></code> designed for ThrowingProviders.  Use by:
+ <pre><code>ThrowingProviderBinder.create(binder())
+    .bind(RemoteProvider.class, Customer.class)
+    .providing(CustomerImpl.class);
+ </code></pre>
+ where CustomerImpl has a constructor annotated with ThrowingInject.</p>
 
 
 
@@ -445,34 +411,107 @@ Summary:
 
 
 
-<!-- ========== METHOD SUMMARY =========== -->
-<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
 
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="inhmethods" class="jd-sumtable"><tr><th>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  <div style="clear:left;">Inherited Methods</div></th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.annotation.Annotation" class="jd-expando-trigger closed"
+          ><img id="inherited-methods-java.lang.annotation.Annotation-trigger"
+          src="../../../../../javadoc/assets/images/triangle-closed.png"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  java.lang.annotation.Annotation
+
+<div id="inherited-methods-java.lang.annotation.Annotation">
+  <div id="inherited-methods-java.lang.annotation.Annotation-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.annotation.Annotation-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_3.0" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><nobr>
             abstract
             
             
             
             
-            void</nobr>
+            Class&lt;?&nbsp;extends&nbsp;Annotation&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../com/google/inject/grapher/Renderer.html#render()">render</a></span>()</nobr>
+        <span class="sympad">annotationType</span>()</nobr>
         
   </td></tr>
 
 
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            boolean</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad">equals</span>(Object arg0)</nobr>
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            int</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad">hashCode</span>()</nobr>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            String</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad">toString</span>()</nobr>
+        
+  </td></tr>
+
 
 </table>
+  </div>
+</div>
+</td></tr>
 
 
-
-
-
+</table>
 
 
 </div><!-- jd-descr (summary) -->
@@ -509,53 +548,6 @@ Summary:
 
 <!-- ========= METHOD DETAIL ======== -->
 <!-- Public methdos -->
-
-<h2>Public Methods</h2>
-
-
-
-<A NAME="render()"></A>
-
-<div class="jd-details api apilevel-Guice_3.0"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-        abstract 
-         
-        void
-      </span>
-      <span class="sympad">render</span>
-      <span class="normal">()</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_3.0">API Level Guice_3.0</a>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">  
-        <tr>
-            <th>IOException</td>
-            <td></td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 
 
 

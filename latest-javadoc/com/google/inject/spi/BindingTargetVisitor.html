@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -221,6 +221,7 @@
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/ProviderKeyBinding.html">ProviderKeyBinding</a>&lt;T&gt;</li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/ProviderWithDependencies.html">ProviderWithDependencies</a>&lt;T&gt;</li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/spi/ProviderWithExtensionVisitor.html">ProviderWithExtensionVisitor</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/ProvisionListener.html">ProvisionListener</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/TypeConverter.html">TypeConverter</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/TypeEncounter.html">TypeEncounter</a>&lt;I&gt;</li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/TypeListener.html">TypeListener</a></li>
@@ -234,7 +235,9 @@
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html">DefaultBindingTargetVisitor</a>&lt;T,&nbsp;V&gt;</li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/DefaultElementVisitor.html">DefaultElementVisitor</a>&lt;V&gt;</li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/Dependency.html">Dependency</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/DependencyAndSource.html">DependencyAndSource</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/spi/DisableCircularProxiesOption.html">DisableCircularProxiesOption</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/ElementSource.html">ElementSource</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/Elements.html">Elements</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/InjectionPoint.html">InjectionPoint</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/InjectionRequest.html">InjectionRequest</a>&lt;T&gt;</li>
@@ -242,6 +245,10 @@
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/MembersInjectorLookup.html">MembersInjectorLookup</a>&lt;T&gt;</li>
           <li class="api apilevel-Guice_1.0"><a href="../../../../com/google/inject/spi/Message.html">Message</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/ProviderLookup.html">ProviderLookup</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/ProvisionListener.ProvisionInvocation.html">ProvisionListener.ProvisionInvocation</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/ProvisionListenerBinding.html">ProvisionListenerBinding</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/RequireAtInjectOnConstructorsOption.html">RequireAtInjectOnConstructorsOption</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/RequireExactBindingAnnotationsOption.html">RequireExactBindingAnnotationsOption</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/spi/RequireExplicitBindingsOption.html">RequireExplicitBindingsOption</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/ScopeBinding.html">ScopeBinding</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/StaticInjectionRequest.html">StaticInjectionRequest</a></li>
@@ -387,8 +394,6 @@ Summary:
             
               <a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html">DefaultBindingTargetVisitor</a>&lt;T,&nbsp;V&gt;,
             
-              <a href="../../../../com/google/inject/grapher/GraphingVisitor.html">GraphingVisitor</a>&lt;K,&nbsp;N&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;,&nbsp;M&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;,&nbsp;B&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;,&nbsp;D&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;,
-            
               <a href="../../../../com/google/inject/multibindings/MultibindingsTargetVisitor.html">MultibindingsTargetVisitor</a>&lt;T,&nbsp;V&gt;,
             
               <a href="../../../../com/google/inject/servlet/ServletModuleTargetVisitor.html">ServletModuleTargetVisitor</a>&lt;T,&nbsp;V&gt;,
@@ -410,22 +415,17 @@ Summary:
               <td class="jd-descrcol" width="100%">No-op visitor for subclassing.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/GraphingVisitor.html">GraphingVisitor</a>&lt;K,&nbsp;N&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a>&lt;K&gt;,&nbsp;M&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a>&lt;K&gt;,&nbsp;B&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a>&lt;K&gt;,&nbsp;D&nbsp;extends&nbsp;<a href="../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a>&lt;K&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%"><code><a href="../../../../com/google/inject/spi/BindingTargetVisitor.html">BindingTargetVisitor</a></code> that adds nodes and edges to the graph based on
- the visited <code><a href="../../../../com/google/inject/Binding.html">Binding</a></code>.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../com/google/inject/multibindings/MultibindingsTargetVisitor.html">MultibindingsTargetVisitor</a>&lt;T,&nbsp;V&gt;</td>
               <td class="jd-descrcol" width="100%">A visitor for the multibinder extension.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
+        <tr class=" api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../com/google/inject/servlet/ServletModuleTargetVisitor.html">ServletModuleTargetVisitor</a>&lt;T,&nbsp;V&gt;</td>
               <td class="jd-descrcol" width="100%">A visitor for the servlet extension.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-Guice_3.0" >
+        <tr class="alt-color api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../com/google/inject/grapher/TransitiveDependencyVisitor.html">TransitiveDependencyVisitor</a></td>
-              <td class="jd-descrcol" width="100%"><code><a href="../../../../com/google/inject/spi/BindingTargetVisitor.html">BindingTargetVisitor</a></code> that returns a Collection of the
- <code><a href="../../../../com/google/inject/Key.html">Key</a></code>s of each Binding's dependencies.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">BindingTargetVisitor that returns a Collection of the
+ <code><a href="../../../../com/google/inject/Key.html">Key</a></code>s of each <code><a href="../../../../com/google/inject/Binding.html">Binding</a></code>'s dependencies.&nbsp;</td>
           </tr>
   </table>
       </div>

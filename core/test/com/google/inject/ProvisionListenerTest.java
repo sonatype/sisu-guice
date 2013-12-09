@@ -44,6 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * @author sameb@google.com (Sam Berlin)
  */
+// TODO(sameb): Add some tests for private modules & child injectors.
 public class ProvisionListenerTest extends TestCase {
 
   public void testExceptionInListenerBeforeProvisioning() {
@@ -693,5 +694,18 @@ public class ProvisionListenerTest extends TestCase {
     void init() {
       this.x = xProvider.get();
     }
+  }
+  
+  public void testDeDuplicateProvisionListeners() {
+    final Counter counter = new Counter();
+    Injector injector = Guice.createInjector(new AbstractModule() {
+      @Override
+      protected void configure() {
+        bindListener(Matchers.any(), counter);
+        bindListener(Matchers.any(), counter);
+      }
+    });
+    injector.getInstance(Many.class);
+    assertEquals("ProvisionListener not de-duplicated", 1, counter.count);
   }
 }

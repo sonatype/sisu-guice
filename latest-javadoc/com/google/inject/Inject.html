@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -389,7 +389,7 @@ Summary:
  <li>Every instance it constructs. The class being constructed must have
  exactly one of its constructors marked with <code>@Inject</code> or must have a
  constructor taking no parameters. The Injector then proceeds to perform
- method and field injections.
+ field and method injections.
  
  <li>Pre-constructed instances passed to <code><a href="../../../com/google/inject/Injector.html#injectMembers(java.lang.Object)">injectMembers(Object)</a></code>,
  <code><a href="../../../com/google/inject/binder/LinkedBindingBuilder.html#toInstance(T)">toInstance(Object)</a></code> and

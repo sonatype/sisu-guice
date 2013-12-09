@@ -296,7 +296,7 @@ public abstract class PrivateModule implements Module {
   }
   
   /**
-   * @see Binder#bindListener(com.google.inject.matcher.Matcher, com.google.inject.spi.ProvisionListener...)
+   * @see Binder#bindListener(Matcher, ProvisionListener...)
    */
   protected void bindListener(Matcher<? super Binding<?>> bindingMatcher,
       ProvisionListener... listeners) {

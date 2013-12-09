@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -381,8 +381,8 @@ Summary:
  }</code></pre>
 
  <p>Contributing multibindings from different modules is supported. For
- example, it is okay to have both <code>CandyModule</code> and <code>ChipsModule</code>
- to both create their own <code>Multibinder&lt;Snack&gt;</code>, and to each contribute
+ example, it is okay for both <code>CandyModule</code> and <code>ChipsModule</code>
+ to create their own <code>Multibinder&lt;Snack&gt;</code>, and to each contribute
  bindings to the set of snacks. When that set is injected, it will contain
  elements from both modules.
  

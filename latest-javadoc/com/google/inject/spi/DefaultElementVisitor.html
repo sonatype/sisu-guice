@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -221,6 +221,7 @@
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/ProviderKeyBinding.html">ProviderKeyBinding</a>&lt;T&gt;</li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/ProviderWithDependencies.html">ProviderWithDependencies</a>&lt;T&gt;</li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/spi/ProviderWithExtensionVisitor.html">ProviderWithExtensionVisitor</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/ProvisionListener.html">ProvisionListener</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/TypeConverter.html">TypeConverter</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/TypeEncounter.html">TypeEncounter</a>&lt;I&gt;</li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/TypeListener.html">TypeListener</a></li>
@@ -234,7 +235,9 @@
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/DefaultBindingTargetVisitor.html">DefaultBindingTargetVisitor</a>&lt;T,&nbsp;V&gt;</li>
           <li class="selected api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/DefaultElementVisitor.html">DefaultElementVisitor</a>&lt;V&gt;</li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/Dependency.html">Dependency</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/DependencyAndSource.html">DependencyAndSource</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/spi/DisableCircularProxiesOption.html">DisableCircularProxiesOption</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/ElementSource.html">ElementSource</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/Elements.html">Elements</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/InjectionPoint.html">InjectionPoint</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/InjectionRequest.html">InjectionRequest</a>&lt;T&gt;</li>
@@ -242,6 +245,10 @@
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/MembersInjectorLookup.html">MembersInjectorLookup</a>&lt;T&gt;</li>
           <li class="api apilevel-Guice_1.0"><a href="../../../../com/google/inject/spi/Message.html">Message</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/ProviderLookup.html">ProviderLookup</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/ProvisionListener.ProvisionInvocation.html">ProvisionListener.ProvisionInvocation</a>&lt;T&gt;</li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/ProvisionListenerBinding.html">ProvisionListenerBinding</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/RequireAtInjectOnConstructorsOption.html">RequireAtInjectOnConstructorsOption</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../com/google/inject/spi/RequireExactBindingAnnotationsOption.html">RequireExactBindingAnnotationsOption</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../com/google/inject/spi/RequireExplicitBindingsOption.html">RequireExplicitBindingsOption</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/ScopeBinding.html">ScopeBinding</a></li>
           <li class="api apilevel-Guice_2.0"><a href="../../../../com/google/inject/spi/StaticInjectionRequest.html">StaticInjectionRequest</a></li>
@@ -646,7 +653,61 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_3.0" >
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultElementVisitor.html#visit(com.google.inject.spi.ProvisionListenerBinding)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProvisionListenerBinding.html">ProvisionListenerBinding</a> binding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a provision listener binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultElementVisitor.html#visit(com.google.inject.spi.RequireAtInjectOnConstructorsOption)">visit</a></span>(<a href="../../../../com/google/inject/spi/RequireAtInjectOnConstructorsOption.html">RequireAtInjectOnConstructorsOption</a> option)</nobr>
+        
+        <div class="jd-descrdiv">Visit a require explicit @<code><a href="../../../../com/google/inject/Inject.html">Inject</a></code> command.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/DefaultElementVisitor.html#visit(com.google.inject.spi.RequireExactBindingAnnotationsOption)">visit</a></span>(<a href="../../../../com/google/inject/spi/RequireExactBindingAnnotationsOption.html">RequireExactBindingAnnotationsOption</a> option)</nobr>
+        
+        <div class="jd-descrdiv">Visit a require exact binding annotations command.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_3.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -664,7 +725,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -682,7 +743,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -700,7 +761,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -718,7 +779,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -1144,7 +1205,61 @@ From interface
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_3.0" >
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/ElementVisitor.html#visit(com.google.inject.spi.ProvisionListenerBinding)">visit</a></span>(<a href="../../../../com/google/inject/spi/ProvisionListenerBinding.html">ProvisionListenerBinding</a> binding)</nobr>
+        
+        <div class="jd-descrdiv">Visit a provision listener binding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/ElementVisitor.html#visit(com.google.inject.spi.RequireAtInjectOnConstructorsOption)">visit</a></span>(<a href="../../../../com/google/inject/spi/RequireAtInjectOnConstructorsOption.html">RequireAtInjectOnConstructorsOption</a> option)</nobr>
+        
+        <div class="jd-descrdiv">Visit a require explicit @<code><a href="../../../../com/google/inject/Inject.html">Inject</a></code> command.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            abstract
+            
+            
+            
+            
+            V</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../com/google/inject/spi/ElementVisitor.html#visit(com.google.inject.spi.RequireExactBindingAnnotationsOption)">visit</a></span>(<a href="../../../../com/google/inject/spi/RequireExactBindingAnnotationsOption.html">RequireExactBindingAnnotationsOption</a> option)</nobr>
+        
+        <div class="jd-descrdiv">Visit a require exact binding annotations command.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_3.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1162,7 +1277,7 @@ From interface
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1180,7 +1295,7 @@ From interface
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1198,7 +1313,7 @@ From interface
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1216,7 +1331,7 @@ From interface
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -1588,6 +1703,106 @@ From interface
       
   <div class="jd-tagdata jd-tagdescr"><p>Visit a lookup of the provider for a type.
 </p></div>
+
+    </div>
+</div>
+
+
+<A NAME="visit(com.google.inject.spi.ProvisionListenerBinding)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        V
+      </span>
+      <span class="sympad">visit</span>
+      <span class="normal">(<a href="../../../../com/google/inject/spi/ProvisionListenerBinding.html">ProvisionListenerBinding</a> binding)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a provision listener binding.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="visit(com.google.inject.spi.RequireAtInjectOnConstructorsOption)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        V
+      </span>
+      <span class="sympad">visit</span>
+      <span class="normal">(<a href="../../../../com/google/inject/spi/RequireAtInjectOnConstructorsOption.html">RequireAtInjectOnConstructorsOption</a> option)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a require explicit @<code><a href="../../../../com/google/inject/Inject.html">Inject</a></code> command.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="visit(com.google.inject.spi.RequireExactBindingAnnotationsOption)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        V
+      </span>
+      <span class="sympad">visit</span>
+      <span class="normal">(<a href="../../../../com/google/inject/spi/RequireExactBindingAnnotationsOption.html">RequireExactBindingAnnotationsOption</a> option)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Visit a require exact binding annotations command.</p></div>
 
     </div>
 </div>

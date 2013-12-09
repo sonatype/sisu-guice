@@ -137,6 +137,21 @@
  deprecated="not deprecated"
  visibility="protected"
 >
+<parameter name="bindingMatcher" type="com.google.inject.matcher.Matcher&lt;? super com.google.inject.Binding&lt;?&gt;&gt;">
+</parameter>
+<parameter name="listener" type="com.google.inject.spi.ProvisionListener...">
+</parameter>
+</method>
+<method name="bindListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
 <parameter name="typeMatcher" type="com.google.inject.matcher.Matcher&lt;? super com.google.inject.TypeLiteral&lt;?&gt;&gt;">
 </parameter>
 <parameter name="listener" type="com.google.inject.spi.TypeListener">
@@ -461,6 +476,21 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="bindingMatcher" type="com.google.inject.matcher.Matcher&lt;? super com.google.inject.Binding&lt;?&gt;&gt;">
+</parameter>
+<parameter name="listeners" type="com.google.inject.spi.ProvisionListener...">
+</parameter>
+</method>
+<method name="bindListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
 <parameter name="typeMatcher" type="com.google.inject.matcher.Matcher&lt;? super com.google.inject.TypeLiteral&lt;?&gt;&gt;">
 </parameter>
 <parameter name="listener" type="com.google.inject.spi.TypeListener">
@@ -634,6 +664,28 @@
 >
 <parameter name="types" type="java.lang.Class&lt;?&gt;...">
 </parameter>
+</method>
+<method name="requireAtInjectOnConstructors"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="requireExactBindingAnnotations"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
 </method>
 <method name="requireExplicitBindings"
  return="void"
@@ -1745,6 +1797,21 @@
  deprecated="not deprecated"
  visibility="protected"
 >
+<parameter name="bindingMatcher" type="com.google.inject.matcher.Matcher&lt;? super com.google.inject.Binding&lt;?&gt;&gt;">
+</parameter>
+<parameter name="listeners" type="com.google.inject.spi.ProvisionListener...">
+</parameter>
+</method>
+<method name="bindListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
 <parameter name="typeMatcher" type="com.google.inject.matcher.Matcher&lt;? super com.google.inject.TypeLiteral&lt;?&gt;&gt;">
 </parameter>
 <parameter name="listener" type="com.google.inject.spi.TypeListener">
@@ -2131,6 +2198,36 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<method name="isCircularProxy"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="object" type="java.lang.Object">
+</parameter>
+</method>
+<method name="isScoped"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="binding" type="com.google.inject.Binding&lt;?&gt;">
+</parameter>
+<parameter name="scope" type="com.google.inject.Scope">
+</parameter>
+<parameter name="scopeAnnotation" type="java.lang.Class&lt;? extends java.lang.annotation.Annotation&gt;">
+</parameter>
+</method>
 <method name="isSingleton"
  return="boolean"
  abstract="false"
@@ -3299,14 +3396,67 @@
 </package>
 <package name="com.google.inject.grapher"
 >
-<interface name="BindingEdge"
+<class name="AbstractInjectorGrapher"
+ extends="java.lang.Object"
  abstract="true"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<method name="setType"
+<implements name="com.google.inject.grapher.InjectorGrapher">
+</implements>
+<constructor name="AbstractInjectorGrapher"
+ type="com.google.inject.grapher.AbstractInjectorGrapher"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="AbstractInjectorGrapher"
+ type="com.google.inject.grapher.AbstractInjectorGrapher"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="options" type="com.google.inject.grapher.AbstractInjectorGrapher.GrapherParameters">
+</parameter>
+</constructor>
+<method name="graph"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="injector" type="com.google.inject.Injector">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="graph"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="injector" type="com.google.inject.Injector">
+</parameter>
+<parameter name="root" type="java.util.Set&lt;com.google.inject.Key&lt;?&gt;&gt;">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="newBindingEdge"
  return="void"
  abstract="true"
  native="false"
@@ -3314,21 +3464,265 @@
  static="false"
  final="false"
  deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="edge" type="com.google.inject.grapher.BindingEdge">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="newDependencyEdge"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="edge" type="com.google.inject.grapher.DependencyEdge">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="newImplementationNode"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="node" type="com.google.inject.grapher.ImplementationNode">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="newInstanceNode"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="node" type="com.google.inject.grapher.InstanceNode">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="newInterfaceNode"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="node" type="com.google.inject.grapher.InterfaceNode">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="postProcess"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="reset"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+</class>
+<class name="AbstractInjectorGrapher.GrapherParameters"
+ extends="java.lang.Object"
+ abstract="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="type" type="com.google.inject.grapher.BindingEdge.Type">
-</parameter>
-</method>
-</interface>
-<interface name="BindingEdge.Factory"
- abstract="true"
- static="true"
+<constructor name="AbstractInjectorGrapher.GrapherParameters"
+ type="com.google.inject.grapher.AbstractInjectorGrapher.GrapherParameters"
+ static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<method name="newBindingEdge"
- return="T"
+</constructor>
+<method name="getAliasCreator"
+ return="com.google.inject.grapher.AliasCreator"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getEdgeCreator"
+ return="com.google.inject.grapher.EdgeCreator"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getNodeCreator"
+ return="com.google.inject.grapher.NodeCreator"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getRootKeySetCreator"
+ return="com.google.inject.grapher.RootKeySetCreator"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setAliasCreator"
+ return="com.google.inject.grapher.AbstractInjectorGrapher.GrapherParameters"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="aliasCreator" type="com.google.inject.grapher.AliasCreator">
+</parameter>
+</method>
+<method name="setEdgeCreator"
+ return="com.google.inject.grapher.AbstractInjectorGrapher.GrapherParameters"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="edgeCreator" type="com.google.inject.grapher.EdgeCreator">
+</parameter>
+</method>
+<method name="setNodeCreator"
+ return="com.google.inject.grapher.AbstractInjectorGrapher.GrapherParameters"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="nodeCreator" type="com.google.inject.grapher.NodeCreator">
+</parameter>
+</method>
+<method name="setRootKeySetCreator"
+ return="com.google.inject.grapher.AbstractInjectorGrapher.GrapherParameters"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="rootKeySetCreator" type="com.google.inject.grapher.RootKeySetCreator">
+</parameter>
+</method>
+</class>
+<class name="Alias"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="Alias"
+ type="com.google.inject.grapher.Alias"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fromId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="toId" type="com.google.inject.grapher.NodeId">
+</parameter>
+</constructor>
+<method name="getFromId"
+ return="com.google.inject.grapher.NodeId"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getToId"
+ return="com.google.inject.grapher.NodeId"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<interface name="AliasCreator"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="createAliases"
+ return="java.lang.Iterable&lt;com.google.inject.grapher.Alias&gt;"
  abstract="true"
  native="false"
  synchronized="false"
@@ -3337,12 +3731,59 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="fromId" type="K">
-</parameter>
-<parameter name="toId" type="K">
+<parameter name="bindings" type="java.lang.Iterable&lt;com.google.inject.Binding&lt;?&gt;&gt;">
 </parameter>
 </method>
 </interface>
+<class name="BindingEdge"
+ extends="com.google.inject.grapher.Edge"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="BindingEdge"
+ type="com.google.inject.grapher.BindingEdge"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fromId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="toId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="type" type="com.google.inject.grapher.BindingEdge.Type">
+</parameter>
+</constructor>
+<method name="copy"
+ return="com.google.inject.grapher.Edge"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fromId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="toId" type="com.google.inject.grapher.NodeId">
+</parameter>
+</method>
+<method name="getType"
+ return="com.google.inject.grapher.BindingEdge.Type"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
 <class name="BindingEdge.Type"
  extends="java.lang.Enum"
  abstract="false"
@@ -3376,68 +3817,7 @@
 >
 </method>
 </class>
-<interface name="DependencyEdge"
- abstract="true"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</interface>
-<interface name="DependencyEdge.Factory"
- abstract="true"
- static="true"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<method name="newDependencyEdge"
- return="T"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="fromId" type="K">
-</parameter>
-<parameter name="fromPoint" type="com.google.inject.spi.InjectionPoint">
-</parameter>
-<parameter name="toId" type="K">
-</parameter>
-</method>
-</interface>
-<class name="GrapherModule"
- extends="com.google.inject.AbstractModule"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<constructor name="GrapherModule"
- type="com.google.inject.grapher.GrapherModule"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</constructor>
-<method name="configure"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-</method>
-</class>
-<class name="GraphingVisitor"
+<class name="DefaultRootKeySetCreator"
  extends="java.lang.Object"
  abstract="false"
  static="false"
@@ -3445,386 +3825,18 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<implements name="com.google.inject.spi.BindingTargetVisitor">
+<implements name="com.google.inject.grapher.RootKeySetCreator">
 </implements>
-<constructor name="GraphingVisitor"
- type="com.google.inject.grapher.GraphingVisitor"
+<constructor name="DefaultRootKeySetCreator"
+ type="com.google.inject.grapher.DefaultRootKeySetCreator"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="idFactory" type="com.google.inject.grapher.NodeIdFactory&lt;K&gt;">
-</parameter>
-<parameter name="interfaceNodeFactory" type="com.google.inject.grapher.InterfaceNode.Factory&lt;K, N&gt;">
-</parameter>
-<parameter name="implementationNodeFactory" type="com.google.inject.grapher.ImplementationNode.Factory&lt;K, M&gt;">
-</parameter>
-<parameter name="bindingEdgeFactory" type="com.google.inject.grapher.BindingEdge.Factory&lt;K, B&gt;">
-</parameter>
-<parameter name="dependencyEdgeFactory" type="com.google.inject.grapher.DependencyEdge.Factory&lt;K, D&gt;">
-</parameter>
-<parameter name="nodeAliasFactory" type="com.google.inject.grapher.NodeAliasFactory&lt;K&gt;">
-</parameter>
 </constructor>
-<method name="getClassNodeId"
- return="K"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="true"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="binding" type="com.google.inject.Binding&lt;?&gt;">
-</parameter>
-</method>
-<method name="getInstanceNodeId"
- return="K"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="true"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="binding" type="com.google.inject.Binding&lt;?&gt;">
-</parameter>
-</method>
-<method name="newBindingEdge"
- return="B"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="nodeId" type="K">
-</parameter>
-<parameter name="toId" type="K">
-</parameter>
-<parameter name="type" type="com.google.inject.grapher.BindingEdge.Type">
-</parameter>
-</method>
-<method name="newClassImplementationNode"
- return="M"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="binding" type="com.google.inject.Binding&lt;?&gt;">
-</parameter>
-<parameter name="constructorInjectionPoint" type="com.google.inject.spi.InjectionPoint">
-</parameter>
-<parameter name="memberInjectionPoints" type="java.util.Collection&lt;com.google.inject.spi.InjectionPoint&gt;">
-</parameter>
-</method>
-<method name="newDependencyEdge"
- return="D"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="nodeId" type="K">
-</parameter>
-<parameter name="injectionPoint" type="com.google.inject.spi.InjectionPoint">
-</parameter>
-<parameter name="dependency" type="com.google.inject.spi.Dependency&lt;?&gt;">
-</parameter>
-</method>
-<method name="newDependencyEdges"
- return="java.util.Collection&lt;D&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="nodeId" type="K">
-</parameter>
-<parameter name="node" type="M">
-</parameter>
-<parameter name="dependencies" type="java.util.Collection&lt;com.google.inject.spi.Dependency&lt;?&gt;&gt;">
-</parameter>
-</method>
-<method name="newInstanceImplementationNode"
- return="M"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="binding" type="com.google.inject.Binding&lt;?&gt;">
-</parameter>
-<parameter name="instance" type="java.lang.Object">
-</parameter>
-</method>
-<method name="newInterfaceNode"
- return="N"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="binding" type="com.google.inject.Binding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.ConstructorBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.ConvertedConstantBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.ExposedBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.InstanceBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.LinkedKeyBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.ProviderBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.ProviderInstanceBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.ProviderKeyBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.lang.Void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.UntargettedBinding&lt;?&gt;">
-</parameter>
-</method>
-</class>
-<interface name="ImplementationNode"
- abstract="true"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<method name="addMember"
- return="void"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="member" type="java.lang.reflect.Member">
-</parameter>
-</method>
-<method name="setClassKey"
- return="void"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="key" type="com.google.inject.Key&lt;?&gt;">
-</parameter>
-</method>
-<method name="setInstance"
- return="void"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="instance" type="java.lang.Object">
-</parameter>
-</method>
-<method name="setSource"
- return="void"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="source" type="java.lang.Object">
-</parameter>
-</method>
-</interface>
-<interface name="ImplementationNode.Factory"
- abstract="true"
- static="true"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<method name="newImplementationNode"
- return="T"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="nodeId" type="K">
-</parameter>
-</method>
-</interface>
-<class name="InjectorGrapher"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<constructor name="InjectorGrapher"
- type="com.google.inject.grapher.InjectorGrapher"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="keyVisitor" type="com.google.inject.spi.BindingTargetVisitor&lt;java.lang.Object, java.util.Collection&lt;com.google.inject.Key&lt;?&gt;&gt;&gt;">
-</parameter>
-<parameter name="graphingVisitor" type="com.google.inject.spi.BindingTargetVisitor&lt;java.lang.Object, java.lang.Void&gt;">
-</parameter>
-<parameter name="renderer" type="com.google.inject.grapher.Renderer">
-</parameter>
-</constructor>
-<method name="graph"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<exception name="IOException" type="java.io.IOException">
-</exception>
-</method>
-<method name="of"
- return="com.google.inject.grapher.InjectorGrapher"
+<method name="getRootKeys"
+ return="java.util.Set&lt;com.google.inject.Key&lt;?&gt;&gt;"
  abstract="false"
  native="false"
  synchronized="false"
@@ -3836,8 +3848,31 @@
 <parameter name="injector" type="com.google.inject.Injector">
 </parameter>
 </method>
-<method name="rootedAt"
- return="com.google.inject.grapher.InjectorGrapher"
+</class>
+<class name="DependencyEdge"
+ extends="com.google.inject.grapher.Edge"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="DependencyEdge"
+ type="com.google.inject.grapher.DependencyEdge"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fromId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="toId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="injectionPoint" type="com.google.inject.spi.InjectionPoint">
+</parameter>
+</constructor>
+<method name="copy"
+ return="com.google.inject.grapher.Edge"
  abstract="false"
  native="false"
  synchronized="false"
@@ -3846,11 +3881,13 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="keys" type="com.google.inject.Key&lt;?&gt;...">
+<parameter name="fromId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="toId" type="com.google.inject.grapher.NodeId">
 </parameter>
 </method>
-<method name="rootedAt"
- return="com.google.inject.grapher.InjectorGrapher"
+<method name="getInjectionPoint"
+ return="com.google.inject.spi.InjectionPoint"
  abstract="false"
  native="false"
  synchronized="false"
@@ -3859,65 +3896,268 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="classes" type="java.lang.Class&lt;?&gt;...">
+</method>
+</class>
+<class name="Edge"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="Edge"
+ type="com.google.inject.grapher.Edge"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="fromId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="toId" type="com.google.inject.grapher.NodeId">
+</parameter>
+</constructor>
+<method name="copy"
+ return="com.google.inject.grapher.Edge"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fromId" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="toId" type="com.google.inject.grapher.NodeId">
+</parameter>
+</method>
+<method name="getFromId"
+ return="com.google.inject.grapher.NodeId"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getToId"
+ return="com.google.inject.grapher.NodeId"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<interface name="EdgeCreator"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="getEdges"
+ return="java.lang.Iterable&lt;com.google.inject.grapher.Edge&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="bindings" type="java.lang.Iterable&lt;com.google.inject.Binding&lt;?&gt;&gt;">
+</parameter>
+</method>
+</interface>
+<class name="ImplementationNode"
+ extends="com.google.inject.grapher.Node"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="ImplementationNode"
+ type="com.google.inject.grapher.ImplementationNode"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="id" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="source" type="java.lang.Object">
+</parameter>
+<parameter name="members" type="java.util.Collection&lt;java.lang.reflect.Member&gt;">
+</parameter>
+</constructor>
+<method name="copy"
+ return="com.google.inject.grapher.Node"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="id" type="com.google.inject.grapher.NodeId">
+</parameter>
+</method>
+<method name="getMembers"
+ return="java.util.Collection&lt;java.lang.reflect.Member&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<interface name="InjectorGrapher"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="graph"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="injector" type="com.google.inject.Injector">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="graph"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="injector" type="com.google.inject.Injector">
+</parameter>
+<parameter name="root" type="java.util.Set&lt;com.google.inject.Key&lt;?&gt;&gt;">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+</interface>
+<class name="InstanceNode"
+ extends="com.google.inject.grapher.Node"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="InstanceNode"
+ type="com.google.inject.grapher.InstanceNode"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="id" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="source" type="java.lang.Object">
+</parameter>
+<parameter name="instance" type="java.lang.Object">
+</parameter>
+<parameter name="members" type="java.lang.Iterable&lt;java.lang.reflect.Member&gt;">
+</parameter>
+</constructor>
+<method name="copy"
+ return="com.google.inject.grapher.Node"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="id" type="com.google.inject.grapher.NodeId">
+</parameter>
+</method>
+<method name="getInstance"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getMembers"
+ return="java.lang.Iterable&lt;java.lang.reflect.Member&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<class name="InterfaceNode"
+ extends="com.google.inject.grapher.Node"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="InterfaceNode"
+ type="com.google.inject.grapher.InterfaceNode"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="id" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="source" type="java.lang.Object">
+</parameter>
+</constructor>
+<method name="copy"
+ return="com.google.inject.grapher.Node"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="id" type="com.google.inject.grapher.NodeId">
 </parameter>
 </method>
 </class>
-<interface name="InterfaceNode"
- abstract="true"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<method name="setKey"
- return="void"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="key" type="com.google.inject.Key&lt;?&gt;">
-</parameter>
-</method>
-<method name="setSource"
- return="void"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="source" type="java.lang.Object">
-</parameter>
-</method>
-</interface>
-<interface name="InterfaceNode.Factory"
- abstract="true"
- static="true"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<method name="newInterfaceNode"
- return="T"
- abstract="true"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="nodeId" type="K">
-</parameter>
-</method>
-</interface>
 <interface name="NameFactory"
  abstract="true"
  static="false"
@@ -3991,15 +4231,28 @@
 </parameter>
 </method>
 </interface>
-<interface name="NodeAliasFactory"
+<class name="Node"
+ extends="java.lang.Object"
  abstract="true"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<method name="newAlias"
- return="void"
+<constructor name="Node"
+ type="com.google.inject.grapher.Node"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="id" type="com.google.inject.grapher.NodeId">
+</parameter>
+<parameter name="source" type="java.lang.Object">
+</parameter>
+</constructor>
+<method name="copy"
+ return="com.google.inject.grapher.Node"
  abstract="true"
  native="false"
  synchronized="false"
@@ -4008,25 +4261,78 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="fromId" type="K">
+<parameter name="id" type="com.google.inject.grapher.NodeId">
 </parameter>
-<parameter name="toId" type="K">
+</method>
+<method name="getId"
+ return="com.google.inject.grapher.NodeId"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getSource"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<interface name="NodeCreator"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="getNodes"
+ return="java.lang.Iterable&lt;com.google.inject.grapher.Node&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="bindings" type="java.lang.Iterable&lt;com.google.inject.Binding&lt;?&gt;&gt;">
 </parameter>
 </method>
 </interface>
-<interface name="NodeIdFactory"
- abstract="true"
+<class name="NodeId"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="getKey"
+ return="com.google.inject.Key&lt;?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<method name="getClassNodeId"
- return="K"
- abstract="true"
+</method>
+<method name="newInstanceId"
+ return="com.google.inject.grapher.NodeId"
+ abstract="false"
  native="false"
  synchronized="false"
- static="false"
+ static="true"
  final="false"
  deprecated="not deprecated"
  visibility="public"
@@ -4034,12 +4340,12 @@
 <parameter name="key" type="com.google.inject.Key&lt;?&gt;">
 </parameter>
 </method>
-<method name="getInstanceNodeId"
- return="K"
- abstract="true"
+<method name="newTypeId"
+ return="com.google.inject.grapher.NodeId"
+ abstract="false"
  native="false"
  synchronized="false"
- static="false"
+ static="true"
  final="false"
  deprecated="not deprecated"
  visibility="public"
@@ -4047,16 +4353,49 @@
 <parameter name="key" type="com.google.inject.Key&lt;?&gt;">
 </parameter>
 </method>
-</interface>
-<interface name="Renderer"
+</class>
+<class name="NodeId.NodeType"
+ extends="java.lang.Enum"
+ abstract="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="valueOf"
+ return="com.google.inject.grapher.NodeId.NodeType"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="name" type="java.lang.String">
+</parameter>
+</method>
+<method name="values"
+ return="com.google.inject.grapher.NodeId.NodeType[]"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<interface name="RootKeySetCreator"
  abstract="true"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<method name="render"
- return="void"
+<method name="getRootKeys"
+ return="java.util.Set&lt;com.google.inject.Key&lt;?&gt;&gt;"
  abstract="true"
  native="false"
  synchronized="false"
@@ -4065,8 +4404,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<exception name="IOException" type="java.io.IOException">
-</exception>
+<parameter name="injector" type="com.google.inject.Injector">
+</parameter>
 </method>
 </interface>
 <class name="ShortNameFactory"
@@ -4179,61 +4518,14 @@
 </parameter>
 </method>
 </class>
-<class name="StringNodeIdFactory"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<implements name="com.google.inject.grapher.NodeIdFactory">
-</implements>
-<constructor name="StringNodeIdFactory"
- type="com.google.inject.grapher.StringNodeIdFactory"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</constructor>
-<method name="getClassNodeId"
- return="java.lang.String"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="key" type="com.google.inject.Key&lt;?&gt;">
-</parameter>
-</method>
-<method name="getInstanceNodeId"
- return="java.lang.String"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="key" type="com.google.inject.Key&lt;?&gt;">
-</parameter>
-</method>
-</class>
 <class name="TransitiveDependencyVisitor"
- extends="java.lang.Object"
+ extends="com.google.inject.spi.DefaultBindingTargetVisitor"
  abstract="false"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<implements name="com.google.inject.spi.BindingTargetVisitor">
-</implements>
 <constructor name="TransitiveDependencyVisitor"
  type="com.google.inject.grapher.TransitiveDependencyVisitor"
  static="false"
@@ -4266,19 +4558,6 @@
  visibility="public"
 >
 <parameter name="binding" type="com.google.inject.spi.ConvertedConstantBinding&lt;?&gt;">
-</parameter>
-</method>
-<method name="visit"
- return="java.util.Collection&lt;com.google.inject.Key&lt;?&gt;&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="binding" type="com.google.inject.spi.ExposedBinding&lt;?&gt;">
 </parameter>
 </method>
 <method name="visit"
@@ -4346,7 +4625,7 @@
 <parameter name="binding" type="com.google.inject.spi.ProviderKeyBinding&lt;?&gt;">
 </parameter>
 </method>
-<method name="visit"
+<method name="visitOther"
  return="java.util.Collection&lt;com.google.inject.Key&lt;?&gt;&gt;"
  abstract="false"
  native="false"
@@ -4356,7 +4635,7 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="binding" type="com.google.inject.spi.UntargettedBinding&lt;?&gt;">
+<parameter name="binding" type="com.google.inject.Binding&lt;?&gt;">
 </parameter>
 </method>
 </class>
@@ -4396,99 +4675,6 @@
 >
 </method>
 </class>
-<class name="BindingEdgeFactory"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<implements name="com.google.inject.grapher.BindingEdge.Factory">
-</implements>
-<constructor name="BindingEdgeFactory"
- type="com.google.inject.grapher.graphviz.BindingEdgeFactory"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="renderer" type="com.google.inject.grapher.graphviz.GraphvizRenderer">
-</parameter>
-</constructor>
-<method name="newAdaptor"
- return="com.google.inject.grapher.graphviz.BindingEdgeFactory.GraphvizEdgeAdaptor"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="edge" type="com.google.inject.grapher.graphviz.GraphvizEdge">
-</parameter>
-</method>
-<method name="newBindingEdge"
- return="com.google.inject.grapher.BindingEdge&lt;java.lang.String&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="fromId" type="java.lang.String">
-</parameter>
-<parameter name="toId" type="java.lang.String">
-</parameter>
-</method>
-</class>
-<class name="BindingEdgeFactory.GraphvizEdgeAdaptor"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<implements name="com.google.inject.grapher.BindingEdge">
-</implements>
-<constructor name="BindingEdgeFactory.GraphvizEdgeAdaptor"
- type="com.google.inject.grapher.graphviz.BindingEdgeFactory.GraphvizEdgeAdaptor"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="edge" type="com.google.inject.grapher.graphviz.GraphvizEdge">
-</parameter>
-</constructor>
-<method name="setType"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="type" type="com.google.inject.grapher.BindingEdge.Type">
-</parameter>
-</method>
-<field name="edge"
- type="com.google.inject.grapher.graphviz.GraphvizEdge"
- transient="false"
- volatile="false"
- static="false"
- final="true"
- deprecated="not deprecated"
- visibility="protected"
->
-</field>
-</class>
 <class name="CompassPoint"
  extends="java.lang.Enum"
  abstract="false"
@@ -4521,90 +4707,6 @@
  visibility="public"
 >
 </method>
-</class>
-<class name="DependencyEdgeFactory"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<implements name="com.google.inject.grapher.DependencyEdge.Factory">
-</implements>
-<constructor name="DependencyEdgeFactory"
- type="com.google.inject.grapher.graphviz.DependencyEdgeFactory"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="renderer" type="com.google.inject.grapher.graphviz.GraphvizRenderer">
-</parameter>
-<parameter name="portIdFactory" type="com.google.inject.grapher.graphviz.PortIdFactory">
-</parameter>
-</constructor>
-<method name="newAdaptor"
- return="com.google.inject.grapher.graphviz.DependencyEdgeFactory.GraphvizEdgeAdaptor"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="edge" type="com.google.inject.grapher.graphviz.GraphvizEdge">
-</parameter>
-</method>
-<method name="newDependencyEdge"
- return="com.google.inject.grapher.DependencyEdge&lt;java.lang.String&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="fromId" type="java.lang.String">
-</parameter>
-<parameter name="fromPoint" type="com.google.inject.spi.InjectionPoint">
-</parameter>
-<parameter name="toId" type="java.lang.String">
-</parameter>
-</method>
-</class>
-<class name="DependencyEdgeFactory.GraphvizEdgeAdaptor"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<implements name="com.google.inject.grapher.DependencyEdge">
-</implements>
-<constructor name="DependencyEdgeFactory.GraphvizEdgeAdaptor"
- type="com.google.inject.grapher.graphviz.DependencyEdgeFactory.GraphvizEdgeAdaptor"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="edge" type="com.google.inject.grapher.graphviz.GraphvizEdge">
-</parameter>
-</constructor>
-<field name="edge"
- type="com.google.inject.grapher.graphviz.GraphvizEdge"
- transient="false"
- volatile="false"
- static="false"
- final="true"
- deprecated="not deprecated"
- visibility="protected"
->
-</field>
 </class>
 <class name="EdgeStyle"
  extends="java.lang.Enum"
@@ -4654,9 +4756,9 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="tailNodeId" type="java.lang.String">
+<parameter name="tailNodeId" type="com.google.inject.grapher.NodeId">
 </parameter>
-<parameter name="headNodeId" type="java.lang.String">
+<parameter name="headNodeId" type="com.google.inject.grapher.NodeId">
 </parameter>
 </constructor>
 <method name="getArrowHead"
@@ -4693,7 +4795,7 @@
 >
 </method>
 <method name="getHeadNodeId"
- return="java.lang.String"
+ return="com.google.inject.grapher.NodeId"
  abstract="false"
  native="false"
  synchronized="false"
@@ -4737,7 +4839,7 @@
 >
 </method>
 <method name="getTailNodeId"
- return="java.lang.String"
+ return="com.google.inject.grapher.NodeId"
  abstract="false"
  native="false"
  synchronized="false"
@@ -4850,282 +4952,14 @@
 </parameter>
 </method>
 </class>
-<class name="GraphvizModule"
- extends="com.google.inject.AbstractModule"
+<class name="GraphvizGrapher"
+ extends="com.google.inject.grapher.AbstractInjectorGrapher"
  abstract="false"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<constructor name="GraphvizModule"
- type="com.google.inject.grapher.graphviz.GraphvizModule"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</constructor>
-<method name="configure"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-</method>
-</class>
-<class name="GraphvizNode"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<constructor name="GraphvizNode"
- type="com.google.inject.grapher.graphviz.GraphvizNode"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="nodeId" type="java.lang.String">
-</parameter>
-</constructor>
-<method name="addField"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="portId" type="java.lang.String">
-</parameter>
-<parameter name="title" type="java.lang.String">
-</parameter>
-</method>
-<method name="addSubtitle"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="position" type="int">
-</parameter>
-<parameter name="subtitle" type="java.lang.String">
-</parameter>
-</method>
-<method name="getFields"
- return="java.util.Map&lt;java.lang.String, java.lang.String&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getHeaderBackgroundColor"
- return="java.lang.String"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getHeaderTextColor"
- return="java.lang.String"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getNodeId"
- return="java.lang.String"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getShape"
- return="com.google.inject.grapher.graphviz.NodeShape"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getStyle"
- return="com.google.inject.grapher.graphviz.NodeStyle"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getSubtitles"
- return="java.util.List&lt;java.lang.String&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getTitle"
- return="java.lang.String"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="setHeaderBackgroundColor"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="headerBackgroundColor" type="java.lang.String">
-</parameter>
-</method>
-<method name="setHeaderTextColor"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="headerTextColor" type="java.lang.String">
-</parameter>
-</method>
-<method name="setShape"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="shape" type="com.google.inject.grapher.graphviz.NodeShape">
-</parameter>
-</method>
-<method name="setStyle"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="style" type="com.google.inject.grapher.graphviz.NodeStyle">
-</parameter>
-</method>
-<method name="setTitle"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="title" type="java.lang.String">
-</parameter>
-</method>
-</class>
-<class name="GraphvizRenderer"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<implements name="com.google.inject.grapher.NodeAliasFactory">
-</implements>
-<implements name="com.google.inject.grapher.Renderer">
-</implements>
-<constructor name="GraphvizRenderer"
- type="com.google.inject.grapher.graphviz.GraphvizRenderer"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</constructor>
-<method name="addEdge"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="edge" type="com.google.inject.grapher.graphviz.GraphvizEdge">
-</parameter>
-</method>
-<method name="addNode"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="node" type="com.google.inject.grapher.graphviz.GraphvizNode">
-</parameter>
-</method>
 <method name="finish"
  return="void"
  abstract="false"
@@ -5230,22 +5064,20 @@
 <parameter name="str" type="java.lang.String">
 </parameter>
 </method>
-<method name="newAlias"
- return="void"
+<method name="htmlEscape"
+ return="java.util.List&lt;java.lang.String&gt;"
  abstract="false"
  native="false"
  synchronized="false"
  static="false"
  final="false"
  deprecated="not deprecated"
- visibility="public"
+ visibility="protected"
 >
-<parameter name="fromId" type="java.lang.String">
-</parameter>
-<parameter name="toId" type="java.lang.String">
+<parameter name="elements" type="java.util.List&lt;java.lang.String&gt;">
 </parameter>
 </method>
-<method name="render"
+<method name="newBindingEdge"
  return="void"
  abstract="false"
  native="false"
@@ -5253,7 +5085,72 @@
  static="false"
  final="false"
  deprecated="not deprecated"
- visibility="public"
+ visibility="protected"
+>
+<parameter name="edge" type="com.google.inject.grapher.BindingEdge">
+</parameter>
+</method>
+<method name="newDependencyEdge"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="edge" type="com.google.inject.grapher.DependencyEdge">
+</parameter>
+</method>
+<method name="newImplementationNode"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="node" type="com.google.inject.grapher.ImplementationNode">
+</parameter>
+</method>
+<method name="newInstanceNode"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="node" type="com.google.inject.grapher.InstanceNode">
+</parameter>
+</method>
+<method name="newInterfaceNode"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="node" type="com.google.inject.grapher.InterfaceNode">
+</parameter>
+</method>
+<method name="postProcess"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
 >
 </method>
 <method name="renderEdge"
@@ -5282,8 +5179,8 @@
 <parameter name="node" type="com.google.inject.grapher.graphviz.GraphvizNode">
 </parameter>
 </method>
-<method name="resolveAlias"
- return="java.lang.String"
+<method name="reset"
+ return="void"
  abstract="false"
  native="false"
  synchronized="false"
@@ -5292,11 +5189,9 @@
  deprecated="not deprecated"
  visibility="protected"
 >
-<parameter name="id" type="java.lang.String">
-</parameter>
 </method>
 <method name="setOut"
- return="com.google.inject.grapher.graphviz.GraphvizRenderer"
+ return="void"
  abstract="false"
  native="false"
  synchronized="false"
@@ -5309,7 +5204,7 @@
 </parameter>
 </method>
 <method name="setRankdir"
- return="com.google.inject.grapher.graphviz.GraphvizRenderer"
+ return="void"
  abstract="false"
  native="false"
  synchronized="false"
@@ -5333,32 +5228,24 @@
 >
 </method>
 </class>
-<class name="ImplementationNodeFactory"
- extends="java.lang.Object"
+<class name="GraphvizModule"
+ extends="com.google.inject.AbstractModule"
  abstract="false"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<implements name="com.google.inject.grapher.ImplementationNode.Factory">
-</implements>
-<constructor name="ImplementationNodeFactory"
- type="com.google.inject.grapher.graphviz.ImplementationNodeFactory"
+<constructor name="GraphvizModule"
+ type="com.google.inject.grapher.graphviz.GraphvizModule"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="renderer" type="com.google.inject.grapher.graphviz.GraphvizRenderer">
-</parameter>
-<parameter name="nameFactory" type="com.google.inject.grapher.NameFactory">
-</parameter>
-<parameter name="portIdFactory" type="com.google.inject.grapher.graphviz.PortIdFactory">
-</parameter>
 </constructor>
-<method name="newAdaptor"
- return="com.google.inject.grapher.graphviz.ImplementationNodeFactory.GraphvizNodeAdaptor"
+<method name="configure"
+ return="void"
  abstract="false"
  native="false"
  synchronized="false"
@@ -5367,163 +5254,27 @@
  deprecated="not deprecated"
  visibility="protected"
 >
-<parameter name="node" type="com.google.inject.grapher.graphviz.GraphvizNode">
-</parameter>
-</method>
-<method name="newImplementationNode"
- return="com.google.inject.grapher.ImplementationNode&lt;java.lang.String&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="nodeId" type="java.lang.String">
-</parameter>
 </method>
 </class>
-<class name="ImplementationNodeFactory.GraphvizNodeAdaptor"
+<class name="GraphvizNode"
  extends="java.lang.Object"
  abstract="false"
  static="false"
  final="false"
  deprecated="not deprecated"
- visibility="protected"
->
-<implements name="com.google.inject.grapher.ImplementationNode">
-</implements>
-<constructor name="ImplementationNodeFactory.GraphvizNodeAdaptor"
- type="com.google.inject.grapher.graphviz.ImplementationNodeFactory.GraphvizNodeAdaptor"
- static="false"
- final="false"
- deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="node" type="com.google.inject.grapher.graphviz.GraphvizNode">
-</parameter>
-</constructor>
-<method name="addMember"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="member" type="java.lang.reflect.Member">
-</parameter>
-</method>
-<method name="setClassKey"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="key" type="com.google.inject.Key&lt;?&gt;">
-</parameter>
-</method>
-<method name="setInstance"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="instance" type="java.lang.Object">
-</parameter>
-</method>
-<method name="setSource"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="source" type="java.lang.Object">
-</parameter>
-</method>
-<field name="node"
+<constructor name="GraphvizNode"
  type="com.google.inject.grapher.graphviz.GraphvizNode"
- transient="false"
- volatile="false"
- static="false"
- final="true"
- deprecated="not deprecated"
- visibility="protected"
->
-</field>
-</class>
-<class name="InterfaceNodeFactory"
- extends="java.lang.Object"
- abstract="false"
  static="false"
  final="false"
  deprecated="not deprecated"
  visibility="public"
 >
-<implements name="com.google.inject.grapher.InterfaceNode.Factory">
-</implements>
-<constructor name="InterfaceNodeFactory"
- type="com.google.inject.grapher.graphviz.InterfaceNodeFactory"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="renderer" type="com.google.inject.grapher.graphviz.GraphvizRenderer">
-</parameter>
-<parameter name="nameFactory" type="com.google.inject.grapher.NameFactory">
+<parameter name="nodeId" type="com.google.inject.grapher.NodeId">
 </parameter>
 </constructor>
-<method name="newInterfaceNode"
- return="com.google.inject.grapher.InterfaceNode&lt;java.lang.String&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="nodeId" type="java.lang.String">
-</parameter>
-</method>
-</class>
-<class name="InterfaceNodeFactory.GraphvizNodeAdaptor"
- extends="java.lang.Object"
- abstract="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<implements name="com.google.inject.grapher.InterfaceNode">
-</implements>
-<constructor name="InterfaceNodeFactory.GraphvizNodeAdaptor"
- type="com.google.inject.grapher.graphviz.InterfaceNodeFactory.GraphvizNodeAdaptor"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="node" type="com.google.inject.grapher.graphviz.GraphvizNode">
-</parameter>
-</constructor>
-<method name="setKey"
+<method name="addField"
  return="void"
  abstract="false"
  native="false"
@@ -5533,10 +5284,12 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="key" type="com.google.inject.Key&lt;?&gt;">
+<parameter name="portId" type="java.lang.String">
+</parameter>
+<parameter name="title" type="java.lang.String">
 </parameter>
 </method>
-<method name="setSource"
+<method name="addSubtitle"
  return="void"
  abstract="false"
  native="false"
@@ -5546,19 +5299,188 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="source" type="java.lang.Object">
+<parameter name="position" type="int">
+</parameter>
+<parameter name="subtitle" type="java.lang.String">
 </parameter>
 </method>
-<field name="node"
- type="com.google.inject.grapher.graphviz.GraphvizNode"
- transient="false"
- volatile="false"
+<method name="getFields"
+ return="java.util.Map&lt;java.lang.String, java.lang.String&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
  static="false"
- final="true"
+ final="false"
  deprecated="not deprecated"
- visibility="protected"
+ visibility="public"
 >
-</field>
+</method>
+<method name="getHeaderBackgroundColor"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getHeaderTextColor"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getIdentifier"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getNodeId"
+ return="com.google.inject.grapher.NodeId"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getShape"
+ return="com.google.inject.grapher.graphviz.NodeShape"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getStyle"
+ return="com.google.inject.grapher.graphviz.NodeStyle"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getSubtitles"
+ return="java.util.List&lt;java.lang.String&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getTitle"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setHeaderBackgroundColor"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="headerBackgroundColor" type="java.lang.String">
+</parameter>
+</method>
+<method name="setHeaderTextColor"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="headerTextColor" type="java.lang.String">
+</parameter>
+</method>
+<method name="setIdentifier"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="identifier" type="java.lang.String">
+</parameter>
+</method>
+<method name="setShape"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="shape" type="com.google.inject.grapher.graphviz.NodeShape">
+</parameter>
+</method>
+<method name="setStyle"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="style" type="com.google.inject.grapher.graphviz.NodeStyle">
+</parameter>
+</method>
+<method name="setTitle"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="title" type="java.lang.String">
+</parameter>
+</method>
 </class>
 <class name="NodeShape"
  extends="java.lang.Enum"
@@ -7024,6 +6946,36 @@
 <implements name="java.lang.annotation.Annotation">
 </implements>
 </class>
+<class name="ScopingException"
+ extends="java.lang.IllegalStateException"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="ScopingException"
+ type="com.google.inject.servlet.ScopingException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="message" type="java.lang.String">
+</parameter>
+</constructor>
+</class>
+<class name="ScopingOnly"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="java.lang.annotation.Annotation">
+</implements>
+</class>
 <class name="ServletModule"
  extends="com.google.inject.AbstractModule"
  abstract="false"
@@ -7457,6 +7409,19 @@
 <parameter name="seedMap" type="java.util.Map&lt;com.google.inject.Key&lt;?&gt;, java.lang.Object&gt;">
 </parameter>
 </method>
+<method name="isRequestScoped"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="binding" type="com.google.inject.Binding&lt;?&gt;">
+</parameter>
+</method>
 <method name="scopeRequest"
  return="java.util.concurrent.Callable&lt;T&gt;"
  abstract="false"
@@ -7470,6 +7435,19 @@
 <parameter name="callable" type="java.util.concurrent.Callable&lt;T&gt;">
 </parameter>
 <parameter name="seedMap" type="java.util.Map&lt;com.google.inject.Key&lt;?&gt;, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="transferRequest"
+ return="java.util.concurrent.Callable&lt;T&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="callable" type="java.util.concurrent.Callable&lt;T&gt;">
 </parameter>
 </method>
 <field name="REQUEST"
@@ -8181,6 +8159,45 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="binding" type="com.google.inject.spi.ProvisionListenerBinding">
+</parameter>
+</method>
+<method name="visit"
+ return="V"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="option" type="com.google.inject.spi.RequireAtInjectOnConstructorsOption">
+</parameter>
+</method>
+<method name="visit"
+ return="V"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="option" type="com.google.inject.spi.RequireExactBindingAnnotationsOption">
+</parameter>
+</method>
+<method name="visit"
+ return="V"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
 <parameter name="option" type="com.google.inject.spi.RequireExplicitBindingsOption">
 </parameter>
 </method>
@@ -8329,6 +8346,49 @@
 >
 </method>
 </class>
+<class name="DependencyAndSource"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="DependencyAndSource"
+ type="com.google.inject.spi.DependencyAndSource"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dependency" type="com.google.inject.spi.Dependency&lt;?&gt;">
+</parameter>
+<parameter name="source" type="java.lang.Object">
+</parameter>
+</constructor>
+<method name="getBindingSource"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getDependency"
+ return="com.google.inject.spi.Dependency&lt;?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
 <class name="DisableCircularProxiesOption"
  extends="java.lang.Object"
  abstract="false"
@@ -8422,6 +8482,70 @@
 >
 </method>
 </interface>
+<class name="ElementSource"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="getDeclaringSource"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getModuleClassNames"
+ return="java.util.List&lt;java.lang.String&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getModuleConfigurePositionsInStackTrace"
+ return="java.util.List&lt;java.lang.Integer&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getOriginalElementSource"
+ return="com.google.inject.spi.ElementSource"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getStackTrace"
+ return="java.lang.StackTraceElement[]"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
 <interface name="ElementVisitor"
  abstract="true"
  static="false"
@@ -8531,6 +8655,45 @@
  visibility="public"
 >
 <parameter name="lookup" type="com.google.inject.spi.ProviderLookup&lt;T&gt;">
+</parameter>
+</method>
+<method name="visit"
+ return="V"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="binding" type="com.google.inject.spi.ProvisionListenerBinding">
+</parameter>
+</method>
+<method name="visit"
+ return="V"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="option" type="com.google.inject.spi.RequireAtInjectOnConstructorsOption">
+</parameter>
+</method>
+<method name="visit"
+ return="V"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="option" type="com.google.inject.spi.RequireExactBindingAnnotationsOption">
 </parameter>
 </method>
 <method name="visit"
@@ -9662,6 +9825,243 @@
 </parameter>
 </method>
 </interface>
+<interface name="ProvisionListener"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="onProvision"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="provision" type="com.google.inject.spi.ProvisionListener.ProvisionInvocation&lt;T&gt;">
+</parameter>
+</method>
+</interface>
+<class name="ProvisionListener.ProvisionInvocation"
+ extends="java.lang.Object"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="ProvisionListener.ProvisionInvocation"
+ type="com.google.inject.spi.ProvisionListener.ProvisionInvocation"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="getBinding"
+ return="com.google.inject.Binding&lt;T&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getDependencyChain"
+ return="java.util.List&lt;com.google.inject.spi.DependencyAndSource&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="provision"
+ return="T"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<class name="ProvisionListenerBinding"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.inject.spi.Element">
+</implements>
+<method name="acceptVisitor"
+ return="R"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="visitor" type="com.google.inject.spi.ElementVisitor&lt;R&gt;">
+</parameter>
+</method>
+<method name="applyTo"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="binder" type="com.google.inject.Binder">
+</parameter>
+</method>
+<method name="getBindingMatcher"
+ return="com.google.inject.matcher.Matcher&lt;? super com.google.inject.Binding&lt;?&gt;&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getListeners"
+ return="java.util.List&lt;com.google.inject.spi.ProvisionListener&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getSource"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<class name="RequireAtInjectOnConstructorsOption"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.inject.spi.Element">
+</implements>
+<method name="acceptVisitor"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="visitor" type="com.google.inject.spi.ElementVisitor&lt;T&gt;">
+</parameter>
+</method>
+<method name="applyTo"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="binder" type="com.google.inject.Binder">
+</parameter>
+</method>
+<method name="getSource"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<class name="RequireExactBindingAnnotationsOption"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.inject.spi.Element">
+</implements>
+<method name="acceptVisitor"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="visitor" type="com.google.inject.spi.ElementVisitor&lt;T&gt;">
+</parameter>
+</method>
+<method name="applyTo"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="binder" type="com.google.inject.Binder">
+</parameter>
+</method>
+<method name="getSource"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
 <class name="RequireExplicitBindingsOption"
  extends="java.lang.Object"
  abstract="false"
@@ -10292,6 +10692,17 @@
 <implements name="java.lang.annotation.Annotation">
 </implements>
 </class>
+<class name="ThrowingInject"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="java.lang.annotation.Annotation">
+</implements>
+</class>
 <interface name="ThrowingProvider"
  abstract="true"
  static="false"
@@ -10324,7 +10735,7 @@
  visibility="public"
 >
 <method name="bind"
- return="com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P&gt;"
+ return="com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P, T&gt;"
  abstract="false"
  native="false"
  synchronized="false"
@@ -10335,7 +10746,37 @@
 >
 <parameter name="interfaceType" type="java.lang.Class&lt;P&gt;">
 </parameter>
-<parameter name="valueType" type="java.lang.reflect.Type">
+<parameter name="typeLiteral" type="com.google.inject.TypeLiteral&lt;T&gt;">
+</parameter>
+</method>
+<method name="bind"
+ return="com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P, T&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="interfaceType" type="java.lang.Class&lt;P&gt;">
+</parameter>
+<parameter name="clazz" type="java.lang.Class&lt;T&gt;">
+</parameter>
+</method>
+<method name="bind"
+ return="com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P, ?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="deprecated"
+ visibility="public"
+>
+<parameter name="interfaceType" type="java.lang.Class&lt;P&gt;">
+</parameter>
+<parameter name="clazz" type="java.lang.reflect.Type">
 </parameter>
 </method>
 <method name="create"
@@ -10386,7 +10827,7 @@
 </parameter>
 </constructor>
 <method name="annotatedWith"
- return="com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P&gt;"
+ return="com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P, T&gt;"
  abstract="false"
  native="false"
  synchronized="false"
@@ -10399,7 +10840,7 @@
 </parameter>
 </method>
 <method name="annotatedWith"
- return="com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P&gt;"
+ return="com.google.inject.throwingproviders.ThrowingProviderBinder.SecondaryBinder&lt;P, T&gt;"
  abstract="false"
  native="false"
  synchronized="false"
@@ -10409,6 +10850,32 @@
  visibility="public"
 >
 <parameter name="annotation" type="java.lang.annotation.Annotation">
+</parameter>
+</method>
+<method name="providing"
+ return="com.google.inject.binder.ScopedBindingBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="cxtorLiteral" type="com.google.inject.TypeLiteral&lt;? extends T&gt;">
+</parameter>
+</method>
+<method name="providing"
+ return="com.google.inject.binder.ScopedBindingBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="cxtorClass" type="java.lang.Class&lt;? extends T&gt;">
 </parameter>
 </method>
 <method name="to"

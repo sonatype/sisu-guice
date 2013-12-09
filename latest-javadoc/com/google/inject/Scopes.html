@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -476,6 +476,43 @@ Summary:
 <!-- ========== METHOD SUMMARY =========== -->
 <table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
 
+
+
+	 
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            static
+            
+            boolean</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../com/google/inject/Scopes.html#isCircularProxy(java.lang.Object)">isCircularProxy</a></span>(Object object)</nobr>
+        
+        <div class="jd-descrdiv">Returns true if the object is a proxy for a circular dependency,
+ constructed by Guice because it encountered a circular dependency.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            static
+            
+            boolean</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../com/google/inject/Scopes.html#isScoped(com.google.inject.Binding<?>, com.google.inject.Scope, java.lang.Class<? extends java.lang.annotation.Annotation>)">isScoped</a></span>(<a href="../../../com/google/inject/Binding.html">Binding</a>&lt;?&gt; binding, <a href="../../../com/google/inject/Scope.html">Scope</a> scope, Class&lt;?&nbsp;extends&nbsp;Annotation&gt; scopeAnnotation)</nobr>
+        
+        <div class="jd-descrdiv">Returns true if <code>binding</code> has the given scope.</div>
+  
+  </td></tr>
 
 
 	 
@@ -831,6 +868,98 @@ From class
 
 <h2>Public Methods</h2>
 
+
+
+<A NAME="isCircularProxy(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+        static 
+         
+         
+         
+        boolean
+      </span>
+      <span class="sympad">isCircularProxy</span>
+      <span class="normal">(Object object)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if the object is a proxy for a circular dependency,
+ constructed by Guice because it encountered a circular dependency. Scope
+ implementations should be careful to <b>not cache circular proxies</b>,
+ because the proxies are not intended for general purpose use. (They are
+ designed just to fulfill the immediate injection, not all injections.
+ Caching them can lead to IllegalArgumentExceptions or ClassCastExceptions.)
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isScoped(com.google.inject.Binding<?>, com.google.inject.Scope, java.lang.Class<? extends java.lang.annotation.Annotation>)"></A>
+
+<div class="jd-details api apilevel-Guice_4.0"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+        static 
+         
+         
+         
+        boolean
+      </span>
+      <span class="sympad">isScoped</span>
+      <span class="normal">(<a href="../../../com/google/inject/Binding.html">Binding</a>&lt;?&gt; binding, <a href="../../../com/google/inject/Scope.html">Scope</a> scope, Class&lt;?&nbsp;extends&nbsp;Annotation&gt; scopeAnnotation)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+  Since: <a href="../../../guide/appendix/api-levels.html#levelGuice_4.0">API Level Guice_4.0</a>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code>binding</code> has the given scope. If the binding is a <code><a href="../../../com/google/inject/spi/LinkedKeyBinding.html">linked key binding</a></code> and belongs to an injector (ie. it
+ was retrieved via <code><a href="../../../com/google/inject/Injector.html#getBinding(com.google.inject.Key<T>)">Injector.getBinding()</a></code>), then this method will
+ also true if the target binding has the given scope.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>binding</td>
+          <td>binding to check</td>
+        </tr>
+        <tr>
+          <th>scope</td>
+          <td>scope implementation instance</td>
+        </tr>
+        <tr>
+          <th>scopeAnnotation</td>
+          <td>scope annotation class
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
 
 
 <A NAME="isSingleton(com.google.inject.Binding<?>)"></A>

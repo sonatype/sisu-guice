@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -210,18 +210,10 @@
               
     <li><h2>Classes</h2>
       <ul>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/BindingEdgeFactory.html">BindingEdgeFactory</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/BindingEdgeFactory.GraphvizEdgeAdaptor.html">BindingEdgeFactory.GraphvizEdgeAdaptor</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/DependencyEdgeFactory.html">DependencyEdgeFactory</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/DependencyEdgeFactory.GraphvizEdgeAdaptor.html">DependencyEdgeFactory.GraphvizEdgeAdaptor</a></li>
         <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html">GraphvizEdge</a></li>
+        <li class="api apilevel-Guice_4.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizGrapher.html">GraphvizGrapher</a></li>
         <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizModule.html">GraphvizModule</a></li>
         <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizNode.html">GraphvizNode</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizRenderer.html">GraphvizRenderer</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/ImplementationNodeFactory.html">ImplementationNodeFactory</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/ImplementationNodeFactory.GraphvizNodeAdaptor.html">ImplementationNodeFactory.GraphvizNodeAdaptor</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/InterfaceNodeFactory.html">InterfaceNodeFactory</a></li>
-        <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/InterfaceNodeFactory.GraphvizNodeAdaptor.html">InterfaceNodeFactory.GraphvizNodeAdaptor</a></li>
         <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/PortIdFactoryImpl.html">PortIdFactoryImpl</a></li>
       </ul>
     </li>
@@ -322,60 +314,22 @@
     
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/BindingEdgeFactory.html">BindingEdgeFactory</a></td>
-              <td class="jd-descrcol" width="100%">Graphviz-specific implementation of <code><a href="../../../../../com/google/inject/grapher/BindingEdge.Factory.html">BindingEdge.Factory</a></code>.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/BindingEdgeFactory.GraphvizEdgeAdaptor.html">BindingEdgeFactory.GraphvizEdgeAdaptor</a></td>
-              <td class="jd-descrcol" width="100%">Adaptor class that converts <code><a href="../../../../../com/google/inject/grapher/BindingEdge.html">BindingEdge</a></code> methods to display
- operations on a <code><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html">GraphvizEdge</a></code>.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/DependencyEdgeFactory.html">DependencyEdgeFactory</a></td>
-              <td class="jd-descrcol" width="100%">Graphviz-specific implementation of <code><a href="../../../../../com/google/inject/grapher/DependencyEdge.Factory.html">DependencyEdge.Factory</a></code>.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/DependencyEdgeFactory.GraphvizEdgeAdaptor.html">DependencyEdgeFactory.GraphvizEdgeAdaptor</a></td>
-              <td class="jd-descrcol" width="100%">Adaptor class that converts <code><a href="../../../../../com/google/inject/grapher/DependencyEdge.html">DependencyEdge</a></code> methods to display
- operations on a <code><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html">GraphvizEdge</a></code>.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html">GraphvizEdge</a></td>
               <td class="jd-descrcol" width="100%">Data object to encapsulate the attributes of Graphviz edges that we're
  interested in drawing.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizModule.html">GraphvizModule</a></td>
-              <td class="jd-descrcol" width="100%">Module that provides <code><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizRenderer.html">GraphvizRenderer</a></code> as the <code><a href="../../../../../com/google/inject/grapher/Renderer.html">Renderer</a></code> and
- binds the other Graphviz factories.&nbsp;</td>
+        <tr class=" api apilevel-Guice_4.0" >
+              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizGrapher.html">GraphvizGrapher</a></td>
+              <td class="jd-descrcol" width="100%">InjectorGrapher implementation that writes out a Graphviz DOT file of the graph.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-Guice_3.0" >
+              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizModule.html">GraphvizModule</a></td>
+              <td class="jd-descrcol" width="100%">Module that provides classes needed by <code><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizGrapher.html">GraphvizGrapher</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizNode.html">GraphvizNode</a></td>
               <td class="jd-descrcol" width="100%">Data object to encapsulate the attributes of Graphviz nodes that we're
  interested in drawing.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizRenderer.html">GraphvizRenderer</a></td>
-              <td class="jd-descrcol" width="100%"><code><a href="../../../../../com/google/inject/grapher/Renderer.html">Renderer</a></code> implementation that writes out a Graphviz DOT file of the
- graph.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/ImplementationNodeFactory.html">ImplementationNodeFactory</a></td>
-              <td class="jd-descrcol" width="100%">Graphviz-specific implementation of <code><a href="../../../../../com/google/inject/grapher/ImplementationNode.Factory.html">ImplementationNode.Factory</a></code>.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/ImplementationNodeFactory.GraphvizNodeAdaptor.html">ImplementationNodeFactory.GraphvizNodeAdaptor</a></td>
-              <td class="jd-descrcol" width="100%">Adaptor class that converts <code><a href="../../../../../com/google/inject/grapher/ImplementationNode.html">ImplementationNode</a></code> methods to display
- operations on a <code><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizNode.html">GraphvizNode</a></code>.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/InterfaceNodeFactory.html">InterfaceNodeFactory</a></td>
-              <td class="jd-descrcol" width="100%">Graphviz-specific implementation of <code><a href="../../../../../com/google/inject/grapher/InterfaceNode.Factory.html">InterfaceNode.Factory</a></code>.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-Guice_3.0" >
-              <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/InterfaceNodeFactory.GraphvizNodeAdaptor.html">InterfaceNodeFactory.GraphvizNodeAdaptor</a></td>
-              <td class="jd-descrcol" width="100%">Adaptor class that converts <code><a href="../../../../../com/google/inject/grapher/InterfaceNode.html">InterfaceNode</a></code> methods to display
- operations on a <code><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizNode.html">GraphvizNode</a></code>.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-Guice_3.0" >
               <td class="jd-linkcol"><a href="../../../../../com/google/inject/grapher/graphviz/PortIdFactoryImpl.html">PortIdFactoryImpl</a></td>

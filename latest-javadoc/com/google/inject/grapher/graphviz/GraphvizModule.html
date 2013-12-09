@@ -135,9 +135,9 @@
     </select>
   </div>
   <script>
-   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+   var SINCE_DATA = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     
-    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0' ];
+    var SINCE_LABELS = [ 'Guice_1.0', 'Guice_2.0', 'Guice_3.0', 'Guice_4.0' ];
     buildApiLevelSelector();
     addLoadEvent(changeApiLevel);
   </script>
@@ -210,18 +210,10 @@
               
     <li><h2>Classes</h2>
       <ul>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/BindingEdgeFactory.html">BindingEdgeFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/BindingEdgeFactory.GraphvizEdgeAdaptor.html">BindingEdgeFactory.GraphvizEdgeAdaptor</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/DependencyEdgeFactory.html">DependencyEdgeFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/DependencyEdgeFactory.GraphvizEdgeAdaptor.html">DependencyEdgeFactory.GraphvizEdgeAdaptor</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizEdge.html">GraphvizEdge</a></li>
+          <li class="api apilevel-Guice_4.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizGrapher.html">GraphvizGrapher</a></li>
           <li class="selected api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizModule.html">GraphvizModule</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizNode.html">GraphvizNode</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizRenderer.html">GraphvizRenderer</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/ImplementationNodeFactory.html">ImplementationNodeFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/ImplementationNodeFactory.GraphvizNodeAdaptor.html">ImplementationNodeFactory.GraphvizNodeAdaptor</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/InterfaceNodeFactory.html">InterfaceNodeFactory</a></li>
-          <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/InterfaceNodeFactory.GraphvizNodeAdaptor.html">InterfaceNodeFactory.GraphvizNodeAdaptor</a></li>
           <li class="api apilevel-Guice_3.0"><a href="../../../../../com/google/inject/grapher/graphviz/PortIdFactoryImpl.html">PortIdFactoryImpl</a></li>
       </ul>
     </li>
@@ -408,8 +400,7 @@ Summary:
 
 
 <h2>Class Overview</h2>
-<p>Module that provides <code><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizRenderer.html">GraphvizRenderer</a></code> as the <code><a href="../../../../../com/google/inject/grapher/Renderer.html">Renderer</a></code> and
- binds the other Graphviz factories.</p>
+<p>Module that provides classes needed by <code><a href="../../../../../com/google/inject/grapher/graphviz/GraphvizGrapher.html">GraphvizGrapher</a></code>.</p>
 
 
 
@@ -674,7 +665,23 @@ From class
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_4.0" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            void</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../../com/google/inject/AbstractModule.html#bindListener(com.google.inject.matcher.Matcher<? super com.google.inject.Binding<?>>, com.google.inject.spi.ProvisionListener...)">bindListener</a></span>(<a href="../../../../../com/google/inject/matcher/Matcher.html">Matcher</a>&lt;?&nbsp;super&nbsp;<a href="../../../../../com/google/inject/Binding.html">Binding</a>&lt;?&gt;&gt; bindingMatcher, <a href="../../../../../com/google/inject/spi/ProvisionListener.html">ProvisionListener...</a> listener)</nobr>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -690,7 +697,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-Guice_1.0" >
+    <tr class="alt-color api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -706,7 +713,7 @@ From class
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_1.0" >
+    <tr class=" api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -724,7 +731,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-Guice_1.0" >
+    <tr class="alt-color api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -742,7 +749,7 @@ From class
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_1.0" >
+    <tr class=" api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             
             synchronized
@@ -760,7 +767,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -776,7 +783,7 @@ From class
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -792,7 +799,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -808,7 +815,7 @@ From class
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -824,7 +831,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -840,7 +847,7 @@ From class
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -856,7 +863,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-Guice_1.0" >
+    <tr class="alt-color api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -872,7 +879,7 @@ From class
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -888,7 +895,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-Guice_1.0" >
+    <tr class="alt-color api apilevel-Guice_1.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -904,7 +911,7 @@ From class
 
 
 	 
-    <tr class="alt-color api apilevel-Guice_2.0" >
+    <tr class=" api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
@@ -922,7 +929,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-Guice_2.0" >
+    <tr class="alt-color api apilevel-Guice_2.0" >
         <td class="jd-typecol"><nobr>
             
             
