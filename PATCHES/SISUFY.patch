@@ -1,16 +1,25 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2012-07-29
+Last-Update: 2012-12-09
 
-diff --git a/README b/README
+diff --git a/README.md b/README.md
 new file mode 100644
-index 0000000..ad2843d
+index 0000000..7597582
 --- /dev/null
-+++ b/README
-@@ -0,0 +1 @@
++++ b/README.md
+@@ -0,0 +1,10 @@
 +Patched build of http://code.google.com/p/google-guice/ - see PATCHES for the exact differences.
++
++Compatibility with Google-Guice
++-------------------------------
++
++The main difference between Sisu-Guice and Google-Guice is that Guava is now exposed as a direct Maven dependency. If you are assembling your application outside of Maven you therefore need to add Guava to the runtime JARs. The build uses Guava 11.0.2 but you can use Maven's `<dependencyManagement>` to select a different version of Guava. (The current source code is compatible up to and including Guava 15.0)
++
++Because of this dependency difference you should avoid mixing the official Google-Guice library with internal extensions provided by Sisu-Guice and vice-versa. Third-party Guice extensions should be compatible with either library.
++
++Sisu-Guice retains the same public API as Google-Guice and is binary compatible from a client perspective.
 diff --git a/core/pom.xml b/core/pom.xml
-index 633b933..69c4b1a 100644
+index 97c8e60..27f5ea5 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,14 +4,15 @@
@@ -30,9 +39,9 @@ index 633b933..69c4b1a 100644
 -  <name>Google Guice - Core Library</name>
 +  <name>Sisu Guice - Core Library</name>
  
-   <dependencies>
-     <dependency>
-@@ -133,18 +134,6 @@
+   <properties>
+     <cglib.version>3.0</cglib.version>
+@@ -123,18 +124,6 @@
            </excludes>
          </configuration>
        </plugin>
@@ -192,7 +201,7 @@ index 8875e39..9eb7ee9 100644
  
  </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index 72d36bf..2ef23f5 100644
+index 18b15a3..2edfc04 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -4,14 +4,14 @@
@@ -213,7 +222,7 @@ index 72d36bf..2ef23f5 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index 9a45b1d..f349015 100644
+index bd706c7..5b6574b 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -4,17 +4,16 @@
@@ -391,7 +400,7 @@ index cd866cc..d086054 100644
  
  </project>
 diff --git a/pom.xml b/pom.xml
-index b03046b..bfc1c00 100644
+index 0805839..83477bc 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -428,7 +437,7 @@ index b03046b..bfc1c00 100644
    <scm>
 -    <connection>scm:git:https://code.google.com/p/google-guice/</connection>
 -    <developerConnection>scm:git:https://code.google.com/p/google-guice/</developerConnection>
--    <url>http://code.google.com/p/google-guice/source/browse/</url>
+-    <url>https://code.google.com/p/google-guice/</url>
 +    <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
 +    <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
 +    <url>http://github.com/sonatype/sisu-guice</url>
@@ -439,7 +448,7 @@ index b03046b..bfc1c00 100644
  
    <ciManagement>
      <system>Hudson</system>
--    <url>https://builds.sonatype.org/job/google-guice/</url>
+-    <url>https://grid.sonatype.org/ci/job/google-guice/</url>
 +    <url>https://builds.sonatype.org/job/sisu-guice/</url>
    </ciManagement>
  
@@ -452,7 +461,7 @@ index b03046b..bfc1c00 100644
    </properties>
  
    <dependencies>
-@@ -217,7 +216,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -316,7 +315,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
@@ -461,7 +470,7 @@ index b03046b..bfc1c00 100644
                <Bundle-RequiredExecutionEnvironment>
                  J2SE-1.5,JavaSE-1.6
                </Bundle-RequiredExecutionEnvironment>
-@@ -272,82 +271,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -367,82 +366,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
            <version>2.7</version>

@@ -1,7 +1,7 @@
 Description: Pull out embedded Guava and expose it as an external dependency
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=709
-Last-Update: 2013-03-31
+Last-Update: 2013-12-09
 
 diff --git a/build.properties b/build.properties
 index a76a5ab..d8bf543 100644
@@ -14,10 +14,10 @@ index a76a5ab..d8bf543 100644
 -imports=!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.common.*
 +imports=!net.sf.cglib.*,!org.objectweb.asm.*
 diff --git a/build.xml b/build.xml
-index 16e63df..6aa5037 100644
+index 51d2cb1..83e50c7 100644
 --- a/build.xml
 +++ b/build.xml
-@@ -89,11 +89,12 @@
+@@ -102,11 +102,12 @@
        <classpath>
          <pathelement location="${build.dir}/guice-${version}-tests.jar"/>
          <pathelement location="${build.dir}/dist/guice-${version}.jar"/>
@@ -31,7 +31,7 @@ index 16e63df..6aa5037 100644
          <pathelement location="lib/build/javax.inject-tck.jar"/>
          <pathelement location="lib/build/bnd-0.0.384.jar"/>
          <pathelement location="lib/build/felix-2.0.5.jar"/>
-@@ -120,7 +121,7 @@
+@@ -134,7 +135,7 @@
      <javadoc packagenames="com.google.*"
                   docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
               maxmemory="512M"
@@ -40,7 +40,7 @@ index 16e63df..6aa5037 100644
        <fileset dir="${src.dir}" defaultexcludes="yes">
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
-@@ -149,7 +150,7 @@
+@@ -163,7 +164,7 @@
                       docletpath="${jdiff.home}/jdiff.jar${path.separator}${jdiff.home}/xerces.jar"
                   maxmemory="512M"
                       sourcefiles="${jdiff.home}/Null.java"
@@ -49,7 +49,7 @@ index 16e63df..6aa5037 100644
            <doclet name="jdiff.JDiff">
                  <param name="-oldapi" value="${old.api}"/>
                  <param name="-oldapidir" value="latest-api-diffs"/>             
-@@ -169,7 +170,7 @@
+@@ -183,7 +184,7 @@
               docletpath="lib/build/doclava.jar"
               bootclasspath="${java.home}/lib/rt.jar"
               maxmemory="512M"
@@ -59,7 +59,7 @@ index 16e63df..6aa5037 100644
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
 diff --git a/common.xml b/common.xml
-index b0cae0c..9ed0f8b 100644
+index 1a7add9..fe08135 100644
 --- a/common.xml
 +++ b/common.xml
 @@ -131,8 +131,6 @@
@@ -71,10 +71,10 @@ index b0cae0c..9ed0f8b 100644
        <rule pattern="javax.annotation.*.class" result="com.google.inject.internal.jsr305.$@1"/>
        <rule pattern="javax.annotation.**.*.class" result="com.google.inject.internal.jsr305.@1.$@2"/>
        <keep pattern="com.google.inject.**"/>
-@@ -151,17 +149,11 @@
-       <zipfileset src="${common.basedir}/lib/build/cglib-3.0.jar"/>
-       <zipfileset src="${common.basedir}/lib/build/asm-4.0.jar"/>
-       <zipfileset src="${common.basedir}/lib/build/asm-util-4.0.jar"/>
+@@ -150,17 +148,11 @@
+       <fileset dir="${build.dir}/classes"/>
+       <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
+       <zipfileset src="${common.basedir}/lib/build/asm-4.2.jar"/>
 -      <zipfileset src="${common.basedir}/lib/build/guava-11.0.1.jar"/>
        <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
@@ -89,7 +89,7 @@ index b0cae0c..9ed0f8b 100644
      </jarjar>
    </target>
  
-@@ -181,8 +173,6 @@
+@@ -177,8 +169,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
@@ -159,7 +159,7 @@ index a3e2202..0000000
 -
 -chmod +w -R $srcdir $testdir
 diff --git a/core/pom.xml b/core/pom.xml
-index 5a04460..06decf9 100644
+index 97c8e60..9d4f43e 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -32,7 +32,7 @@
@@ -171,7 +171,7 @@ index 5a04460..06decf9 100644
      </dependency>
      <dependency>
        <groupId>cglib</groupId>
-@@ -241,7 +241,6 @@
+@@ -242,7 +242,6 @@
                <includes>
                  <include>*:asm*</include>
                  <include>*:cglib</include>
@@ -221,7 +221,7 @@ index 77ab8fa..6cb2b1b 100644
        systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/osgitests.jar").start();
  
 diff --git a/guice.iml b/guice.iml
-index 2abdea0..ca98987 100644
+index 53b2d05..8dd0ae2 100644
 --- a/guice.iml
 +++ b/guice.iml
 @@ -87,6 +87,15 @@
@@ -249,7 +249,7 @@ new file mode 100644
 index 0000000..c8c8d5d
 Binary files /dev/null and b/lib/guava-11.0.2.jar differ
 diff --git a/pom.xml b/pom.xml
-index 9bfe995..331f9a2 100644
+index 0805839..95a3197 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -221,25 +221,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -278,7 +278,7 @@ index 9bfe995..331f9a2 100644
              </rules>
            </configuration>
            <!--
-@@ -305,6 +292,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -332,6 +319,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                  Ignore-Package,Bnd-LastModified
                </_removeheaders>
              </instructions>

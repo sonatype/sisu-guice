@@ -1,10 +1,10 @@
 Description: Isolate jarjar instructions to core build, extensions no longer need jarjar
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=719
-Last-Update: 2013-10-06
+Last-Update: 2013-12-09
 
 diff --git a/build.xml b/build.xml
-index 6aa5037..c66a0c2 100644
+index 83e50c7..d9802ae 100644
 --- a/build.xml
 +++ b/build.xml
 @@ -31,34 +31,34 @@
@@ -62,7 +62,7 @@ index 6aa5037..c66a0c2 100644
      <java fork="true"
          classname="junit.textui.TestRunner"
 diff --git a/common.xml b/common.xml
-index 9ed0f8b..79ce94f 100644
+index fe08135..e54d19d 100644
 --- a/common.xml
 +++ b/common.xml
 @@ -119,7 +119,7 @@
@@ -83,7 +83,7 @@ index 9ed0f8b..79ce94f 100644
        <keep pattern="com.google.inject.**"/>
        <keep pattern="com.googlecode.**"/>
      </jarjar>
-@@ -156,24 +154,4 @@
+@@ -155,21 +153,4 @@
        <keep pattern="com.google.inject.**"/>
      </jarjar>
    </target>
@@ -95,10 +95,7 @@ index 9ed0f8b..79ce94f 100644
 -    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
 -        classpath="${common.basedir}/lib/build/jarjar-1.1.jar"/>
 -    <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
--      <zipfileset src="${common.basedir}/lib/build/cglib-3.0.jar">
--        <include name="LICENSE"/>
--        <include name="NOTICE"/>
--      </zipfileset>
+-      <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"><include name="LICENSE"/><include name="NOTICE"/></zipfileset>
 -      <fileset dir="${build.dir}/classes"/>
 -      <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
 -      <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
@@ -109,7 +106,7 @@ index 9ed0f8b..79ce94f 100644
 -  </target>
  </project>
 diff --git a/core/pom.xml b/core/pom.xml
-index 06decf9..4a1c6ca 100644
+index 9d4f43e..0a870fc 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -13,11 +13,6 @@
@@ -141,7 +138,7 @@ index 06decf9..4a1c6ca 100644
      </dependency>
      <dependency>
        <groupId>javax.inject</groupId>
-@@ -215,51 +212,65 @@
+@@ -216,51 +213,65 @@
            <value>!false</value>
          </property>
        </activation>
@@ -234,7 +231,7 @@ index 06decf9..4a1c6ca 100644
                  </configuration>
                </execution>
              </executions>
-@@ -267,6 +278,43 @@
+@@ -268,6 +279,43 @@
          </plugins>
        </build>
      </profile>
@@ -387,7 +384,7 @@ index 9be40c8..764c726 100644
    </target>
  
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index eeb12c9..62b1d27 100644
+index bd706c7..9a45b1d 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -101,41 +101,28 @@
@@ -517,7 +514,7 @@ index 9d36431..27c20e0 100644
    </target>
  
 diff --git a/pom.xml b/pom.xml
-index 331f9a2..e368ed8 100644
+index 95a3197..21ea053 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -196,65 +196,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
