@@ -36,11 +36,22 @@
       <artifactId>guava</artifactId>
       <version>11.0.2</version>
     </dependency>
+    <!--
+     | CGLIB is embedded by default by the JarJar build profile
+    -->
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>5.0_BETA</version>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
       <version>3.1</version>
       <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -200,7 +211,7 @@
     </profile>
     <profile>
       <!--
-       | JarJar build profile: re-package ASM and CGLIB classes under the Guice namespace
+       | JarJar build profile: embed CGLIB (and ASM) classes under Guice namespace
       -->
       <id>guice.with.jarjar</id>
       <activation>
@@ -277,7 +288,7 @@
     </profile>
     <profile>
       <!--
-       | m2e profile - force use of JarJar inside Eclipse
+       | m2e profile - enable use of JarJar inside Eclipse
       -->
       <id>m2e</id>
       <activation>

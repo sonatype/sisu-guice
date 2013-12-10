@@ -1,7 +1,7 @@
 Description: Pull out embedded Guava and expose it as an external dependency
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=709
-Last-Update: 2013-12-09
+Last-Update: 2013-12-10
 
 diff --git a/build.properties b/build.properties
 index a76a5ab..d8bf543 100644
@@ -59,19 +59,21 @@ index 51d2cb1..83e50c7 100644
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
 diff --git a/common.xml b/common.xml
-index 1a7add9..fe08135 100644
+index 1a7add9..33a22eb 100644
 --- a/common.xml
 +++ b/common.xml
-@@ -131,8 +131,6 @@
+@@ -131,10 +131,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
 -      <rule pattern="com.google.common.*" result="com.google.inject.internal.guava.$@1"/>
 -      <rule pattern="com.google.common.**.*" result="com.google.inject.internal.guava.@1.$@2"/>
-       <rule pattern="javax.annotation.*.class" result="com.google.inject.internal.jsr305.$@1"/>
-       <rule pattern="javax.annotation.**.*.class" result="com.google.inject.internal.jsr305.@1.$@2"/>
+-      <rule pattern="javax.annotation.*.class" result="com.google.inject.internal.jsr305.$@1"/>
+-      <rule pattern="javax.annotation.**.*.class" result="com.google.inject.internal.jsr305.@1.$@2"/>
        <keep pattern="com.google.inject.**"/>
-@@ -150,17 +148,11 @@
+       <keep pattern="com.googlecode.**"/>
+     </jarjar>
+@@ -150,17 +146,11 @@
        <fileset dir="${build.dir}/classes"/>
        <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
        <zipfileset src="${common.basedir}/lib/build/asm-4.2.jar"/>
@@ -89,7 +91,7 @@ index 1a7add9..fe08135 100644
      </jarjar>
    </target>
  
-@@ -177,8 +169,6 @@
+@@ -177,8 +167,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
@@ -159,7 +161,7 @@ index a3e2202..0000000
 -
 -chmod +w -R $srcdir $testdir
 diff --git a/core/pom.xml b/core/pom.xml
-index 97c8e60..9d4f43e 100644
+index 97c8e60..8326c9b 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -32,7 +32,7 @@
@@ -171,14 +173,15 @@ index 97c8e60..9d4f43e 100644
      </dependency>
      <dependency>
        <groupId>cglib</groupId>
-@@ -242,7 +242,6 @@
+@@ -242,8 +242,6 @@
                <includes>
                  <include>*:asm*</include>
                  <include>*:cglib</include>
 -                <include>*:guava</include>
-                 <include>*:jsr305</include>
+-                <include>*:jsr305</include>
                </includes>
              </configuration>
+           </plugin>
 diff --git a/core/test/com/googlecode/guice/OSGiContainerTest.java b/core/test/com/googlecode/guice/OSGiContainerTest.java
 index 77ab8fa..6cb2b1b 100644
 --- a/core/test/com/googlecode/guice/OSGiContainerTest.java

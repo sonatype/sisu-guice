@@ -88,7 +88,7 @@
   <profiles>
     <profile>
       <!--
-       | Non-JarJar build profile: need CGLIB during tests
+       | If JarJar build profile is disabled we need CGLIB during tests
       -->
       <activation>
         <property>
@@ -97,6 +97,12 @@
         </property>
       </activation>
       <dependencies>
+        <dependency>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
+          <version>5.0_BETA</version>
+          <scope>test</scope>
+        </dependency>
         <dependency>
           <groupId>cglib</groupId>
           <artifactId>cglib</artifactId>

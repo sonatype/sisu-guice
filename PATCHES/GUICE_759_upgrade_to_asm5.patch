@@ -1,10 +1,10 @@
 Description: Upgrade ASM to 5.0_BETA (via patched cglib)
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=759
-Last-Update: 2013-12-09
+Last-Update: 2013-12-10
 
 diff --git a/build.xml b/build.xml
-index d9802ae..309eb0f 100644
+index d9802ae..ac19447 100644
 --- a/build.xml
 +++ b/build.xml
 @@ -252,7 +252,7 @@
@@ -17,7 +17,7 @@ index d9802ae..309eb0f 100644
      <replace file="build/no_aop/common.xml" value="">
        <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
 diff --git a/common.xml b/common.xml
-index e54d19d..7932bce 100644
+index e54d19d..d23fbe9 100644
 --- a/common.xml
 +++ b/common.xml
 @@ -145,7 +145,7 @@
@@ -30,43 +30,40 @@ index e54d19d..7932bce 100644
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
 diff --git a/core/pom.xml b/core/pom.xml
-index 0a870fc..b413200 100644
+index 7606276..5346795 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -32,13 +32,7 @@
+@@ -33,6 +33,13 @@
+      | CGLIB is embedded by default by the JarJar build profile
+     -->
      <dependency>
++      <groupId>org.ow2.asm</groupId>
++      <artifactId>asm</artifactId>
++      <version>5.0_BETA</version>
++      <optional>true</optional>
++      <scope>provided</scope>
++    </dependency>
++    <dependency>
        <groupId>cglib</groupId>
        <artifactId>cglib</artifactId>
--      <version>3.0</version>
--      <optional>true</optional>
--    </dependency>
--    <dependency>
--      <groupId>org.ow2.asm</groupId>
--      <artifactId>asm-util</artifactId>
--      <version>4.0</version>
-+      <version>3.1</version>
-       <optional>true</optional>
-     </dependency>
-     <dependency>
+       <version>3.1</version>
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index 9a45b1d..3062c49 100644
+index f50bf3c..150a5d6 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
-@@ -113,13 +113,7 @@
+@@ -111,6 +111,12 @@
+       </activation>
+       <dependencies>
          <dependency>
++          <groupId>org.ow2.asm</groupId>
++          <artifactId>asm</artifactId>
++          <version>5.0_BETA</version>
++          <scope>test</scope>
++        </dependency>
++        <dependency>
            <groupId>cglib</groupId>
            <artifactId>cglib</artifactId>
--          <version>3.0</version>
--          <scope>test</scope>
--        </dependency>
--        <dependency>
--          <groupId>org.ow2.asm</groupId>
--          <artifactId>asm-util</artifactId>
--          <version>4.0</version>
-+          <version>3.1</version>
-           <scope>test</scope>
-         </dependency>
-       </dependencies>
+           <version>3.1</version>
 diff --git a/lib/build/asm-4.2.jar b/lib/build/asm-4.2.jar
 deleted file mode 100644
 index 693913d..0000000
