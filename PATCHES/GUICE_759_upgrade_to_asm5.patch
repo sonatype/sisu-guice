@@ -44,7 +44,7 @@ index 0a870fc..b413200 100644
 -      <groupId>org.ow2.asm</groupId>
 -      <artifactId>asm-util</artifactId>
 -      <version>4.0</version>
-+      <version>3.1.1</version>
++      <version>3.1</version>
        <optional>true</optional>
      </dependency>
      <dependency>
@@ -63,7 +63,7 @@ index 9a45b1d..3062c49 100644
 -          <groupId>org.ow2.asm</groupId>
 -          <artifactId>asm-util</artifactId>
 -          <version>4.0</version>
-+          <version>3.1.1</version>
++          <version>3.1</version>
            <scope>test</scope>
          </dependency>
        </dependencies>
