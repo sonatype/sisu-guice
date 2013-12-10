@@ -7,7 +7,7 @@ diff --git a/build.xml b/build.xml
 index d9802ae..309eb0f 100644
 --- a/build.xml
 +++ b/build.xml
-@@ -252,13 +252,13 @@
+@@ -252,7 +252,7 @@
        <arg value="-DNO_AOP" />
      </munge>
      <replace file="build/no_aop/common.xml" value="">
@@ -15,26 +15,16 @@ index d9802ae..309eb0f 100644
 +      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0_BETA.jar"/>]]></replacetoken>
      </replace>
      <replace file="build/no_aop/common.xml" value="">
--      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
-+      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.1.jar"/>]]></replacetoken>
-     </replace>
-     <replace file="build/no_aop/common.xml" value="">
--      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"><include name="LICENSE"/><include name="NOTICE"/></zipfileset>]]></replacetoken>
-+      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.1.jar"><include name="LICENSE"/><include name="NOTICE"/></zipfileset>]]></replacetoken>
-     </replace>
-     <replace file="build/no_aop/common.xml" value='Bundle-Name" value="$${ant.project.name} (no_aop)'>
-       <replacetoken><![CDATA[Bundle-Name" value="${ant.project.name}]]></replacetoken>
+       <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
 diff --git a/common.xml b/common.xml
 index e54d19d..7932bce 100644
 --- a/common.xml
 +++ b/common.xml
-@@ -144,8 +144,8 @@
-         classpath="${common.basedir}/lib/build/jarjar-1.1.jar"/>
+@@ -145,7 +145,7 @@
      <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
        <fileset dir="${build.dir}/classes"/>
--      <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
+       <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
 -      <zipfileset src="${common.basedir}/lib/build/asm-4.2.jar"/>
-+      <zipfileset src="${common.basedir}/lib/build/cglib-3.1.1.jar"/>
 +      <zipfileset src="${common.basedir}/lib/build/asm-5.0_BETA.jar"/>
        <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
@@ -43,12 +33,9 @@ diff --git a/core/pom.xml b/core/pom.xml
 index 0a870fc..b413200 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -30,15 +30,9 @@
-       <version>11.0.2</version>
-     </dependency>
+@@ -32,13 +32,7 @@
      <dependency>
--      <groupId>cglib</groupId>
-+      <groupId>org.sonatype.sisu.inject</groupId>
+       <groupId>cglib</groupId>
        <artifactId>cglib</artifactId>
 -      <version>3.0</version>
 -      <optional>true</optional>
@@ -65,12 +52,9 @@ diff --git a/extensions/pom.xml b/extensions/pom.xml
 index 9a45b1d..3062c49 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
-@@ -111,15 +111,9 @@
-       </activation>
-       <dependencies>
+@@ -113,13 +113,7 @@
          <dependency>
--          <groupId>cglib</groupId>
-+          <groupId>org.sonatype.sisu.inject</groupId>
+           <groupId>cglib</groupId>
            <artifactId>cglib</artifactId>
 -          <version>3.0</version>
 -          <scope>test</scope>
@@ -91,11 +75,3 @@ diff --git a/lib/build/asm-5.0_BETA.jar b/lib/build/asm-5.0_BETA.jar
 new file mode 100644
 index 0000000..2e26615
 Binary files /dev/null and b/lib/build/asm-5.0_BETA.jar differ
-diff --git a/lib/build/cglib-3.1.1.jar b/lib/build/cglib-3.1.1.jar
-new file mode 100644
-index 0000000..69924b0
-Binary files /dev/null and b/lib/build/cglib-3.1.1.jar differ
-diff --git a/lib/build/cglib-3.1.jar b/lib/build/cglib-3.1.jar
-deleted file mode 100644
-index 25a5df1..0000000
-Binary files a/lib/build/cglib-3.1.jar and /dev/null differ
