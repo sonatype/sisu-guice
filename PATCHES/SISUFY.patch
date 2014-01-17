@@ -245,7 +245,7 @@ index bd706c7..5b6574b 100644
  
    <modules>
      <module>assistedinject</module>
-@@ -40,16 +39,16 @@
+@@ -40,17 +39,17 @@
       | All extensions depend on the core
      -->
      <dependency>
@@ -254,6 +254,7 @@ index bd706c7..5b6574b 100644
 +      <groupId>org.sonatype.sisu</groupId>
 +      <artifactId>sisu-guice</artifactId>
        <version>${project.version}</version>
+       <scope>provided</scope>
      </dependency>
      <!--
       | Some extension tests depend on the core tests

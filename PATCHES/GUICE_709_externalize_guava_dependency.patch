@@ -1,7 +1,7 @@
 Description: Pull out embedded Guava and expose it as an external dependency
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=709
-Last-Update: 2013-12-10
+Last-Update: 2014-01-17
 
 diff --git a/build.properties b/build.properties
 index a76a5ab..d8bf543 100644
@@ -14,9 +14,63 @@ index a76a5ab..d8bf543 100644
 -imports=!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.common.*
 +imports=!net.sf.cglib.*,!org.objectweb.asm.*
 diff --git a/build.xml b/build.xml
-index 51d2cb1..83e50c7 100644
+index 51d2cb1..d9802ae 100644
 --- a/build.xml
 +++ b/build.xml
+@@ -31,34 +31,34 @@
+         <ant antfile="extensions/grapher/build.xml" target="distjars" inheritAll="false"/>
+ 
+     <copy toDir="${build.dir}/dist"> 
+-      <fileset dir="extensions/servlet/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/servlet/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist"> 
+-      <fileset dir="extensions/spring/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/spring/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/struts2/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/struts2/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/assistedinject/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/assistedinject/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/jmx/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/jmx/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/jndi/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/jndi/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/throwingproviders/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/throwingproviders/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/multibindings/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/multibindings/build" includes="*.jar"/>
+     </copy>
+     <copy toDir="${build.dir}/dist">
+-      <fileset dir="extensions/persist/build" includes="*.jar" excludes="*-with-deps.jar"/>
++      <fileset dir="extensions/persist/build" includes="*.jar"/>
+     </copy>
+         <copy toDir="${build.dir}/dist">
+-          <fileset dir="extensions/grapher/build" includes="*.jar" excludes="*-with-deps.jar"/>
++          <fileset dir="extensions/grapher/build" includes="*.jar"/>
+         </copy>
+ 
+     <copy toDir="${build.dir}/dist" file="COPYING"/> 
+@@ -93,7 +93,7 @@
+   </target>
+ 
+   <target name="test.dist.run"
+-    depends="jar, test.compile-with-deps"
++    depends="jar, test.withdeps"
+     description="Execute JUnit tests against distribution jar with the given jvmarg.">
+     <java fork="true"
+         classname="junit.textui.TestRunner"
 @@ -102,11 +102,12 @@
        <classpath>
          <pathelement location="${build.dir}/guice-${version}-tests.jar"/>
@@ -59,9 +113,18 @@ index 51d2cb1..83e50c7 100644
          <include name="com/google/**"/>
          <exclude name="com/google/inject/internal/**"/>
 diff --git a/common.xml b/common.xml
-index 1a7add9..33a22eb 100644
+index 1a7add9..e54d19d 100644
 --- a/common.xml
 +++ b/common.xml
+@@ -119,7 +119,7 @@
+       depends="source.jar, jar"
+       description="Build jar files"/>
+ 
+-  <target name="test.compile-with-deps" depends="test.compile"
++  <target name="test.withdeps" depends="test.compile"
+       description="Build a jar of tests with internal.util refocused.">
+     <mkdir dir="${build.dir}/dist"/>
+     <dirname property="common.basedir" file="${ant.file.common}"/>
 @@ -131,10 +131,6 @@
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
@@ -73,7 +136,7 @@ index 1a7add9..33a22eb 100644
        <keep pattern="com.google.inject.**"/>
        <keep pattern="com.googlecode.**"/>
      </jarjar>
-@@ -150,17 +146,11 @@
+@@ -150,35 +146,10 @@
        <fileset dir="${build.dir}/classes"/>
        <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
        <zipfileset src="${common.basedir}/lib/build/asm-4.2.jar"/>
@@ -84,17 +147,26 @@ index 1a7add9..33a22eb 100644
        <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
 -      <rule pattern="com.google.common.*" result="com.google.inject.internal.guava.$@1"/>
 -      <rule pattern="com.google.common.**.*" result="com.google.inject.internal.guava.@1.$@2"/>
-       <keep pattern="com.google.inject.**"/>
+-      <keep pattern="com.google.inject.**"/>
 -      <!-- the servlet extension uses this but core doesn't,
 -           so we explicitly instruct the build to keep it. -->
 -      <keep pattern="com.google.common.base.Throwables"/>
-     </jarjar>
-   </target>
- 
-@@ -177,8 +167,6 @@
-       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
-       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
-       <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
+-    </jarjar>
+-  </target>
+-
+-  <target name="jar.withrenameddeps" depends="compile"
+-      description="Build jar with dependencies embedded.">
+-    <mkdir dir="${build.dir}/dist"/>
+-    <dirname property="common.basedir" file="${ant.file.common}"/>
+-    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+-        classpath="${common.basedir}/lib/build/jarjar-1.1.jar"/>
+-    <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
+-      <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"><include name="LICENSE"/><include name="NOTICE"/></zipfileset>
+-      <fileset dir="${build.dir}/classes"/>
+-      <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
+-      <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
+-      <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
+-      <rule pattern="org.objectweb.asm.**.*" result="com.google.inject.internal.asm.@1.$@2"/>
 -      <rule pattern="com.google.common.*" result="com.google.inject.internal.guava.$@1"/>
 -      <rule pattern="com.google.common.**.*" result="com.google.inject.internal.guava.@1.$@2"/>
        <keep pattern="com.google.inject.**"/>
@@ -161,27 +233,211 @@ index a3e2202..0000000
 -
 -chmod +w -R $srcdir $testdir
 diff --git a/core/pom.xml b/core/pom.xml
-index 97c8e60..8326c9b 100644
+index 97c8e60..1ea34a2 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -32,7 +32,7 @@
+@@ -13,11 +13,6 @@
+ 
+   <name>Google Guice - Core Library</name>
+ 
+-  <properties>
+-    <cglib.version>3.0</cglib.version>
+-    <asm.version>4.0</asm.version>
+-  </properties>
+-
+   <dependencies>
+     <dependency>
+       <groupId>javax.inject</groupId>
+@@ -32,17 +27,17 @@
      <dependency>
        <groupId>com.google.guava</groupId>
        <artifactId>guava</artifactId>
 -      <version>11.0.1</version>
 +      <version>11.0.2</version>
      </dependency>
++    <!--
++     | CGLIB is embedded by default by the JarJar build profile
++    -->
      <dependency>
        <groupId>cglib</groupId>
-@@ -242,8 +242,6 @@
+       <artifactId>cglib</artifactId>
+-      <version>${cglib.version}</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.ow2.asm</groupId>
+-      <artifactId>asm-util</artifactId>
+-      <version>${asm.version}</version>
++      <version>3.1</version>
++      <optional>true</optional>
++      <scope>provided</scope>
+     </dependency>
+     <dependency>
+       <groupId>javax.inject</groupId>
+@@ -207,7 +202,7 @@
+     </profile>
+     <profile>
+       <!--
+-       | JarJar build profile: re-package ASM and CGLIB classes under the Guice namespace
++       | JarJar build profile: embed CGLIB (and ASM) classes under Guice namespace
+       -->
+       <id>guice.with.jarjar</id>
+       <activation>
+@@ -216,52 +211,87 @@
+           <value>!false</value>
+         </property>
+       </activation>
+-      <dependencies>
+-        <!--
+-         | Mark as optional: embedded by JarJar
+-        -->
+-        <dependency>
+-          <groupId>cglib</groupId>
+-          <artifactId>cglib</artifactId>
+-          <version>${cglib.version}</version>
+-          <optional>true</optional>
+-        </dependency>
+-        <dependency>
+-          <groupId>org.ow2.asm</groupId>
+-          <artifactId>asm-util</artifactId>
+-          <version>${asm.version}</version>
+-          <optional>true</optional>
+-        </dependency>
+-      </dependencies>
+       <build>
+         <plugins>
+           <plugin>
+             <groupId>org.sonatype.plugins</groupId>
+             <artifactId>jarjar-maven-plugin</artifactId>
++            <version>1.8</version>
+             <configuration>
++              <overwrite>true</overwrite>
                <includes>
                  <include>*:asm*</include>
                  <include>*:cglib</include>
 -                <include>*:guava</include>
 -                <include>*:jsr305</include>
                </includes>
++              <rules>
++                <rule>
++                  <pattern>net.sf.cglib.*</pattern>
++                  <result>com.google.inject.internal.cglib.$@1</result>
++                </rule>
++                <rule>
++                  <pattern>net.sf.cglib.**.*</pattern>
++                  <result>com.google.inject.internal.cglib.@1.$@2</result>
++                </rule>
++                <rule>
++                  <pattern>org.objectweb.asm.*</pattern>
++                  <result>com.google.inject.internal.asm.$@1</result>
++                </rule>
++                <rule>
++                  <pattern>org.objectweb.asm.**.*</pattern>
++                  <result>com.google.inject.internal.asm.@1.$@2</result>
++                </rule>
++                <keep>
++                  <pattern>com.google.inject.**</pattern>
++                </keep>
++                <keep>
++                  <pattern>com.googlecode.**</pattern>
++                </keep>
++              </rules>
              </configuration>
-           </plugin>
+-          </plugin>
+-          <plugin>
+             <!--
+-             | Package the original non-JarJar'd classes so extensions can compile against them
++             | JarJar all classes before running tests
+             -->
++            <executions>
++              <execution>
++                <id>jarjar-classes</id>
++                <phase>process-test-classes</phase>
++                <goals>
++                  <goal>jarjar</goal>
++                </goals>
++                <configuration>
++                  <input>{classes}</input>
++                </configuration>
++              </execution>
++              <execution>
++                <id>jarjar-test-classes</id>
++                <phase>process-test-classes</phase>
++                <goals>
++                  <goal>jarjar</goal>
++                </goals>
++                <configuration>
++                  <input>{test-classes}</input>
++                </configuration>
++              </execution>
++            </executions>
++          </plugin>
++          <!--
++           | Attach original (non-JarJar'd) classes
++          -->
++          <plugin>
+             <artifactId>maven-jar-plugin</artifactId>
+             <executions>
+               <execution>
+-                <id>no_deps</id>
++                <id>classes</id>
+                 <phase>package</phase>
+                 <goals>
+                   <goal>jar</goal>
+                 </goals>
+                 <configuration>
+                   <classesDirectory>${project.build.directory}/original-classes</classesDirectory>
+-                  <classifier>no_deps</classifier>
++                  <classifier>classes</classifier>
++                  <archive>
++                    <manifestFile combine.self="override" />
++                  </archive>
+                 </configuration>
+               </execution>
+             </executions>
+@@ -269,6 +299,43 @@
+         </plugins>
+       </build>
+     </profile>
++    <profile>
++      <!--
++       | m2e profile - enable use of JarJar inside Eclipse
++      -->
++      <id>m2e</id>
++      <activation>
++        <property>
++          <name>m2e.version</name>
++        </property>
++      </activation>
++      <build>
++        <pluginManagement>
++          <plugins>
++            <plugin>
++              <groupId>org.eclipse.m2e</groupId>
++              <artifactId>lifecycle-mapping</artifactId>
++              <version>1.0.0</version>
++              <configuration>
++                <lifecycleMappingMetadata>
++                  <pluginExecutions>
++                    <pluginExecution>
++                      <pluginExecutionFilter>
++                        <groupId>org.sonatype.plugins</groupId>
++                        <artifactId>jarjar-maven-plugin</artifactId>
++                        <versionRange>[1.4,)</versionRange>
++                        <goals><goal>jarjar</goal></goals>
++                      </pluginExecutionFilter>
++                      <action><execute /></action>
++                    </pluginExecution>
++                  </pluginExecutions>
++                </lifecycleMappingMetadata>
++              </configuration>
++            </plugin>
++          </plugins>
++        </pluginManagement>
++      </build>
++    </profile>
+   </profiles>
+ 
+ </project>
 diff --git a/core/test/com/googlecode/guice/OSGiContainerTest.java b/core/test/com/googlecode/guice/OSGiContainerTest.java
 index 77ab8fa..6cb2b1b 100644
 --- a/core/test/com/googlecode/guice/OSGiContainerTest.java
@@ -223,6 +479,246 @@ index 77ab8fa..6cb2b1b 100644
        systemContext.installBundle("reference:file:" + GUICE_JAR);
        systemContext.installBundle("reference:file:" + BUILD_TEST_DIR + "/osgitests.jar").start();
  
+diff --git a/extensions/assistedinject/build.xml b/extensions/assistedinject/build.xml
+index 16557de..459ff9e 100644
+--- a/extensions/assistedinject/build.xml
++++ b/extensions/assistedinject/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/grapher/build.xml b/extensions/grapher/build.xml
+index d36fdcd..d5524dd 100644
+--- a/extensions/grapher/build.xml
++++ b/extensions/grapher/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/jmx/build.xml b/extensions/jmx/build.xml
+index 1bdcb97..8a99b77 100644
+--- a/extensions/jmx/build.xml
++++ b/extensions/jmx/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/jndi/build.xml b/extensions/jndi/build.xml
+index 14eaa8b..5c366a2 100644
+--- a/extensions/jndi/build.xml
++++ b/extensions/jndi/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/multibindings/build.xml b/extensions/multibindings/build.xml
+index 7a23462..2f72159 100644
+--- a/extensions/multibindings/build.xml
++++ b/extensions/multibindings/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/persist/build.xml b/extensions/persist/build.xml
+index 9be40c8..764c726 100644
+--- a/extensions/persist/build.xml
++++ b/extensions/persist/build.xml
+@@ -11,11 +11,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/pom.xml b/extensions/pom.xml
+index bd706c7..c1fb034 100644
+--- a/extensions/pom.xml
++++ b/extensions/pom.xml
+@@ -43,6 +43,7 @@
+       <groupId>com.google.inject</groupId>
+       <artifactId>guice</artifactId>
+       <version>${project.version}</version>
++      <scope>provided</scope>
+     </dependency>
+     <!--
+      | Some extension tests depend on the core tests
+@@ -101,41 +102,22 @@
+   <profiles>
+     <profile>
+       <!--
+-       | JarJar build profile: re-package ASM and CGLIB references under the Guice namespace
++       | If JarJar build profile is disabled we need CGLIB during tests
+       -->
+-      <id>guice.with.jarjar</id>
+       <activation>
+         <property>
+           <name>guice.with.jarjar</name>
+-          <value>!false</value>
++          <value>false</value>
+         </property>
+       </activation>
+       <dependencies>
+-        <!--
+-         | Extensions compile first against the non-JarJar'd core - and are then JarJar'd themselves
+-         | (optional dependency so it doesn't leak to client projects that depend on Guice artifacts)
+-        -->
+         <dependency>
+-          <groupId>com.google.inject</groupId>
+-          <artifactId>guice</artifactId>
+-          <version>${project.version}</version>
+-          <classifier>no_deps</classifier>
+-          <optional>true</optional>
++          <groupId>cglib</groupId>
++          <artifactId>cglib</artifactId>
++          <version>3.1</version>
++          <scope>test</scope>
+         </dependency>
+       </dependencies>
+-      <build>
+-        <plugins>
+-          <plugin>
+-            <groupId>org.sonatype.plugins</groupId>
+-            <artifactId>jarjar-maven-plugin</artifactId>
+-            <configuration>
+-              <excludes>
+-                <exclude>*:*</exclude>
+-              </excludes>
+-            </configuration>
+-          </plugin>
+-        </plugins>
+-      </build>
+     </profile>
+   </profiles>
+ 
+diff --git a/extensions/servlet/build.xml b/extensions/servlet/build.xml
+index d7a10e1..5bee7e5 100644
+--- a/extensions/servlet/build.xml
++++ b/extensions/servlet/build.xml
+@@ -12,11 +12,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/spring/build.xml b/extensions/spring/build.xml
+index 16c8299..3051929 100644
+--- a/extensions/spring/build.xml
++++ b/extensions/spring/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/struts2/build.xml b/extensions/struts2/build.xml
+index 820dfa2..6463274 100644
+--- a/extensions/struts2/build.xml
++++ b/extensions/struts2/build.xml
+@@ -11,11 +11,10 @@
+     <fileset dir="../servlet/build" includes="*.jar"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
+diff --git a/extensions/throwingproviders/build.xml b/extensions/throwingproviders/build.xml
+index 9d36431..27c20e0 100644
+--- a/extensions/throwingproviders/build.xml
++++ b/extensions/throwingproviders/build.xml
+@@ -10,11 +10,10 @@
+     <pathelement path="../../build/classes"/>
+   </path>
+ 
+-  <target name="jar" depends="jar.withrenameddeps, manifest" description="Build jar.">
++  <target name="jar" depends="compile, manifest" description="Build jar.">
+     <jar destfile="${build.dir}/${ant.project.name}-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+-      <zipfileset src="${build.dir}/${ant.project.name}-with-deps.jar"
+-          excludes="com/google/inject/internal/**"/>
++      <fileset dir="${build.dir}/classes"/>
+     </jar>
+   </target>
+ 
 diff --git a/guice.iml b/guice.iml
 index 53b2d05..8dd0ae2 100644
 --- a/guice.iml
@@ -252,13 +748,38 @@ new file mode 100644
 index 0000000..c8c8d5d
 Binary files /dev/null and b/lib/guava-11.0.2.jar differ
 diff --git a/pom.xml b/pom.xml
-index 0805839..95a3197 100644
+index 0805839..21ea053 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -221,25 +221,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
-                 <pattern>org.objectweb.asm.**.*</pattern>
-                 <result>com.google.inject.internal.asm.@1.$@2</result>
-               </rule>
+@@ -196,78 +196,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+             </execution>
+           </executions>
+         </plugin>
+-        <!--
+-         | Shared JarJar configuration
+-        -->
+-        <plugin>
+-          <groupId>org.sonatype.plugins</groupId>
+-          <artifactId>jarjar-maven-plugin</artifactId>
+-          <version>1.4</version>
+-          <configuration>
+-            <rules>
+-              <rule>
+-                <pattern>net.sf.cglib.*</pattern>
+-                <result>com.google.inject.internal.cglib.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>net.sf.cglib.**.*</pattern>
+-                <result>com.google.inject.internal.cglib.@1.$@2</result>
+-              </rule>
+-              <rule>
+-                <pattern>org.objectweb.asm.*</pattern>
+-                <result>com.google.inject.internal.asm.$@1</result>
+-              </rule>
+-              <rule>
+-                <pattern>org.objectweb.asm.**.*</pattern>
+-                <result>com.google.inject.internal.asm.@1.$@2</result>
+-              </rule>
 -              <rule>
 -                <pattern>com.google.common.*</pattern>
 -                <result>com.google.inject.internal.guava.$@1</result>
@@ -267,21 +788,49 @@ index 0805839..95a3197 100644
 -                <pattern>com.google.common.**.*</pattern>
 -                <result>com.google.inject.internal.guava.@1.$@2</result>
 -              </rule>
-               <keep>
-                 <pattern>com.google.inject.**</pattern>
-               </keep>
-               <keep>
-                 <pattern>com.googlecode.**</pattern>
-               </keep>
+-              <keep>
+-                <pattern>com.google.inject.**</pattern>
+-              </keep>
+-              <keep>
+-                <pattern>com.googlecode.**</pattern>
+-              </keep>
 -              <keep>
 -                <!-- the servlet extension uses this but core doesn't,
 -                     so we explicitly instruct the build to keep it. -->
 -                <pattern>com.google.common.base.Throwables</pattern>
 -              </keep>
-             </rules>
-           </configuration>
-           <!--
-@@ -332,6 +319,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
+-            </rules>
+-          </configuration>
+-          <!--
+-           | JarJar all classes before running tests
+-          -->
+-          <executions>
+-            <execution>
+-              <id>jarjar-classes</id>
+-              <phase>process-test-classes</phase>
+-              <goals>
+-                <goal>jarjar</goal>
+-              </goals>
+-              <configuration>
+-                <input>{classes}</input>
+-              </configuration>
+-            </execution>
+-            <execution>
+-              <id>jarjar-test-classes</id>
+-              <phase>process-test-classes</phase>
+-              <goals>
+-                <goal>jarjar</goal>
+-              </goals>
+-              <configuration>
+-                <input>{test-classes}</input>
+-              </configuration>
+-            </execution>
+-          </executions>
+-        </plugin>
+         <plugin>
+           <artifactId>maven-surefire-plugin</artifactId>
+           <version>2.5</version>
+@@ -332,6 +260,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                  Ignore-Package,Bnd-LastModified
                </_removeheaders>
              </instructions>
