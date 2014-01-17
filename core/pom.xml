@@ -225,7 +225,7 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>jarjar-maven-plugin</artifactId>
-            <version>1.7</version>
+            <version>1.8</version>
             <configuration>
               <overwrite>true</overwrite>
               <includes>
@@ -279,6 +279,28 @@
                 </goals>
                 <configuration>
                   <input>{test-classes}</input>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+           | Attach original (non-JarJar'd) classes
+          -->
+          <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>classes</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classesDirectory>${project.build.directory}/original-classes</classesDirectory>
+                  <classifier>classes</classifier>
+                  <archive>
+                    <manifestFile combine.self="override" />
+                  </archive>
                 </configuration>
               </execution>
             </executions>
