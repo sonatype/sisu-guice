@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2012-12-09
+Last-Update: 2014-01-17
 
 diff --git a/README.md b/README.md
 new file mode 100644
