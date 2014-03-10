@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
-class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinition> {
+public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinition> {
   private final String pattern;
   private final Key<? extends HttpServlet> servletKey;
   private final UriPatternMatcher patternMatcher;

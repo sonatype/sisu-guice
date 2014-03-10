@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
-class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
+public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
   private final String pattern;
   private final Key<? extends Filter> filterKey;
   private final UriPatternMatcher patternMatcher;
