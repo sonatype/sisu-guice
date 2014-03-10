@@ -478,9 +478,9 @@ index dece81f..e1f116e 100644
                <Bundle-Name>${project.artifactId}</Bundle-Name>
 -              <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
 +              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
-               <Bundle-RequiredExecutionEnvironment>
-                 J2SE-1.5,JavaSE-1.6
-               </Bundle-RequiredExecutionEnvironment>
+               <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+               <Import-Package>!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.inject.*,*</Import-Package>
+               <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
 @@ -295,82 +294,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
