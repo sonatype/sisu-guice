@@ -34,7 +34,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>11.0.2</version>
+      <version>16.0.1</version>
     </dependency>
     <!--
      | CGLIB is embedded by default by the JarJar build profile
@@ -107,6 +107,8 @@
            | Temporarily excluded tests
           -->
           <excludes>
+            <exclude>**/*$*</exclude>
+            <exclude>**/ErrorHandlingTest*</exclude>
             <exclude>**/OSGiContainerTest*</exclude>
             <exclude>**/ScopesTest*</exclude>
             <exclude>**/TypeConversionTest*</exclude>
@@ -211,7 +213,7 @@
     </profile>
     <profile>
       <!--
-       | JarJar build profile: embed CGLIB (and ASM) classes under Guice namespace
+       | JarJar build profile: Embed CGLIB (and ASM) classes under a Guice namespace
       -->
       <id>guice.with.jarjar</id>
       <activation>
@@ -283,10 +285,10 @@
               </execution>
             </executions>
           </plugin>
-          <!--
-           | Attach original (non-JarJar'd) classes
-          -->
           <plugin>
+            <!--
+             | Package the original non-JarJar'd classes so extensions can compile against them
+            -->
             <artifactId>maven-jar-plugin</artifactId>
             <executions>
               <execution>
@@ -346,5 +348,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>

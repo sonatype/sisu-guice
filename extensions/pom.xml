@@ -54,6 +54,16 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+    <!--
+     | Some extension tests depend on cglib which is not embedded
+     | in an execution that doesn't include package.
+    -->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>3.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -85,33 +95,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <!--
-       | If JarJar build profile is disabled we need CGLIB during tests
-      -->
-      <activation>
-        <property>
-          <name>guice.with.jarjar</name>
-          <value>false</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.ow2.asm</groupId>
-          <artifactId>asm</artifactId>
-          <version>5.0_BETA</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>cglib</groupId>
-          <artifactId>cglib</artifactId>
-          <version>3.1</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 
 </project>
