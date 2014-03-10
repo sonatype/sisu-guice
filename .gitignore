@@ -1,25 +1,9 @@
-# Maven
+/build/
 target/
-*.ser
-*.ec
-
-# Ant
-build/
-!lib/build/
-
-# IntelliJ Idea
-.idea/
-out/
-*.ipr
-*.iws
-*.iml
-
-# Eclipse
-.classpath
+/bin/
 .project
+.classpath
 .settings/
-bin/
-
 *~
 *.orig
 *.new
