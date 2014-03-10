@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2014-01-17
+Last-Update: 2014-03-10
 
 diff --git a/README.md b/README.md
 new file mode 100644
@@ -19,7 +19,7 @@ index 0000000..7597582
 +
 +Sisu-Guice retains the same public API as Google-Guice and is binary compatible from a client perspective.
 diff --git a/core/pom.xml b/core/pom.xml
-index 97c8e60..27f5ea5 100644
+index 3773300..c16fc80 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,14 +4,15 @@
@@ -39,9 +39,17 @@ index 97c8e60..27f5ea5 100644
 -  <name>Google Guice - Core Library</name>
 +  <name>Sisu Guice - Core Library</name>
  
-   <properties>
-     <cglib.version>3.0</cglib.version>
-@@ -123,18 +124,6 @@
+   <dependencies>
+     <dependency>
+@@ -37,6 +38,7 @@
+       <artifactId>cglib</artifactId>
+       <version>3.1</version>
+       <optional>true</optional>
++      <scope>provided</scope>
+     </dependency>
+     <dependency>
+       <groupId>javax.inject</groupId>
+@@ -119,18 +121,6 @@
            </excludes>
          </configuration>
        </plugin>
@@ -113,10 +121,10 @@ index 6f63452..920f7ba 100644
        <version>${project.version}</version>
      </dependency>
 diff --git a/extensions/jmx/pom.xml b/extensions/jmx/pom.xml
-index 62c7d17..b6d53bf 100644
+index f3298e7..7de6431 100644
 --- a/extensions/jmx/pom.xml
 +++ b/extensions/jmx/pom.xml
-@@ -4,13 +4,13 @@
+@@ -4,14 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -131,7 +139,8 @@ index 62c7d17..b6d53bf 100644
 -  <name>Google Guice - Extensions - JMX</name>
 +  <name>Sisu Guice - Extensions - JMX</name>
  
- </project>
+   <build>
+     <plugins>
 diff --git a/extensions/jndi/pom.xml b/extensions/jndi/pom.xml
 index fb9bc3c..f78153a 100644
 --- a/extensions/jndi/pom.xml
@@ -201,7 +210,7 @@ index 8875e39..9eb7ee9 100644
  
  </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index 18b15a3..2edfc04 100644
+index b3c4a34..021c76a 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -4,14 +4,14 @@
@@ -222,7 +231,7 @@ index 18b15a3..2edfc04 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index bd706c7..5b6574b 100644
+index b758bcd..8494d4e 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -4,17 +4,16 @@
@@ -245,7 +254,7 @@ index bd706c7..5b6574b 100644
  
    <modules>
      <module>assistedinject</module>
-@@ -40,17 +39,17 @@
+@@ -40,16 +39,17 @@
       | All extensions depend on the core
      -->
      <dependency>
@@ -254,7 +263,7 @@ index bd706c7..5b6574b 100644
 +      <groupId>org.sonatype.sisu</groupId>
 +      <artifactId>sisu-guice</artifactId>
        <version>${project.version}</version>
-       <scope>provided</scope>
++      <scope>provided</scope>
      </dependency>
      <!--
       | Some extension tests depend on the core tests
@@ -267,7 +276,7 @@ index bd706c7..5b6574b 100644
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
-@@ -79,22 +78,10 @@
+@@ -89,22 +89,10 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
            <instructions>
@@ -290,7 +299,7 @@ index bd706c7..5b6574b 100644
 -      </plugin>
      </plugins>
    </build>
- 
+ </project>
 diff --git a/extensions/service/pom.xml b/extensions/service/pom.xml
 index 8dd4001..9eede3e 100644
 --- a/extensions/service/pom.xml
@@ -381,10 +390,10 @@ index cf987cf..2a60ebd 100644
        <version>${project.version}</version>
      </dependency>
 diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
-index cd866cc..d086054 100644
+index 63a8b78..bb24528 100644
 --- a/extensions/throwingproviders/pom.xml
 +++ b/extensions/throwingproviders/pom.xml
-@@ -4,13 +4,13 @@
+@@ -4,14 +4,14 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -399,9 +408,10 @@ index cd866cc..d086054 100644
 -  <name>Google Guice - Extensions - ThrowingProviders</name>
 +  <name>Sisu Guice - Extensions - ThrowingProviders</name>
  
- </project>
+   <build>
+     <plugins>
 diff --git a/pom.xml b/pom.xml
-index 0805839..83477bc 100644
+index dece81f..e1f116e 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -462,7 +472,7 @@ index 0805839..83477bc 100644
    </properties>
  
    <dependencies>
-@@ -316,7 +315,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -244,7 +243,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
@@ -471,7 +481,7 @@ index 0805839..83477bc 100644
                <Bundle-RequiredExecutionEnvironment>
                  J2SE-1.5,JavaSE-1.6
                </Bundle-RequiredExecutionEnvironment>
-@@ -367,82 +366,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -295,82 +294,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
            <version>2.7</version>

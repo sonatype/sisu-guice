@@ -1,7 +1,7 @@
 Description: Upgrade ASM to 5.0_BETA (via patched cglib)
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=759
-Last-Update: 2013-12-10
+Last-Update: 2014-03-10
 
 diff --git a/build.xml b/build.xml
 index d9802ae..ac19447 100644
@@ -47,23 +47,6 @@ index 7606276..5346795 100644
        <groupId>cglib</groupId>
        <artifactId>cglib</artifactId>
        <version>3.1</version>
-diff --git a/extensions/pom.xml b/extensions/pom.xml
-index f50bf3c..150a5d6 100644
---- a/extensions/pom.xml
-+++ b/extensions/pom.xml
-@@ -111,6 +111,12 @@
-       </activation>
-       <dependencies>
-         <dependency>
-+          <groupId>org.ow2.asm</groupId>
-+          <artifactId>asm</artifactId>
-+          <version>5.0_BETA</version>
-+          <scope>test</scope>
-+        </dependency>
-+        <dependency>
-           <groupId>cglib</groupId>
-           <artifactId>cglib</artifactId>
-           <version>3.1</version>
 diff --git a/lib/build/asm-4.2.jar b/lib/build/asm-4.2.jar
 deleted file mode 100644
 index 693913d..0000000
