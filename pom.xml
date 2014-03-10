@@ -32,7 +32,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
   <name>Sisu Guice</name>
 
   <description>
-    Patched build of Guice: a lightweight dependency injection framework for Java 5 and above
+    Patched build of Guice: a lightweight dependency injection framework for Java 6 and above
   </description>
 
   <url>http://code.google.com/p/google-guice/</url>
@@ -164,7 +164,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
           </executions>
         </plugin>
         <!--
-         | Make sure we only use Java5 methods
+         | Make sure we only use Java6 methods
         -->
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
