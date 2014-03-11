@@ -45,8 +45,8 @@ public abstract class AbstractFilterPipeline implements FilterPipeline {
 
   protected abstract FilterDefinition[] filterDefinitions();
 
-  protected final AbstractServletPipeline servletPipeline;
-  protected final Provider<ServletContext> servletContext;
+  private final AbstractServletPipeline servletPipeline;
+  private final Provider<ServletContext> servletContext;
 
   //Unfortunately, we need the injector itself in order to create filters + servlets
   private final Injector injector;
