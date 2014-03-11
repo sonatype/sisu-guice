@@ -17,6 +17,7 @@ package com.google.inject.servlet;
 
 import static com.google.inject.servlet.ManagedServletPipeline.REQUEST_DISPATCHER_REQUEST;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -34,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -52,6 +55,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
 public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinition> {
+  private static final Logger logger = Logger.getLogger(ServletDefinition.class.getName());
+
   private final String pattern;
   private final Key<? extends HttpServlet> servletKey;
   private final UriPatternMatcher patternMatcher;
@@ -285,7 +290,14 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
         = (previous != null) ? previous.getOriginalRequest() : request;
     GuiceFilter.localContext.set(new GuiceFilter.Context(originalRequest, request, response));
     try {
-      httpServlet.get().service(request, response);
+      HttpServlet reference = httpServlet.get();
+      if (logger.isLoggable(Level.FINER)) {
+        String path = ServletUtils.getContextRelativePath(request);
+        logger.finer("Serving " + path + " with " + reference);
+      }
+      if (reference != null) {
+        reference.service(request, response);
+      }
     } finally {
       GuiceFilter.localContext.set(previous);
     }
@@ -297,5 +309,11 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
 
   String getPattern() {
     return pattern;
+  }
+
+  public String toPaddedString(int padding) {
+    HttpServlet reference = httpServlet.get();
+    return Strings.padEnd(pattern, padding, ' ') + ' '
+        + (reference != null ? reference : servletKey);
   }
 }
