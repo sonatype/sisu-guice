@@ -160,8 +160,8 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
     final String path = ServletUtils.getContextRelativePath(request);
     if (shouldFilter(path)) {
       Filter reference = filter.get();
-      if (logger.isLoggable(Level.FINER)) {
-        logger.finer("Filtering " + path + " with " + reference);
+      if (logger.isLoggable(Level.FINE)) {
+        logger.fine("Filtering " + path + " with " + reference);
       }
       return reference;
     } else {
