@@ -39,14 +39,14 @@ import javax.servlet.http.HttpServletRequestWrapper;
  *
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
-public abstract class AbstractFilterPipeline implements FilterPipeline{
+public abstract class AbstractFilterPipeline implements FilterPipeline {
 
   protected abstract boolean hasFiltersMapped();
 
   protected abstract FilterDefinition[] filterDefinitions();
 
-  private final AbstractServletPipeline servletPipeline;
-  private final Provider<ServletContext> servletContext;
+  protected final AbstractServletPipeline servletPipeline;
+  protected final Provider<ServletContext> servletContext;
 
   //Unfortunately, we need the injector itself in order to create filters + servlets
   private final Injector injector;
