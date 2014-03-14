@@ -378,8 +378,8 @@ index ff1e5b6..0bfdadd 100644
      if (shouldFilter(path)) {
 -      return filter.get();
 +      Filter reference = filter.get();
-+      if (logger.isLoggable(Level.FINE)) {
-+        logger.fine("Filtering " + path + " with " + reference);
++      if (logger.isLoggable(Level.FINEST)) {
++        logger.finest("Filtering " + path + " with " + reference);
 +      }
 +      return reference;
      } else {
@@ -791,9 +791,9 @@ index cbd8f29..b968aa7 100644
      try {
 -      httpServlet.get().service(request, response);
 +      HttpServlet reference = httpServlet.get();
-+      if (logger.isLoggable(Level.FINE)) {
++      if (logger.isLoggable(Level.FINEST)) {
 +        String path = ServletUtils.getContextRelativePath(request);
-+        logger.fine("Serving " + path + " with " + reference);
++        logger.finest("Serving " + path + " with " + reference);
 +      }
 +      if (reference != null) {
 +        reference.service(request, response);
@@ -825,3 +825,20 @@ index d8bac74..169dd89 100644
    /**
     * @param uri A "contextual" (i.e. relative) Request URI, *not* a complete one.
     * @return Returns true if the uri matches the pattern.
+diff --git a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java b/extensions/servlet/src/com/google/injec
+index f7a108f..7ab0cdf 100644
+--- a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
++++ b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
+@@ -100,9 +100,9 @@ public class GuiceFilter implements Filter {
+ 
+     // This can happen if you create many injectors and they all have their own
+     // servlet module. This is legal, caveat a small warning.
+-    if (GuiceFilter.pipeline instanceof ManagedFilterPipeline) {
+-      LOGGER.config(MULTIPLE_INJECTORS_WARNING);
+-    }
++    //if (GuiceFilter.pipeline instanceof ManagedFilterPipeline) {
++    //  LOGGER.config(MULTIPLE_INJECTORS_WARNING);
++    //}
+ 
+     // We overwrite the default pipeline
+     GuiceFilter.pipeline = pipeline;

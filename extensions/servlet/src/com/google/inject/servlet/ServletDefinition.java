@@ -291,9 +291,9 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
     GuiceFilter.localContext.set(new GuiceFilter.Context(originalRequest, request, response));
     try {
       HttpServlet reference = httpServlet.get();
-      if (logger.isLoggable(Level.FINE)) {
+      if (logger.isLoggable(Level.FINEST)) {
         String path = ServletUtils.getContextRelativePath(request);
-        logger.fine("Serving " + path + " with " + reference);
+        logger.finest("Serving " + path + " with " + reference);
       }
       if (reference != null) {
         reference.service(request, response);

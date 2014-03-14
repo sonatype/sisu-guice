@@ -18,8 +18,21 @@ index 0000000..7597582
 +Because of this dependency difference you should avoid mixing the official Google-Guice library with internal extensions provided by Sisu-Guice and vice-versa. Third-party Guice extensions should be compatible with either library.
 +
 +Sisu-Guice retains the same public API as Google-Guice and is binary compatible from a client perspective.
+diff --git a/common.xml b/common.xml
+index 83d3327..1500850 100644
+--- a/common.xml
++++ b/common.xml
+@@ -35,7 +35,7 @@
+     <property name="Bundle-SymbolicName" value="${module}"/>
+     <property name="Bundle-Version" value="${replace;${version};^[^0-9];0.0.0.$0}"/>
+ 
+-    <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 5 and above"/>
++    <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 6 and above"/>
+     <property name="Bundle-DocURL" value="http://code.google.com/p/google-guice/"/>
+     <property name="Bundle-Copyright" value="Copyright (C) 2006 Google Inc."/>
+     <property name="Bundle-License" value="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
 diff --git a/core/pom.xml b/core/pom.xml
-index 3773300..c16fc80 100644
+index ea2212a..92a9d88 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,14 +4,15 @@
@@ -41,7 +54,7 @@ index 3773300..c16fc80 100644
  
    <dependencies>
      <dependency>
-@@ -37,6 +38,7 @@
+@@ -50,6 +51,7 @@
        <artifactId>cglib</artifactId>
        <version>3.1</version>
        <optional>true</optional>
@@ -49,7 +62,16 @@ index 3773300..c16fc80 100644
      </dependency>
      <dependency>
        <groupId>javax.inject</groupId>
-@@ -119,18 +121,6 @@
+@@ -86,7 +88,7 @@
+         <artifactId>maven-remote-resources-plugin</artifactId>
+       </plugin>
+       <!--
+-       | Enable Java5 conformance checks
++       | Enable Java6 conformance checks
+       -->
+       <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+@@ -139,18 +141,6 @@
            </excludes>
          </configuration>
        </plugin>
@@ -210,7 +232,7 @@ index 8875e39..9eb7ee9 100644
  
  </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index b3c4a34..021c76a 100644
+index 89bcc06..a5d63aa 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -4,14 +4,14 @@
@@ -231,7 +253,7 @@ index b3c4a34..021c76a 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index b758bcd..8494d4e 100644
+index b758bcd..009c439 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -4,17 +4,16 @@
@@ -276,6 +298,15 @@ index b758bcd..8494d4e 100644
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
+@@ -75,7 +75,7 @@
+         <artifactId>maven-remote-resources-plugin</artifactId>
+       </plugin>
+       <!--
+-       | Enable Java5 conformance checks
++       | Enable Java6 conformance checks
+       -->
+       <plugin>
+         <groupId>org.codehaus.mojo</groupId>
 @@ -89,22 +89,10 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
@@ -411,7 +442,7 @@ index 63a8b78..bb24528 100644
    <build>
      <plugins>
 diff --git a/pom.xml b/pom.xml
-index dece81f..e1f116e 100644
+index 098a9cb..981580c 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -438,7 +469,7 @@ index dece81f..e1f116e 100644
  
    <description>
 -    Guice is a lightweight dependency injection framework for Java 5 and above
-+    Patched build of Guice: a lightweight dependency injection framework for Java 5 and above
++    Patched build of Guice: a lightweight dependency injection framework for Java 6 and above
    </description>
  
    <url>http://code.google.com/p/google-guice/</url>
@@ -472,6 +503,15 @@ index dece81f..e1f116e 100644
    </properties>
  
    <dependencies>
+@@ -165,7 +164,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+           </executions>
+         </plugin>
+         <!--
+-         | Make sure we only use Java5 methods
++         | Make sure we only use Java6 methods
+         -->
+         <plugin>
+           <artifactId>maven-compiler-plugin</artifactId>
 @@ -244,7 +243,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
@@ -481,7 +521,7 @@ index dece81f..e1f116e 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-@@ -295,82 +294,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -297,82 +296,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
            <version>2.7</version>
