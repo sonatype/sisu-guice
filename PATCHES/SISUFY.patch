@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2014-03-10
+Last-Update: 2014-03-14
 
 diff --git a/README.md b/README.md
 new file mode 100644
@@ -521,10 +521,11 @@ index 098a9cb..981580c 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-@@ -297,82 +296,56 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -296,83 +295,67 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         </plugin>
          <plugin>
            <artifactId>maven-javadoc-plugin</artifactId>
-           <version>2.7</version>
+-          <version>2.7</version>
 -          <executions>
 -            <execution>
 -              <phase>package</phase>
@@ -533,6 +534,7 @@ index 098a9cb..981580c 100644
 -              </goals>
 -            </execution>
 -          </executions>
++          <version>2.9.1</version>
 +          <configuration>
 +            <doclet>com.google.doclava.Doclava</doclet>
 +            <docletPath>
@@ -540,9 +542,19 @@ index 098a9cb..981580c 100644
 +              ${project.basedir}/../../lib/build/doclava.jar
 +            </docletPath>
 +            <!--
-+             | bootclasspath required by Sun's JVM 
++             | bootclasspath required by Sun's JVM
 +            -->
 +            <bootclasspath>${sun.boot.class.path}</bootclasspath>
++            <!--
++             | javadoc requires @javax.annotation.Nullable
++            -->
++            <additionalDependencies>
++              <additionalDependency>
++                <groupId>com.google.code.findbugs</groupId>
++                <artifactId>jsr305</artifactId>
++                <version>2.0.3</version>
++              </additionalDependency>
++            </additionalDependencies>
 +            <excludePackageNames>*.internal</excludePackageNames>
 +            <additionalparam>
 +              -quiet
