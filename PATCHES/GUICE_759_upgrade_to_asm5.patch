@@ -1,7 +1,7 @@
-Description: Upgrade ASM to 5.0
+Description: Upgrade ASM to 5.0.1
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=759
-Last-Update: 2014-03-19
+Last-Update: 2014-03-31
 
 diff --git a/build.xml b/build.xml
 index d9802ae..ac19447 100644
@@ -12,7 +12,7 @@ index d9802ae..ac19447 100644
      </munge>
      <replace file="build/no_aop/common.xml" value="">
 -      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-4.2.jar"/>]]></replacetoken>
-+      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.jar"/>]]></replacetoken>
++      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>]]></replacetoken>
      </replace>
      <replace file="build/no_aop/common.xml" value="">
        <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
@@ -25,7 +25,7 @@ index e54d19d..d23fbe9 100644
        <fileset dir="${build.dir}/classes"/>
        <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
 -      <zipfileset src="${common.basedir}/lib/build/asm-4.2.jar"/>
-+      <zipfileset src="${common.basedir}/lib/build/asm-5.0.jar"/>
++      <zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>
        <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
@@ -39,7 +39,7 @@ index 7606276..5346795 100644
      <dependency>
 +      <groupId>org.ow2.asm</groupId>
 +      <artifactId>asm</artifactId>
-+      <version>5.0</version>
++      <version>5.0.1</version>
 +      <optional>true</optional>
 +      <scope>provided</scope>
 +    </dependency>
@@ -51,7 +51,7 @@ diff --git a/lib/build/asm-4.2.jar b/lib/build/asm-4.2.jar
 deleted file mode 100644
 index 693913d..0000000
 Binary files a/lib/build/asm-4.2.jar and /dev/null differ
-diff --git a/lib/build/asm-5.0.jar b/lib/build/asm-5.0.jar
+diff --git a/lib/build/asm-5.0.1.jar b/lib/build/asm-5.0.1.jar
 new file mode 100644
 index 0000000..2e26615
-Binary files /dev/null and b/lib/build/asm-5.0.jar differ
+Binary files /dev/null and b/lib/build/asm-5.0.1.jar differ
