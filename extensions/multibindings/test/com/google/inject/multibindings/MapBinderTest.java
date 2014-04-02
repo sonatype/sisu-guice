@@ -30,6 +30,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.common.testing.GcFinalization;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binding;
 import com.google.inject.BindingAnnotation;
@@ -48,6 +50,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.google.inject.spi.Dependency;
 import com.google.inject.spi.HasDependencies;
+import com.google.inject.spi.InstanceBinding;
 import com.google.inject.util.Modules;
 import com.google.inject.util.Providers;
 
@@ -58,12 +61,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -78,6 +83,8 @@ public class MapBinderTest extends TestCase {
   final TypeLiteral<Map<String, Provider<String>>> mapOfStringProvider =
       new TypeLiteral<Map<String, Provider<String>>>() {}; 
   final TypeLiteral<Map<String, String>> mapOfString = new TypeLiteral<Map<String, String>>() {};
+  final TypeLiteral<Map<Integer, String>> mapOfIntString =
+      new TypeLiteral<Map<Integer, String>>() {};
   final TypeLiteral<Map<String, Integer>> mapOfInteger = new TypeLiteral<Map<String, Integer>>() {};
   final TypeLiteral<Map<String, Set<String>>> mapOfSetOfString =
       new TypeLiteral<Map<String, Set<String>>>() {};
@@ -366,10 +373,10 @@ public class MapBinderTest extends TestCase {
       fail();
     } catch(CreationException ce) {
       assertContains(ce.getMessage(),
-          "Map injection failed due to duplicated key \"a\", from bindings at:",
+          "Map injection failed due to duplicated key \"a\", from bindings:",
           asModuleChain(Main.class, Module1.class),
           asModuleChain(Main.class, Module2.class),
-          "and key: \"b\", from bindings at:",
+          "and key: \"b\", from bindings:",
           asModuleChain(Main.class, Module2.class),
           asModuleChain(Main.class, Module3.class),
           "at " + Main.class.getName() + ".configure(",
@@ -604,6 +611,23 @@ public class MapBinderTest extends TestCase {
     Key<?> setKey = new Key<Set<Map.Entry<Integer, Provider<String>>>>() {};
     assertEquals(ImmutableSet.<Dependency<?>>of(Dependency.get(setKey)),
         withDependencies.getDependencies());
+    Set<String> elements = Sets.newHashSet();
+    elements.addAll(recurseForDependencies(injector, withDependencies));
+    assertEquals(ImmutableSet.of("A", "B"), elements);
+  }
+
+  private Set<String> recurseForDependencies(Injector injector, HasDependencies hasDependencies) {
+    Set<String> elements = Sets.newHashSet();
+    for (Dependency<?> dependency : hasDependencies.getDependencies()) {
+      Binding<?> binding = injector.getBinding(dependency.getKey());
+      HasDependencies deps = (HasDependencies) binding;
+      if (binding instanceof InstanceBinding) {
+        elements.add((String) ((InstanceBinding) binding).getInstance());
+      } else {
+        elements.addAll(recurseForDependencies(injector, deps));
+      }
+    }    
+    return elements;
   }
 
   /** We just want to make sure that mapbinder's binding depends on the underlying multibinder. */
@@ -849,5 +873,69 @@ public class MapBinderTest extends TestCase {
     expected.put(1, 1);
     expected.put(2, 2);
     assertEquals(expected, s1);
-  }  
+  }
+
+  public void testTwoMapBindersAreDistinct() {
+    Injector injector = Guice.createInjector(new AbstractModule() {
+      @Override protected void configure() {  
+        MapBinder.newMapBinder(binder(), String.class, String.class)
+            .addBinding("A").toInstance("a");
+        
+        MapBinder.newMapBinder(binder(), Integer.class, String.class)
+            .addBinding(1).toInstance("b");
+      }
+    });
+    Collector collector = new Collector();
+    Binding<Map<String, String>> map1 = injector.getBinding(Key.get(mapOfString));
+    map1.acceptTargetVisitor(collector);
+    assertNotNull(collector.mapbinding);
+    MapBinderBinding<?> map1Binding = collector.mapbinding;
+  
+    Binding<Map<Integer, String>> map2 = injector.getBinding(Key.get(mapOfIntString));
+    map2.acceptTargetVisitor(collector);
+    assertNotNull(collector.mapbinding);
+    MapBinderBinding<?> map2Binding = collector.mapbinding;
+  
+    List<Binding<String>> bindings = injector.findBindingsByType(stringType);
+    assertEquals("should have two elements: " + bindings.toString(), 2, bindings.size());
+    Binding<String> a = bindings.get(0);
+    Binding<String> b = bindings.get(1);
+    assertEquals("a", ((InstanceBinding<String>) a).getInstance());
+    assertEquals("b", ((InstanceBinding<String>) b).getInstance());
+    
+    // Make sure the correct elements belong to their own sets.
+    assertTrue(map1Binding.containsElement(a));
+    assertFalse(map1Binding.containsElement(b));
+  
+    assertFalse(map2Binding.containsElement(a));
+    assertTrue(map2Binding.containsElement(b));
+  }
+
+  // Tests for com.google.inject.internal.WeakKeySet not leaking memory.
+  public void testWeakKeySet_integration_mapbinder() {
+    Key<Map<String, String>> mapKey = Key.get(new TypeLiteral<Map<String, String>>() {});
+    
+    Injector parentInjector = Guice.createInjector(new AbstractModule() {
+          @Override protected void configure() {
+            bind(String.class).toInstance("hi");
+          }
+        });
+    WeakKeySetUtils.assertNotBlacklisted(parentInjector, mapKey);
+
+    Injector childInjector = parentInjector.createChildInjector(new AbstractModule() {
+      @Override protected void configure() {
+        MapBinder<String, String> binder =
+            MapBinder.newMapBinder(binder(), String.class, String.class);
+        binder.addBinding("bar").toInstance("foo");
+      }
+    });
+    WeakReference<Injector> weakRef = new WeakReference<Injector>(childInjector);
+    WeakKeySetUtils.assertBlacklisted(parentInjector, mapKey);
+    
+    // Clear the ref, GC, and ensure that we are no longer blacklisting.
+    childInjector = null;
+    
+    GcFinalization.awaitClear(weakRef);
+    WeakKeySetUtils.assertNotBlacklisted(parentInjector, mapKey);
+  }
 }
