@@ -130,7 +130,7 @@ final class WeakKeySet {
 
   public Set<Object> getSources(Key<?> key) {
     evictionCache.cleanUp();
-    Multiset<Object> sources = backingSet.get(key);
+    Multiset<Object> sources = (backingSet == null) ? null : backingSet.get(key);
     return (sources == null) ? null : sources.elementSet();
   }
   
