@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2014-03-14
+Last-Update: 2014-04-15
 
 diff --git a/README.md b/README.md
 new file mode 100644
@@ -54,9 +54,32 @@ index ea2212a..92a9d88 100644
  
    <dependencies>
      <dependency>
-@@ -50,6 +51,7 @@
-       <artifactId>cglib</artifactId>
-       <version>3.1</version>
+@@ -46,22 +46,18 @@
+      | CGLIB is embedded by default by the JarJar build profile
+     -->
+     <dependency>
+-      <groupId>cglib</groupId>
+-      <artifactId>cglib</artifactId>
+-      <version>3.1</version>
+-      <exclusions>
+-        <exclusion>
+-          <groupId>asm</groupId>
+-          <artifactId>asm</artifactId>
+-        </exclusion>
+-      </exclusions>
++      <groupId>org.ow2.asm</groupId>
++      <artifactId>asm</artifactId>
++      <version>5.0.1</version>
+       <optional>true</optional>
++      <scope>provided</scope>
+     </dependency>
+     <dependency>
+-      <groupId>org.ow2.asm</groupId>
+-      <artifactId>asm</artifactId>
+-      <version>5.0.1</version>
++      <groupId>cglib</groupId>
++      <artifactId>cglib</artifactId>
++      <version>3.1</version>
        <optional>true</optional>
 +      <scope>provided</scope>
      </dependency>
@@ -90,6 +113,15 @@ index ea2212a..92a9d88 100644
      </plugins>
    </build>
  
+@@ -233,7 +233,7 @@
+           <plugin>
+             <groupId>org.sonatype.plugins</groupId>
+             <artifactId>jarjar-maven-plugin</artifactId>
+-            <version>1.8</version>
++            <version>1.9</version>
+             <executions>
+               <execution>
+                 <id>jarjar</id>
 diff --git a/extensions/assistedinject/pom.xml b/extensions/assistedinject/pom.xml
 index 601f24e..38f360e 100644
 --- a/extensions/assistedinject/pom.xml
@@ -298,6 +330,36 @@ index b758bcd..009c439 100644
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
+@@ -70,23 +70,17 @@
+      | in an execution that doesn't include package.
+     -->
+     <dependency>
+-      <groupId>cglib</groupId>
+-      <artifactId>cglib</artifactId>
+-      <version>3.1</version>
+-      <scope>test</scope>
+-      <exclusions>
+-        <exclusion>
+-          <groupId>asm</groupId>
+-          <artifactId>asm</artifactId>
+-        </exclusion>
+-      </exclusions>
+-    </dependency>
+-    <dependency>
+       <groupId>org.ow2.asm</groupId>
+       <artifactId>asm</artifactId>
+       <version>5.0.1</version>
+       <scope>test</scope>
+     </dependency>
++    <dependency>
++      <groupId>cglib</groupId>
++      <artifactId>cglib</artifactId>
++      <version>3.1</version>
++      <scope>test</scope>
++    </dependency>
+   </dependencies>
+ 
+   <build>
 @@ -75,7 +75,7 @@
          <artifactId>maven-remote-resources-plugin</artifactId>
        </plugin>
@@ -420,6 +482,27 @@ index cf987cf..2a60ebd 100644
        <artifactId>guice-servlet</artifactId>
        <version>${project.version}</version>
      </dependency>
+diff --git a/extensions/testlib/pom.xml b/extensions/testlib/pom.xml
+index e12aee0..ffd1536 100644
+--- a/extensions/testlib/pom.xml
++++ b/extensions/testlib/pom.xml
+@@ -4,14 +4,14 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>4.0-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-testlib</artifactId>
+ 
+-  <name>Google Guice - Extensions - TestLib</name>
++  <name>Sisu Guice - Extensions - TestLib</name>
+ 
+   <build>
+     <plugins>
 diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
 index 63a8b78..bb24528 100644
 --- a/extensions/throwingproviders/pom.xml

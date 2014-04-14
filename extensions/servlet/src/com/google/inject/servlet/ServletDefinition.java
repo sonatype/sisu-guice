@@ -223,19 +223,16 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
             // then pathinfo is null.
             if (pathInfo.isEmpty() && servletPathLength > 0) {
               pathInfo = null;
+            } else {
+              try {
+                pathInfo = new URI(pathInfo).getPath();
+              } catch (URISyntaxException e) {
+                // ugh, just leave it alone then
+              }
             }
           } else {
             pathInfo = null; // we know nothing additional about the URI.
           }
-
-          if (pathInfo != null) {
-            try {
-              pathInfo = new URI(pathInfo).getPath();
-            } catch (URISyntaxException e) {
-              // ugh, just leave it alone then
-            }
-          }
-
           pathInfoComputed = true;
         }
 

@@ -64,7 +64,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
     <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
     <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
     <url>http://github.com/sonatype/sisu-guice</url>
-    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
