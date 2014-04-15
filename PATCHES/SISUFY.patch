@@ -122,6 +122,40 @@ index ea2212a..92a9d88 100644
              <executions>
                <execution>
                  <id>jarjar</id>
+@@ -274,22 +274,25 @@
+           </plugin>
+           <plugin>
+             <!--
+-             | Package the original non-JarJar'd classes so extensions can compile against them
++             | Attach the original non-JarJar'd classes so extensions can compile against them
+             -->
+-            <artifactId>maven-jar-plugin</artifactId>
++            <groupId>org.codehaus.mojo</groupId>
++            <artifactId>build-helper-maven-plugin</artifactId>
++            <version>1.8</version>
+             <executions>
+               <execution>
+                 <id>classes</id>
+                 <phase>package</phase>
+                 <goals>
+-                  <goal>jar</goal>
++                  <goal>attach-artifact</goal>
+                 </goals>
+                 <configuration>
+-                  <classesDirectory>${project.build.directory}/original-classes</classesDirectory>
+-                  <classifier>classes</classifier>
+-                  <archive>
+-                    <manifestFile combine.self="override" />
+-                  </archive>
++                  <artifacts>
++                    <artifact>
++                      <file>${project.build.directory}/original-${project.build.finalName}.jar</file>
++                      <classifier>classes</classifier>
++                    </artifact>
++                  </artifacts>
+                 </configuration>
+               </execution>
+             </executions>
 diff --git a/extensions/assistedinject/pom.xml b/extensions/assistedinject/pom.xml
 index 601f24e..38f360e 100644
 --- a/extensions/assistedinject/pom.xml
