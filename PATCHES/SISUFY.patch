@@ -571,7 +571,7 @@ index 098a9cb..981580c 100644
 -    <version>5</version>
 +    <groupId>org.sonatype.forge</groupId>
 +    <artifactId>forge-parent</artifactId>
-+    <version>35</version>
++    <version>38</version>
    </parent>
  
    <packaging>pom</packaging>
