@@ -46,6 +46,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -128,6 +129,7 @@ public class ContinuingRequestIntegrationTest extends TestCase {
         .andReturn("")
         .anyTimes();
     expect(request.getMethod()).andReturn("GET");
+    expect(request.getCookies()).andReturn(new Cookie[0]);
 
     FilterChain filterChain = createMock(FilterChain.class);
     expect(request.getParameter(PARAM_NAME)).andReturn(PARAM_VALUE);
@@ -171,6 +173,8 @@ public class ContinuingRequestIntegrationTest extends TestCase {
         .anyTimes();
 
     expect(request.getMethod()).andReturn("GET");
+    expect(request.getCookies()).andReturn(new Cookie[0]);
+
     FilterChain filterChain = createMock(FilterChain.class);
 
     replay(request, filterConfig, filterChain);
