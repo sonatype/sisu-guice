@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2014-04-15
+Last-Update: 2014-05-27
 
 diff --git a/README.md b/README.md
 new file mode 100644
@@ -767,3 +767,55 @@ index 098a9cb..981580c 100644
 -  </profiles>
 -
  </project>
+diff --git a/build.xml b/build.xml
+index 687c5f9..79e06f0 100644
+--- a/build.xml
++++ b/build.xml
+@@ -260,7 +260,7 @@
+       <arg value="-DNO_AOP" />
+     </munge>
+     <replace file="build/no_aop/common.xml" value="">
+-      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>]]></replacetoken>
++      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.2.jar"/>]]></replacetoken>
+     </replace>
+     <replace file="build/no_aop/common.xml" value="">
+       <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
+diff --git a/common.xml b/common.xml
+index c513d47..1130813 100644
+--- a/common.xml
++++ b/common.xml
+@@ -149,7 +149,7 @@
+     <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
+       <fileset dir="${build.dir}/classes"/>
+       <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
+-      <zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>
++      <zipfileset src="${common.basedir}/lib/build/asm-5.0.2.jar"/>
+       <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
+       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
+       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
+diff --git a/core/pom.xml b/core/pom.xml
+index b9078a5..a11ac5a 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -48,7 +48,7 @@
+     <dependency>
+       <groupId>org.ow2.asm</groupId>
+       <artifactId>asm</artifactId>
+-      <version>5.0.1</version>
++      <version>5.0.2</version>
+       <optional>true</optional>
+       <scope>provided</scope>
+     </dependency>
+diff --git a/extensions/pom.xml b/extensions/pom.xml
+index 1d7d3f8..16c149a 100644
+--- a/extensions/pom.xml
++++ b/extensions/pom.xml
+@@ -72,7 +72,7 @@
+     <dependency>
+       <groupId>org.ow2.asm</groupId>
+       <artifactId>asm</artifactId>
+-      <version>5.0.1</version>
++      <version>5.0.2</version>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
