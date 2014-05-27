@@ -27,7 +27,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
 
   <groupId>org.sonatype.sisu.inject</groupId>
   <artifactId>guice-parent</artifactId>
-  <version>4.0-SNAPSHOT</version>
+  <version>3.2.2</version>
 
   <name>Sisu Guice</name>
 
@@ -64,7 +64,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
     <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
     <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
     <url>http://github.com/sonatype/sisu-guice</url>
-    <tag>HEAD</tag>
+    <tag>sisu-guice-3.2.2</tag>
   </scm>
 
   <issueManagement>
