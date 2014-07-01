@@ -15,7 +15,6 @@
  */
 package com.google.inject.servlet;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -69,7 +68,7 @@ public abstract class AbstractFilterPipeline implements FilterPipeline {
       return;
 
     // Used to prevent duplicate initialization.
-    Set<Filter> initializedSoFar = Sets.newSetFromMap(Maps.<Filter, Boolean>newIdentityHashMap());
+    Set<Filter> initializedSoFar = Sets.newIdentityHashSet();
 
     for (FilterDefinition filterDefinition : filterDefinitions()) {
       filterDefinition.init(servletContext, injector, initializedSoFar);
@@ -137,7 +136,7 @@ public abstract class AbstractFilterPipeline implements FilterPipeline {
     servletPipeline.destroy();
 
     //go down chain and destroy all our filters
-    Set<Filter> destroyedSoFar = Sets.newSetFromMap(Maps.<Filter, Boolean>newIdentityHashMap());
+    Set<Filter> destroyedSoFar = Sets.newIdentityHashSet();
     for (FilterDefinition filterDefinition : filterDefinitions()) {
       filterDefinition.destroy(destroyedSoFar);
     }

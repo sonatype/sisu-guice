@@ -309,7 +309,7 @@ final class InjectorImpl implements Injector, Lookups {
   /** Returns true if the key type is MembersInjector (but not a subclass of MembersInjector). */
   private static boolean isMembersInjector(Key<?> key) {
     return key.getTypeLiteral().getRawType().equals(MembersInjector.class)
-        && !(key.getAnnotationType() != null);
+        && key.getAnnotationType() == null;
   }
 
   private <T> BindingImpl<MembersInjector<T>> createMembersInjectorBinding(
@@ -1072,5 +1072,4 @@ final class InjectorImpl implements Injector, Lookups {
         .add("bindings", state.getExplicitBindingsThisLevel().values())
         .toString();
   }
-
 }
