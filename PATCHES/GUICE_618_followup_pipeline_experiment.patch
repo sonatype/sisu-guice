@@ -8,7 +8,7 @@ new file mode 100644
 index 0000000..9ab0124
 --- /dev/null
 +++ b/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java
-@@ -0,0 +1,145 @@
+@@ -0,0 +1,144 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -26,7 +26,6 @@ index 0000000..9ab0124
 + */
 +package com.google.inject.servlet;
 +
-+import com.google.common.collect.Maps;
 +import com.google.common.collect.Sets;
 +import com.google.inject.Injector;
 +import com.google.inject.Provider;
@@ -80,7 +79,7 @@ index 0000000..9ab0124
 +      return;
 +
 +    // Used to prevent duplicate initialization.
-+    Set<Filter> initializedSoFar = Sets.newSetFromMap(Maps.<Filter, Boolean>newIdentityHashMap());
++    Set<Filter> initializedSoFar = Sets.newIdentityHashSet();
 +
 +    for (FilterDefinition filterDefinition : filterDefinitions()) {
 +      filterDefinition.init(servletContext, injector, initializedSoFar);
@@ -148,7 +147,7 @@ index 0000000..9ab0124
 +    servletPipeline.destroy();
 +
 +    //go down chain and destroy all our filters
-+    Set<Filter> destroyedSoFar = Sets.newSetFromMap(Maps.<Filter, Boolean>newIdentityHashMap());
++    Set<Filter> destroyedSoFar = Sets.newIdentityHashSet();
 +    for (FilterDefinition filterDefinition : filterDefinitions()) {
 +      filterDefinition.destroy(destroyedSoFar);
 +    }
@@ -159,7 +158,7 @@ new file mode 100644
 index 0000000..00d849e
 --- /dev/null
 +++ b/extensions/servlet/src/com/google/inject/servlet/AbstractServletPipeline.java
-@@ -0,0 +1,158 @@
+@@ -0,0 +1,155 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -178,7 +177,6 @@ index 0000000..00d849e
 +package com.google.inject.servlet;
 +
 +import com.google.common.base.Preconditions;
-+import com.google.common.collect.Maps;
 +import com.google.common.collect.Sets;
 +import com.google.inject.Injector;
 +
@@ -207,8 +205,7 @@ index 0000000..00d849e
 +  protected abstract ServletDefinition[] servletDefinitions();
 +
 +  public void init(ServletContext servletContext, Injector injector) throws ServletException {
-+    Set<HttpServlet> initializedSoFar
-+        = Sets.newSetFromMap(Maps.<HttpServlet, Boolean>newIdentityHashMap());
++    Set<HttpServlet> initializedSoFar = Sets.newIdentityHashSet();
 +
 +    for (ServletDefinition servletDefinition : servletDefinitions()) {
 +      servletDefinition.init(servletContext, injector, initializedSoFar);
@@ -230,8 +227,7 @@ index 0000000..00d849e
 +  }
 +
 +  public void destroy() {
-+    Set<HttpServlet> destroyedSoFar
-+        = Sets.newSetFromMap(Maps.<HttpServlet, Boolean>newIdentityHashMap());
++    Set<HttpServlet> destroyedSoFar = Sets.newIdentityHashSet();
 +    for (ServletDefinition servletDefinition : servletDefinitions()) {
 +      servletDefinition.destroy(destroyedSoFar);
 +    }
@@ -400,11 +396,10 @@ diff --git a/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipel
 index 9e5b849..47bfec9 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java
-@@ -16,8 +16,6 @@
+@@ -16,7 +16,6 @@
  package com.google.inject.servlet;
  
  import com.google.common.collect.Lists;
--import com.google.common.collect.Maps;
 -import com.google.common.collect.Sets;
  import com.google.inject.Binding;
  import com.google.inject.Inject;
@@ -493,7 +488,7 @@ index 9e5b849..47bfec9 100644
 -      return;
 -
 -    // Used to prevent duplicate initialization.
--    Set<Filter> initializedSoFar = Sets.newSetFromMap(Maps.<Filter, Boolean>newIdentityHashMap());
+-    Set<Filter> initializedSoFar = Sets.newIdentityHashSet();
 -
 -    for (FilterDefinition filterDefinition : filterDefinitions) {
 -      filterDefinition.init(servletContext, injector, initializedSoFar);
@@ -561,7 +556,7 @@ index 9e5b849..47bfec9 100644
 -    servletPipeline.destroy();
 -
 -    //go down chain and destroy all our filters
--    Set<Filter> destroyedSoFar = Sets.newSetFromMap(Maps.<Filter, Boolean>newIdentityHashMap());
+-    Set<Filter> destroyedSoFar = Sets.newIdentityHashSet();
 -    for (FilterDefinition filterDefinition : filterDefinitions) {
 -      filterDefinition.destroy(destroyedSoFar);
 -    }
@@ -571,13 +566,12 @@ diff --git a/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipe
 index e3e35df..3530c06 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java
-@@ -15,28 +15,14 @@
+@@ -15,27 +15,14 @@
   */
  package com.google.inject.servlet;
  
 -import com.google.common.base.Preconditions;
  import com.google.common.collect.Lists;
--import com.google.common.collect.Maps;
 -import com.google.common.collect.Sets;
  import com.google.inject.Binding;
  import com.google.inject.Inject;
@@ -636,14 +630,13 @@ index e3e35df..3530c06 100644
      List<ServletDefinition> servletDefinitions = Lists.newArrayList();
      for (Binding<ServletDefinition> entry : injector.findBindingsByType(SERVLET_DEFS)) {
          servletDefinitions.add(entry.getProvider().get());
-@@ -75,116 +67,4 @@ class ManagedServletPipeline {
+@@ -75,114 +67,4 @@ class ManagedServletPipeline {
      // Copy to a fixed size array for speed.
      return servletDefinitions.toArray(new ServletDefinition[servletDefinitions.size()]);
    }
 -
 -  public void init(ServletContext servletContext, Injector injector) throws ServletException {
--    Set<HttpServlet> initializedSoFar
--        = Sets.newSetFromMap(Maps.<HttpServlet, Boolean>newIdentityHashMap());
+-    Set<HttpServlet> initializedSoFar = Sets.newIdentityHashSet();
 -
 -    for (ServletDefinition servletDefinition : servletDefinitions) {
 -      servletDefinition.init(servletContext, injector, initializedSoFar);
@@ -665,8 +658,7 @@ index e3e35df..3530c06 100644
 -  }
 -
 -  public void destroy() {
--    Set<HttpServlet> destroyedSoFar
--        = Sets.newSetFromMap(Maps.<HttpServlet, Boolean>newIdentityHashMap());
+-    Set<HttpServlet> destroyedSoFar = Sets.newIdentityHashSet();
 -    for (ServletDefinition servletDefinition : servletDefinitions) {
 -      servletDefinition.destroy(destroyedSoFar);
 -    }
