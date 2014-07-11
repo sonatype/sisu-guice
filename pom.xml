@@ -35,7 +35,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
     Patched build of Guice: a lightweight dependency injection framework for Java 6 and above
   </description>
 
-  <url>http://code.google.com/p/google-guice/</url>
+  <url>https://github.com/google/guice</url>
   <inceptionYear>2006</inceptionYear>
 
   <organization>
@@ -64,17 +64,16 @@ See the Apache License Version 2.0 for the specific language governing permissio
     <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
     <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
     <url>http://github.com/sonatype/sisu-guice</url>
-    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
     <system>Google Code</system>
-    <url>http://code.google.com/p/google-guice/issues/</url>
+    <url>https://github.com/google/guice/issues/</url>
   </issueManagement>
 
   <ciManagement>
-    <system>Hudson</system>
-    <url>https://builds.sonatype.org/job/sisu-guice/</url>
+    <system>Travis</system>
+    <url>https://travis-ci.org/google/guice</url>
   </ciManagement>
 
   <licenses>
@@ -242,7 +241,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
               <module>com.google.inject</module>
               <_include>-${project.basedir}/build.properties</_include>
               <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
-              <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
+              <Bundle-DocURL>https://github.com/google/guice</Bundle-DocURL>
               <Bundle-Name>${project.artifactId}</Bundle-Name>
               <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
               <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>

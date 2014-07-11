@@ -1,4 +1,4 @@
-Patched build of http://code.google.com/p/google-guice/ - see PATCHES for the exact differences.
+Patched build of https://github.com/google/guice/ - see PATCHES for the exact differences.
 
 Compatibility with Google-Guice
 -------------------------------
