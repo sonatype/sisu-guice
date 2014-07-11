@@ -3,36 +3,68 @@ Author: Stuart McCulloch <mcculls@gmail.com>
 Last-Update: 2014-07-11
 
 diff --git a/README.md b/README.md
-new file mode 100644
-index 0000000..7597582
---- /dev/null
+index 913a0b0..b713400 100644
+--- a/README.md
 +++ b/README.md
-@@ -0,0 +1,10 @@
-+Patched build of http://code.google.com/p/google-guice/ - see PATCHES for the exact differences.
-+
+@@ -1,24 +1,10 @@
+-Guice
+-====
++Patched build of https://github.com/google/guice/ - see PATCHES for the exact differences.
+ 
+-**Now, out in [4.0 Beta4](https://github.com/google/guice/wiki/Guice40)!**
 +Compatibility with Google-Guice
 +-------------------------------
-+
+ 
+-**Documentation:** [User Guide](https://github.com/google/guice/wiki/Motivation), [3.0 javadocs](http://google.github.io/guice/api-docs/3.0/javadoc/packages.html), [Latest javadocs](http://google.github.io/guice/api-docs/latest/javadoc/packages.html) <br/>
+-**Continuous Integration:** [![Build Status](https://api.travis-ci.org/google/guice.png?branch=master)](https://travis-ci.org/google/guice) <br
+-/>
+-**Mailing Lists:** [User Mailing List](http://groups.google.com/group/google-guice), [Developer Mailing List](http://groups.google.com/group/google-guice-dev) <br/>
+-**License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 +The main difference between Sisu-Guice and Google-Guice is that Guava is now exposed as a direct Maven dependency. If you are assembling your application outside of Maven you therefore need to add Guava to the runtime JARs. The build uses Guava 11.0.2 but you can use Maven's `<dependencyManagement>` to select a different version of Guava. (The current source code is compatible up to and including Guava 15.0)
-+
+ 
+-Put simply, Guice alleviates the need for factories and the use of new in your Java code. Think of Guice's @Inject as the new new. You will still need to write factories in some cases, but your code will not depend directly on them. Your code will be easier to change, unit test and reuse in other contexts.
 +Because of this dependency difference you should avoid mixing the official Google-Guice library with internal extensions provided by Sisu-Guice and vice-versa. Third-party Guice extensions should be compatible with either library.
-+
+ 
+-Guice embraces Java's type safe nature, especially when it comes to features introduced in Java 5 such as generics and annotations. You might think of Guice as filling in missing features for core Java. Ideally, the language itself would provide most of the same features, but until such a language comes along, we have Guice.
+-
+-Guice helps you design better APIs, and the Guice API itself sets a good example. Guice is not a kitchen sink. We justify each feature with at least three use cases. When in doubt, we leave it out. We build general functionality which enables you to extend Guice rather than adding every feature to the core framework.
+-
+-Guice aims to make development and debugging easier and faster, not harder and slower. In that vein, Guice steers clear of surprises and magic. You should be able to understand code with or without tools, though tools can make things even easier. When errors do occur, Guice goes the extra mile to generate helpful messages.
+-
+-For an introduction to Guice and a comparison to new and the factory pattern, see [Bob Lee's video presentation](https://www.youtube.com/watch?v=hBVJbzAagfs). After that, check out our [user's guide](https://github.com/google/guice/wiki/Motivation).
+-
+-We've been running Guice in mission critical applications since 2006, and now you can, too. We hope you enjoy it as much as we do.
+-
+-[![jolt award](http://crazybob.org/jolt.png)](http://joltawards.com)
 +Sisu-Guice retains the same public API as Google-Guice and is binary compatible from a client perspective.
+diff --git a/build.xml b/build.xml
+index a0f117a..0e96b04 100644
+--- a/build.xml
++++ b/build.xml
+@@ -258,7 +258,7 @@
+       <arg value="-DNO_AOP" />
+     </munge>
+     <replace file="build/no_aop/common.xml" value="">
+-      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>]]></replacetoken>
++      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.2.jar"/>]]></replacetoken>
+     </replace>
+     <replace file="build/no_aop/common.xml" value="">
+       <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
 diff --git a/common.xml b/common.xml
-index 83d3327..1500850 100644
+index f9ced33..f33205e 100644
 --- a/common.xml
 +++ b/common.xml
-@@ -35,7 +35,7 @@
-     <property name="Bundle-SymbolicName" value="${module}"/>
-     <property name="Bundle-Version" value="${replace;${version};^[^0-9];0.0.0.$0}"/>
- 
--    <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 5 and above"/>
-+    <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 6 and above"/>
-     <property name="Bundle-DocURL" value="http://code.google.com/p/google-guice/"/>
-     <property name="Bundle-Copyright" value="Copyright (C) 2006 Google Inc."/>
-     <property name="Bundle-License" value="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+@@ -149,7 +149,7 @@
+     <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
+       <fileset dir="${build.dir}/classes"/>
+       <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
+-      <zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>
++      <zipfileset src="${common.basedir}/lib/build/asm-5.0.2.jar"/>
+       <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
+       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
+       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
 diff --git a/core/pom.xml b/core/pom.xml
-index ea2212a..92a9d88 100644
+index be4cf44..a11ac5a 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,14 +4,15 @@
@@ -54,7 +86,7 @@ index ea2212a..92a9d88 100644
  
    <dependencies>
      <dependency>
-@@ -46,22 +46,18 @@
+@@ -45,22 +46,18 @@
       | CGLIB is embedded by default by the JarJar build profile
      -->
      <dependency>
@@ -69,7 +101,7 @@ index ea2212a..92a9d88 100644
 -      </exclusions>
 +      <groupId>org.ow2.asm</groupId>
 +      <artifactId>asm</artifactId>
-+      <version>5.0.1</version>
++      <version>5.0.2</version>
        <optional>true</optional>
 +      <scope>provided</scope>
      </dependency>
@@ -85,7 +117,7 @@ index ea2212a..92a9d88 100644
      </dependency>
      <dependency>
        <groupId>javax.inject</groupId>
-@@ -86,7 +88,7 @@
+@@ -97,7 +94,7 @@
          <artifactId>maven-remote-resources-plugin</artifactId>
        </plugin>
        <!--
@@ -94,7 +126,7 @@ index ea2212a..92a9d88 100644
        -->
        <plugin>
          <groupId>org.codehaus.mojo</groupId>
-@@ -139,18 +141,6 @@
+@@ -151,18 +148,6 @@
            </excludes>
          </configuration>
        </plugin>
@@ -113,7 +145,7 @@ index ea2212a..92a9d88 100644
      </plugins>
    </build>
  
-@@ -233,7 +233,7 @@
+@@ -249,7 +234,7 @@
            <plugin>
              <groupId>org.sonatype.plugins</groupId>
              <artifactId>jarjar-maven-plugin</artifactId>
@@ -122,7 +154,7 @@ index ea2212a..92a9d88 100644
              <executions>
                <execution>
                  <id>jarjar</id>
-@@ -274,22 +274,25 @@
+@@ -290,22 +275,25 @@
            </plugin>
            <plugin>
              <!--
@@ -298,7 +330,7 @@ index 8875e39..9eb7ee9 100644
  
  </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index 89bcc06..a5d63aa 100644
+index d26cfd2..e30ee28 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -4,14 +4,14 @@
@@ -319,7 +351,7 @@ index 89bcc06..a5d63aa 100644
    <dependencies>
      <dependency>
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index b758bcd..009c439 100644
+index 9391b9d..16c149a 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -4,17 +4,16 @@
@@ -342,7 +374,7 @@ index b758bcd..009c439 100644
  
    <modules>
      <module>assistedinject</module>
-@@ -40,16 +39,17 @@
+@@ -41,16 +40,17 @@
       | All extensions depend on the core
      -->
      <dependency>
@@ -364,37 +396,35 @@ index b758bcd..009c439 100644
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
-@@ -70,23 +70,17 @@
+@@ -70,21 +70,15 @@
       | in an execution that doesn't include package.
      -->
      <dependency>
 -      <groupId>cglib</groupId>
 -      <artifactId>cglib</artifactId>
 -      <version>3.1</version>
--      <scope>test</scope>
++      <groupId>org.ow2.asm</groupId>
++      <artifactId>asm</artifactId>
++      <version>5.0.2</version>
+       <scope>test</scope>
 -      <exclusions>
 -        <exclusion>
 -          <groupId>asm</groupId>
 -          <artifactId>asm</artifactId>
 -        </exclusion>
 -      </exclusions>
--    </dependency>
--    <dependency>
-       <groupId>org.ow2.asm</groupId>
-       <artifactId>asm</artifactId>
-       <version>5.0.1</version>
-       <scope>test</scope>
      </dependency>
-+    <dependency>
+     <dependency>
+-      <groupId>org.ow2.asm</groupId>
+-      <artifactId>asm</artifactId>
+-      <version>5.0.1</version>
 +      <groupId>cglib</groupId>
 +      <artifactId>cglib</artifactId>
 +      <version>3.1</version>
-+      <scope>test</scope>
-+    </dependency>
+       <scope>test</scope>
+     </dependency>
    </dependencies>
- 
-   <build>
-@@ -75,7 +75,7 @@
+@@ -98,7 +92,7 @@
          <artifactId>maven-remote-resources-plugin</artifactId>
        </plugin>
        <!--
@@ -403,7 +433,7 @@ index b758bcd..009c439 100644
        -->
        <plugin>
          <groupId>org.codehaus.mojo</groupId>
-@@ -89,22 +89,10 @@
+@@ -112,22 +106,10 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
            <instructions>
@@ -517,7 +547,7 @@ index cf987cf..2a60ebd 100644
        <version>${project.version}</version>
      </dependency>
 diff --git a/extensions/testlib/pom.xml b/extensions/testlib/pom.xml
-index e12aee0..ffd1536 100644
+index e12aee0..fc274ba 100644
 --- a/extensions/testlib/pom.xml
 +++ b/extensions/testlib/pom.xml
 @@ -4,14 +4,14 @@
@@ -558,8 +588,23 @@ index 63a8b78..bb24528 100644
  
    <build>
      <plugins>
+diff --git a/lib/build/asm-5.0.1.jar b/lib/build/asm-5.0.1.jar
+deleted file mode 100644
+index 9f9be04..0000000
+Binary files a/lib/build/asm-5.0.1.jar and /dev/null differ
+diff --git a/lib/build/asm-5.0.2.jar b/lib/build/asm-5.0.2.jar
+new file mode 100644
+index 0000000..d3e6982
+Binary files /dev/null and b/lib/build/asm-5.0.2.jar differ
+diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
+index 6abed4b..6f66dac 100644
+Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
+diff --git a/lib/build/slf4j-api-1.6.4.jar b/lib/build/slf4j-api-1.6.4.jar
+new file mode 100644
+index 0000000..76ef305
+Binary files /dev/null and b/lib/build/slf4j-api-1.6.4.jar differ
 diff --git a/pom.xml b/pom.xml
-index 098a9cb..981580c 100644
+index 03fa9cb..f47e071 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -585,18 +630,18 @@ index 098a9cb..981580c 100644
 +  <name>Sisu Guice</name>
  
    <description>
--    Guice is a lightweight dependency injection framework for Java 5 and above
+-    Guice is a lightweight dependency injection framework for Java 6 and above
 +    Patched build of Guice: a lightweight dependency injection framework for Java 6 and above
    </description>
  
-   <url>http://code.google.com/p/google-guice/</url>
+   <url>https://github.com/google/guice</url>
 @@ -61,9 +61,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
    </mailingLists>
  
    <scm>
--    <connection>scm:git:https://code.google.com/p/google-guice/</connection>
--    <developerConnection>scm:git:https://code.google.com/p/google-guice/</developerConnection>
--    <url>https://code.google.com/p/google-guice/</url>
+-    <connection>scm:git:git://github.com/google/guice.git</connection>
+-    <developerConnection>scm:git:ssh://git@github.com/google/guice.git</developerConnection>
+-    <url>https://github.com/google/guice</url>
 +    <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
 +    <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
 +    <url>http://github.com/sonatype/sisu-guice</url>
@@ -622,12 +667,12 @@ index 098a9cb..981580c 100644
            <artifactId>maven-compiler-plugin</artifactId>
 @@ -244,7 +243,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
-               <Bundle-DocURL>http://code.google.com/p/google-guice/</Bundle-DocURL>
+               <Bundle-DocURL>https://github.com/google/guice</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
 -              <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
 +              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
-               <Import-Package>!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.inject.*,*</Import-Package>
+               <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
 @@ -296,83 +295,67 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
@@ -758,55 +803,3 @@ index 098a9cb..981580c 100644
 -  </profiles>
 -
  </project>
-diff --git a/build.xml b/build.xml
-index 687c5f9..79e06f0 100644
---- a/build.xml
-+++ b/build.xml
-@@ -260,7 +260,7 @@
-       <arg value="-DNO_AOP" />
-     </munge>
-     <replace file="build/no_aop/common.xml" value="">
--      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>]]></replacetoken>
-+      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.2.jar"/>]]></replacetoken>
-     </replace>
-     <replace file="build/no_aop/common.xml" value="">
-       <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
-diff --git a/common.xml b/common.xml
-index c513d47..1130813 100644
---- a/common.xml
-+++ b/common.xml
-@@ -149,7 +149,7 @@
-     <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
-       <fileset dir="${build.dir}/classes"/>
-       <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
--      <zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>
-+      <zipfileset src="${common.basedir}/lib/build/asm-5.0.2.jar"/>
-       <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
-       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
-       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
-diff --git a/core/pom.xml b/core/pom.xml
-index b9078a5..a11ac5a 100644
---- a/core/pom.xml
-+++ b/core/pom.xml
-@@ -48,7 +48,7 @@
-     <dependency>
-       <groupId>org.ow2.asm</groupId>
-       <artifactId>asm</artifactId>
--      <version>5.0.1</version>
-+      <version>5.0.2</version>
-       <optional>true</optional>
-       <scope>provided</scope>
-     </dependency>
-diff --git a/extensions/pom.xml b/extensions/pom.xml
-index 1d7d3f8..16c149a 100644
---- a/extensions/pom.xml
-+++ b/extensions/pom.xml
-@@ -72,7 +72,7 @@
-     <dependency>
-       <groupId>org.ow2.asm</groupId>
-       <artifactId>asm</artifactId>
--      <version>5.0.1</version>
-+      <version>5.0.2</version>
-       <scope>test</scope>
-     </dependency>
-     <dependency>
