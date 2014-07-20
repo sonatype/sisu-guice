@@ -16,6 +16,8 @@
 
 package com.google.inject.persist.jpa;
 
+import com.google.inject.util.Providers;
+
 import junit.framework.TestCase;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -34,7 +36,7 @@ public class JpaPersistServiceTest extends TestCase {
   private static final String PERSISTENCE_UNIT_NAME = "test_persistence_unit_name";
   private static final Properties PERSISTENCE_PROPERTIES = new Properties();
 
-  private final JpaPersistService sut = new JpaPersistService(PERSISTENCE_UNIT_NAME, PERSISTENCE_PROPERTIES);
+  private final JpaPersistService sut = new JpaPersistService(PERSISTENCE_UNIT_NAME, Providers.of(PERSISTENCE_PROPERTIES));
   private final PersistenceProvider provider = mock(PersistenceProvider.class);
   private final EntityManagerFactory factory = mock(EntityManagerFactory.class);
   private final EntityManager entityManager = mock(EntityManager.class);
