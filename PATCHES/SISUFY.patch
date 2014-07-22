@@ -1,9 +1,77 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2014-07-11
+Last-Update: 2014-07-22
 
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index 1405580..c6eb646 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -1,61 +1,6 @@
+ # How to contribute #
+ 
+-We'd love to accept your patches and contributions to this project.  There are
+-a just a few small guidelines you need to follow.
+-
+-
+-## Contributor License Agreement ##
+-
+-Contributions to any Google project must be accompanied by a Contributor
+-License Agreement.  This is not a copyright **assignment**, it simply gives
+-Google permission to use and redistribute your contributions as part of the
+-project.
+-
+-  * If you are an individual writing original source code and you're sure you
+-    own the intellectual property, then you'll need to sign an [individual
+-    CLA][].
+-
+-  * If you work for a company that wants to allow you to contribute your work,
+-    then you'll need to sign a [corporate CLA][].
+-
+-You generally only need to submit a CLA once, so if you've already submitted
+-one (even if it was for a different project), you probably don't need to do it
+-again.
+-
+-[individual CLA]: https://developers.google.com/open-source/cla/individual
+-[corporate CLA]: https://developers.google.com/open-source/cla/corporate
+-
+-
+-## Submitting a patch ##
+-
+-  1. It's generally best to start by opening a new issue describing the bug or
+-     feature you're intending to fix.  Even if you think it's relatively minor,
+-     it's helpful to know what people are working on.  Mention in the initial
+-     issue that you are planning to work on that bug or feature so that it can
+-     be assigned to you.
+-
+-  1. Follow the normal process of [forking][] the project, and setup a new
+-     branch to work in.  It's important that each group of changes be done in
+-     separate branches in order to ensure that a pull request only includes the
+-     commits related to that bug or feature.
+-
+-  1. Any significant changes should almost always be accompanied by tests.  The
+-     project already has good test coverage, so look at some of the existing
+-     tests if you're unsure how to go about it.
+-     
+-  1. All contributions must be licensed Apache 2.0 and all files must have
+-     a copy of the boilerplate licence comment (can be copied from an existing
+-     file.  Files should be formatted according to Google's [java style guide][].
+-
+-  1. Do your best to have [well-formed commit messages][] for each change.
+-     This provides consistency throughout the project, and ensures that commit
+-     messages are able to be formatted properly by various git tools.
+-
+-  1. Finally, push the commits to your fork and submit a [pull request][].
+-
+-[forking]: https://help.github.com/articles/fork-a-repo
+-[java style guide]: http://google-styleguide.googlecode.com/svn/trunk/javaguide.html
+-[well-formed commit messages]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+-[pull request]: https://help.github.com/articles/creating-a-pull-request
++This is a patched build of https://github.com/google/guice/ which includes selected contributions that have not yet been merged into the upstream build.
+ 
++While we will consider pull-requests (Apache 2.0 licensed) it is better to send contributions directly to the upstream project. You can then open an issue here if you would like specific upstream contributions added to sisu-guice and made available in a release outside of the current google/guice schedule.
+ 
 diff --git a/README.md b/README.md
-index 913a0b0..b713400 100644
+index 2a54be0..b713400 100644
 --- a/README.md
 +++ b/README.md
 @@ -1,24 +1,10 @@
@@ -15,7 +83,7 @@ index 913a0b0..b713400 100644
 +Compatibility with Google-Guice
 +-------------------------------
  
--**Documentation:** [User Guide](https://github.com/google/guice/wiki/Motivation), [3.0 javadocs](http://google.github.io/guice/api-docs/3.0/javadoc/packages.html), [Latest javadocs](http://google.github.io/guice/api-docs/latest/javadoc/packages.html) <br/>
+-**Documentation:** [User Guide](https://github.com/google/guice/wiki/Motivation), [3.0 javadocs](http://google.github.io/guice/api-docs/3.0/javadoc/packages.html), [Latest javadocs](http://google.github.io/guice/api-docs/latest/javadoc/index.html) <br/>
 -**Continuous Integration:** [![Build Status](https://api.travis-ci.org/google/guice.png?branch=master)](https://travis-ci.org/google/guice) <br
 -/>
 -**Mailing Lists:** [User Mailing List](http://groups.google.com/group/google-guice), [Developer Mailing List](http://groups.google.com/group/google-guice-dev) <br/>
@@ -38,20 +106,20 @@ index 913a0b0..b713400 100644
 -[![jolt award](http://crazybob.org/jolt.png)](http://joltawards.com)
 +Sisu-Guice retains the same public API as Google-Guice and is binary compatible from a client perspective.
 diff --git a/build.xml b/build.xml
-index a0f117a..0e96b04 100644
+index 95bbf1b..1dfe79c 100644
 --- a/build.xml
 +++ b/build.xml
-@@ -258,7 +258,7 @@
+@@ -279,7 +279,7 @@
        <arg value="-DNO_AOP" />
      </munge>
      <replace file="build/no_aop/common.xml" value="">
 -      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>]]></replacetoken>
-+      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.2.jar"/>]]></replacetoken>
++      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.3.jar"/>]]></replacetoken>
      </replace>
      <replace file="build/no_aop/common.xml" value="">
        <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
 diff --git a/common.xml b/common.xml
-index f9ced33..f33205e 100644
+index f9ced33..2d3d9b3 100644
 --- a/common.xml
 +++ b/common.xml
 @@ -149,7 +149,7 @@
@@ -59,12 +127,12 @@ index f9ced33..f33205e 100644
        <fileset dir="${build.dir}/classes"/>
        <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
 -      <zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>
-+      <zipfileset src="${common.basedir}/lib/build/asm-5.0.2.jar"/>
++      <zipfileset src="${common.basedir}/lib/build/asm-5.0.3.jar"/>
        <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
        <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
        <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
 diff --git a/core/pom.xml b/core/pom.xml
-index be4cf44..a11ac5a 100644
+index be4cf44..a9c570e 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,14 +4,15 @@
@@ -101,7 +169,7 @@ index be4cf44..a11ac5a 100644
 -      </exclusions>
 +      <groupId>org.ow2.asm</groupId>
 +      <artifactId>asm</artifactId>
-+      <version>5.0.2</version>
++      <version>5.0.3</version>
        <optional>true</optional>
 +      <scope>provided</scope>
      </dependency>
@@ -330,7 +398,7 @@ index 8875e39..9eb7ee9 100644
  
  </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index d26cfd2..e30ee28 100644
+index e909927..8efce20 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -4,14 +4,14 @@
@@ -350,8 +418,30 @@ index d26cfd2..e30ee28 100644
  
    <dependencies>
      <dependency>
+diff --git a/extensions/persist/test/com/google/inject/persist/jpa/JpaPersistServiceTest.java b/extensions/persist/test/com/google/inject/persist/jpa/JpaPersistServiceTest.java
+index e099a5e..954f691 100644
+--- a/extensions/persist/test/com/google/inject/persist/jpa/JpaPersistServiceTest.java
++++ b/extensions/persist/test/com/google/inject/persist/jpa/JpaPersistServiceTest.java
+@@ -16,6 +16,8 @@
+ 
+ package com.google.inject.persist.jpa;
+ 
++import com.google.inject.util.Providers;
++
+ import junit.framework.TestCase;
+ import static org.hamcrest.Matchers.is;
+ import static org.junit.Assert.assertThat;
+@@ -34,7 +36,7 @@ public class JpaPersistServiceTest extends TestCase {
+   private static final String PERSISTENCE_UNIT_NAME = "test_persistence_unit_name";
+   private static final Properties PERSISTENCE_PROPERTIES = new Properties();
+ 
+-  private final JpaPersistService sut = new JpaPersistService(PERSISTENCE_UNIT_NAME, PERSISTENCE_PROPERTIES);
++  private final JpaPersistService sut = new JpaPersistService(PERSISTENCE_UNIT_NAME, Providers.of(PERSISTENCE_PROPERTIES));
+   private final PersistenceProvider provider = mock(PersistenceProvider.class);
+   private final EntityManagerFactory factory = mock(EntityManagerFactory.class);
+   private final EntityManager entityManager = mock(EntityManager.class);
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index 9391b9d..16c149a 100644
+index 9391b9d..97a0f70 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -4,17 +4,16 @@
@@ -405,7 +495,7 @@ index 9391b9d..16c149a 100644
 -      <version>3.1</version>
 +      <groupId>org.ow2.asm</groupId>
 +      <artifactId>asm</artifactId>
-+      <version>5.0.2</version>
++      <version>5.0.3</version>
        <scope>test</scope>
 -      <exclusions>
 -        <exclusion>
@@ -592,19 +682,16 @@ diff --git a/lib/build/asm-5.0.1.jar b/lib/build/asm-5.0.1.jar
 deleted file mode 100644
 index 9f9be04..0000000
 Binary files a/lib/build/asm-5.0.1.jar and /dev/null differ
-diff --git a/lib/build/asm-5.0.2.jar b/lib/build/asm-5.0.2.jar
+diff --git a/lib/build/asm-5.0.3.jar b/lib/build/asm-5.0.3.jar
 new file mode 100644
-index 0000000..d3e6982
-Binary files /dev/null and b/lib/build/asm-5.0.2.jar differ
-diff --git a/lib/build/doclava.jar b/lib/build/doclava.jar
-index 6abed4b..6f66dac 100644
-Binary files a/lib/build/doclava.jar and b/lib/build/doclava.jar differ
+index 0000000..573535b
+Binary files /dev/null and b/lib/build/asm-5.0.3.jar differ
 diff --git a/lib/build/slf4j-api-1.6.4.jar b/lib/build/slf4j-api-1.6.4.jar
 new file mode 100644
 index 0000000..76ef305
 Binary files /dev/null and b/lib/build/slf4j-api-1.6.4.jar differ
 diff --git a/pom.xml b/pom.xml
-index 03fa9cb..f47e071 100644
+index 0eacfcd..246fc4b 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -674,59 +761,7 @@ index 03fa9cb..f47e071 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-@@ -296,83 +295,67 @@ See the Apache License Version 2.0 for the specific language governing permissio
-         </plugin>
-         <plugin>
-           <artifactId>maven-javadoc-plugin</artifactId>
--          <version>2.7</version>
--          <executions>
--            <execution>
--              <phase>package</phase>
--              <goals>
--                <goal>jar</goal>
--              </goals>
--            </execution>
--          </executions>
-+          <version>2.9.1</version>
-+          <configuration>
-+            <doclet>com.google.doclava.Doclava</doclet>
-+            <docletPath>
-+              ${project.basedir}/../lib/build/doclava.jar:
-+              ${project.basedir}/../../lib/build/doclava.jar
-+            </docletPath>
-+            <!--
-+             | bootclasspath required by Sun's JVM
-+            -->
-+            <bootclasspath>${sun.boot.class.path}</bootclasspath>
-+            <!--
-+             | javadoc requires @javax.annotation.Nullable
-+            -->
-+            <additionalDependencies>
-+              <additionalDependency>
-+                <groupId>com.google.code.findbugs</groupId>
-+                <artifactId>jsr305</artifactId>
-+                <version>2.0.3</version>
-+              </additionalDependency>
-+            </additionalDependencies>
-+            <excludePackageNames>*.internal</excludePackageNames>
-+            <additionalparam>
-+              -quiet
-+              -federate JDK http://download.oracle.com/javase/6/docs/api/index.html?
-+              -federationxml JDK http://doclava.googlecode.com/svn/static/api/openjdk-6.xml
-+              -hdf project.name "${project.name} (patched build of Google Guice)"
-+              -d ${project.build.directory}/apidocs
-+            </additionalparam>
-+            <useStandardDocletOptions>false</useStandardDocletOptions>
-+            <!--
-+             | Apple's JVM sometimes requires more memory
-+            -->
-+            <additionalJOption>-J-Xmx1024m</additionalJOption>
-+          </configuration>
-+        </plugin>
-+        <plugin>
-+          <artifactId>maven-site-plugin</artifactId>
-+          <version>3.2</version>
-         </plugin>
+@@ -312,70 +311,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
            <version>2.1.2</version>
