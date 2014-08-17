@@ -4,7 +4,7 @@ Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=618
 Last-Update: 2012-07-29
 
 diff --git a/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java b/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
-index 985064b..d85d97c 100755
+index 985064b..d85d97c 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/FilterPipeline.java
 @@ -39,7 +39,7 @@ import javax.servlet.ServletResponse;
@@ -17,10 +17,10 @@ index 985064b..d85d97c 100755
    void destroyPipeline();
  
 diff --git a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
-index a439dba..2913e55 100644
+index ba7a5af..216fd5f 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
-@@ -88,7 +88,7 @@ public class GuiceFilter implements Filter {
+@@ -89,7 +89,7 @@ public class GuiceFilter implements Filter {
      this(null);
    }
  
@@ -29,7 +29,7 @@ index a439dba..2913e55 100644
      injectedPipeline = filterPipeline;
    }
  
-@@ -99,7 +99,7 @@ public class GuiceFilter implements Filter {
+@@ -100,7 +100,7 @@ public class GuiceFilter implements Filter {
      // This can happen if you create many injectors and they all have their own
      // servlet module. This is legal, caveat a small warning.
      if (GuiceFilter.pipeline instanceof ManagedFilterPipeline) {

@@ -5,7 +5,7 @@ Last-Update: 2014-03-12
 
 diff --git a/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java b/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java
 new file mode 100644
-index 0000000..9ab0124
+index 0000000..4804a2c
 --- /dev/null
 +++ b/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java
 @@ -0,0 +1,144 @@
@@ -155,7 +155,7 @@ index 0000000..9ab0124
 +}
 diff --git a/extensions/servlet/src/com/google/inject/servlet/AbstractServletPipeline.java b/extensions/servlet/src/com/google/inject/servlet/AbstractServletPipeline.java
 new file mode 100644
-index 0000000..00d849e
+index 0000000..08a15ab
 --- /dev/null
 +++ b/extensions/servlet/src/com/google/inject/servlet/AbstractServletPipeline.java
 @@ -0,0 +1,155 @@
@@ -337,7 +337,7 @@ index b4112cf..bfe5a83 100644
      this.filterDefinitions = filterDefinitions;
      this.servletPipeline = servletPipeline;
 diff --git a/extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java b/extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java
-index ff1e5b6..0bfdadd 100644
+index ff1e5b6..dc09014 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java
 @@ -15,6 +15,7 @@
@@ -393,7 +393,7 @@ index ff1e5b6..0bfdadd 100644
 +  }
  }
 diff --git a/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java b/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java
-index 9e5b849..47bfec9 100644
+index 538e10a..47bfec9 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java
 @@ -16,7 +16,6 @@
@@ -404,7 +404,7 @@ index 9e5b849..47bfec9 100644
  import com.google.inject.Binding;
  import com.google.inject.Inject;
  import com.google.inject.Injector;
-@@ -25,19 +23,9 @@ import com.google.inject.Provider;
+@@ -24,19 +23,9 @@ import com.google.inject.Provider;
  import com.google.inject.Singleton;
  import com.google.inject.TypeLiteral;
  
@@ -424,7 +424,7 @@ index 9e5b849..47bfec9 100644
  
  /**
   * Central routing/dispatch class handles lifecycle of managed filters, and delegates to the servlet
-@@ -46,29 +34,28 @@ import javax.servlet.http.HttpServletRequestWrapper;
+@@ -45,29 +34,28 @@ import javax.servlet.http.HttpServletRequestWrapper;
   * @author dhanji@gmail.com (Dhanji R. Prasanna)
   */
  @Singleton
@@ -466,7 +466,7 @@ index 9e5b849..47bfec9 100644
    /**
     * Introspects the injector and collects all instances of bound {@code List<FilterDefinition>}
     * into a master list.
-@@ -76,7 +63,7 @@ class ManagedFilterPipeline implements FilterPipeline{
+@@ -75,7 +63,7 @@ class ManagedFilterPipeline implements FilterPipeline{
     * We have a guarantee that {@link com.google.inject.Injector#getBindings()} returns a map
     * that preserves insertion order in entry-set iterators.
     */
@@ -475,7 +475,7 @@ index 9e5b849..47bfec9 100644
      List<FilterDefinition> filterDefinitions = Lists.newArrayList();
      for (Binding<FilterDefinition> entry : injector.findBindingsByType(FILTER_DEFS)) {
        filterDefinitions.add(entry.getProvider().get());
-@@ -85,86 +72,4 @@ class ManagedFilterPipeline implements FilterPipeline{
+@@ -84,86 +72,4 @@ class ManagedFilterPipeline implements FilterPipeline{
      // Copy to a fixed-size array for speed of iteration.
      return filterDefinitions.toArray(new FilterDefinition[filterDefinitions.size()]);
    }
@@ -563,7 +563,7 @@ index 9e5b849..47bfec9 100644
 -  }
  }
 diff --git a/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java b/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java
-index e3e35df..3530c06 100644
+index 4ca0f2e..3530c06 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java
 @@ -15,27 +15,14 @@
@@ -594,7 +594,7 @@ index e3e35df..3530c06 100644
  
  /**
   * A wrapping dispatcher for servlets, in much the same way as {@link ManagedFilterPipeline} is for
-@@ -45,7 +31,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
+@@ -44,7 +31,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
   * @author dhanji@gmail.com (Dhanji R. Prasanna)
   */
  @Singleton
@@ -603,7 +603,7 @@ index e3e35df..3530c06 100644
    private final ServletDefinition[] servletDefinitions;
    private static final TypeLiteral<ServletDefinition> SERVLET_DEFS =
        TypeLiteral.get(ServletDefinition.class);
-@@ -55,10 +41,16 @@ class ManagedServletPipeline {
+@@ -54,10 +41,16 @@ class ManagedServletPipeline {
      this.servletDefinitions = collectServletDefinitions(injector);
    }
  
@@ -621,7 +621,7 @@ index e3e35df..3530c06 100644
    /**
     * Introspects the injector and collects all instances of bound {@code List<ServletDefinition>}
     * into a master list.
-@@ -66,7 +58,7 @@ class ManagedServletPipeline {
+@@ -65,7 +58,7 @@ class ManagedServletPipeline {
     * We have a guarantee that {@link com.google.inject.Injector#getBindings()} returns a map
     * that preserves insertion order in entry-set iterators.
     */
@@ -630,7 +630,7 @@ index e3e35df..3530c06 100644
      List<ServletDefinition> servletDefinitions = Lists.newArrayList();
      for (Binding<ServletDefinition> entry : injector.findBindingsByType(SERVLET_DEFS)) {
          servletDefinitions.add(entry.getProvider().get());
-@@ -75,114 +67,4 @@ class ManagedServletPipeline {
+@@ -74,114 +67,4 @@ class ManagedServletPipeline {
      // Copy to a fixed size array for speed.
      return servletDefinitions.toArray(new ServletDefinition[servletDefinitions.size()]);
    }
@@ -746,7 +746,7 @@ index e3e35df..3530c06 100644
 -  }
  }
 diff --git a/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java b/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
-index cbd8f29..b968aa7 100644
+index 3b5aea8..837c414 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
 @@ -17,6 +17,7 @@ package com.google.inject.servlet;
@@ -757,7 +757,7 @@ index cbd8f29..b968aa7 100644
  import com.google.common.collect.Iterators;
  import com.google.inject.Injector;
  import com.google.inject.Key;
-@@ -34,6 +35,8 @@ import java.util.HashMap;
+@@ -32,6 +33,8 @@ import java.util.HashMap;
  import java.util.Map;
  import java.util.Set;
  import java.util.concurrent.atomic.AtomicReference;
@@ -766,7 +766,7 @@ index cbd8f29..b968aa7 100644
  
  import javax.servlet.ServletConfig;
  import javax.servlet.ServletContext;
-@@ -51,7 +54,9 @@ import javax.servlet.http.HttpServletResponse;
+@@ -49,7 +52,9 @@ import javax.servlet.http.HttpServletResponse;
   *
   * @author dhanji@gmail.com (Dhanji R. Prasanna)
   */
@@ -777,7 +777,7 @@ index cbd8f29..b968aa7 100644
    private final String pattern;
    private final Key<? extends HttpServlet> servletKey;
    private final UriPatternMatcher patternMatcher;
-@@ -285,7 +290,14 @@ class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinitio
+@@ -276,7 +281,14 @@ class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinitio
          = (previous != null) ? previous.getOriginalRequest() : request;
      GuiceFilter.localContext.set(new GuiceFilter.Context(originalRequest, request, response));
      try {
@@ -793,7 +793,7 @@ index cbd8f29..b968aa7 100644
      } finally {
        GuiceFilter.localContext.set(previous);
      }
-@@ -298,4 +310,10 @@ class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinitio
+@@ -289,4 +301,10 @@ class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinitio
    String getPattern() {
      return pattern;
    }
@@ -817,11 +817,11 @@ index d8bac74..169dd89 100644
    /**
     * @param uri A "contextual" (i.e. relative) Request URI, *not* a complete one.
     * @return Returns true if the uri matches the pattern.
-diff --git a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java b/extensions/servlet/src/com/google/injec
-index f7a108f..7ab0cdf 100644
+diff --git a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
+index 216fd5f..2666ee9 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
-@@ -100,9 +100,9 @@ public class GuiceFilter implements Filter {
+@@ -99,9 +99,9 @@ public class GuiceFilter implements Filter {
  
      // This can happen if you create many injectors and they all have their own
      // servlet module. This is legal, caveat a small warning.

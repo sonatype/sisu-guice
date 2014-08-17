@@ -109,6 +109,46 @@ See the Apache License Version 2.0 for the specific language governing permissio
     <guice.with.no_aop>true</guice.with.no_aop>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject-tck</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>16.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-testlib</artifactId>
+        <version>16.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>5.0.3</version>
+      </dependency>
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>3.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -247,7 +287,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
               <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
               <Import-Package>!com.google.inject.*,*</Import-Package>
               <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-              <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+              <_versionpolicy>$(version;==;$(@))</_versionpolicy>
               <_nouses>true</_nouses>
               <_removeheaders>
                 Embed-Dependency,Embed-Transitive,
@@ -257,10 +297,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
                 Ignore-Package,Bnd-LastModified
               </_removeheaders>
             </instructions>
-            <!--
-             | Exclude from version calculations, as it doesn't use semantic versioning
-            -->
-            <excludeDependencies>guava</excludeDependencies>
           </configuration>
           <executions>
             <execution>

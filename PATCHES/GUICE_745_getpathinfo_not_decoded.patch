@@ -4,10 +4,10 @@ Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=745
 Last-Update: 2014-04-15
 
 diff --git a/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java b/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
-index 1111fde..cbd8f29 100644
+index 3b5aea8..11328ed 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
-@@ -26,6 +26,8 @@
+@@ -26,6 +26,8 @@ import com.google.inject.spi.ProviderInstanceBinding;
  import com.google.inject.spi.ProviderWithExtensionVisitor;
  
  import java.io.IOException;
@@ -16,7 +16,7 @@ index 1111fde..cbd8f29 100644
  import java.util.Collections;
  import java.util.Enumeration;
  import java.util.HashMap;
-@@ -216,6 +216,12 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
+@@ -216,6 +218,12 @@ class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinitio
              // then pathinfo is null.
              if (pathInfo.isEmpty() && servletPathLength > 0) {
                pathInfo = null;
@@ -30,10 +30,10 @@ index 1111fde..cbd8f29 100644
            } else {
              pathInfo = null; // we know nothing additional about the URI.
 diff --git a/extensions/servlet/test/com/google/inject/servlet/ServletDefinitionPathsTest.java b/extensions/servlet/test/com/google/inject/servlet/ServletDefinitionPathsTest.java
-index a5ac841..21eff7e 100644
+index 5509a6c..c89834f 100644
 --- a/extensions/servlet/test/com/google/inject/servlet/ServletDefinitionPathsTest.java
 +++ b/extensions/servlet/test/com/google/inject/servlet/ServletDefinitionPathsTest.java
-@@ -135,6 +135,10 @@ public final void testPathInfoWithServletStyleMatching() throws IOException, Ser
+@@ -133,6 +133,10 @@ public class ServletDefinitionPathsTest extends TestCase {
          "/.../h.thing");
      pathInfoWithServletStyleMatching("/path/my/h.thing", "/path", "*.thing", null, "/my/h.thing");
  
@@ -44,7 +44,7 @@ index a5ac841..21eff7e 100644
    }
  
    private void pathInfoWithServletStyleMatching(final String requestUri, final String contextPath,
-@@ -231,6 +231,11 @@ public final void testPathInfoWithRegexMatching() throws IOException, ServletExc
+@@ -228,6 +232,11 @@ public class ServletDefinitionPathsTest extends TestCase {
      // path
      pathInfoWithRegexMatching("/path/test.com/com.test.MyServletModule", "", "/path/[^/]+/(.*)",
          "com.test.MyServletModule", "/path/test.com/com.test.MyServletModule");

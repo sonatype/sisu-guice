@@ -16,31 +16,22 @@
 
   <dependencies>
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <version>1</version>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.6.4</version>
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+    <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
-      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>16.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-testlib</artifactId>
-      <version>16.0.1</version>
-      <scope>test</scope>
     </dependency>
     <!--
      | CGLIB is embedded by default by the JarJar build profile
@@ -48,21 +39,26 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
-      <version>5.0.3</version>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
-      <version>3.1</version>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>
+    <!--
+     | Test dependencies
+    -->
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject-tck</artifactId>
-      <version>1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-testlib</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

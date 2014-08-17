@@ -4,7 +4,7 @@ Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=492
 Last-Update: 2012-07-29
 
 diff --git a/common.xml b/common.xml
-index 1102481..b0cae0c 100644
+index a23eb90..2d3d9b3 100644
 --- a/common.xml
 +++ b/common.xml
 @@ -44,6 +44,10 @@
@@ -19,12 +19,12 @@ index 1102481..b0cae0c 100644
        <equals arg1="${module}" arg2="com.google.inject"/>
      </condition>
 diff --git a/core/pom.xml b/core/pom.xml
-index 43570f2..5a04460 100644
+index 33e6dcc..edfa724 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -25,6 +25,12 @@
-       <version>1</version>
-     </dependency>
+@@ -15,6 +15,12 @@
+ 
+   <dependencies>
      <dependency>
 +      <groupId>org.slf4j</groupId>
 +      <artifactId>slf4j-api</artifactId>
@@ -32,10 +32,10 @@ index 43570f2..5a04460 100644
 +      <optional>true</optional>
 +    </dependency>
 +    <dependency>
-       <groupId>aopalliance</groupId>
-       <artifactId>aopalliance</artifactId>
-       <version>1.0</version>
-@@ -89,6 +95,12 @@
+       <groupId>javax.inject</groupId>
+       <artifactId>javax.inject</artifactId>
+       <version>1</version>
+@@ -101,6 +107,12 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <!--
@@ -48,19 +48,19 @@ index 43570f2..5a04460 100644
             | Temporarily excluded tests
            -->
            <excludes>
-@@ -107,6 +119,7 @@
-         <configuration>
+@@ -122,6 +134,7 @@
            <instructions>
+             <Bundle-Name>${project.artifactId}$(if;$(classes;NAMED;*.MethodAspect);; (no_aop))</Bundle-Name>
              <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
 +            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
            </instructions>
          </configuration>
        </plugin>
 diff --git a/core/src/com/google/inject/internal/InjectorShell.java b/core/src/com/google/inject/internal/InjectorShell.java
-index 043fdcf..f727a5e 100644
+index 6100879..56b13b3 100644
 --- a/core/src/com/google/inject/internal/InjectorShell.java
 +++ b/core/src/com/google/inject/internal/InjectorShell.java
-@@ -252,6 +252,15 @@ final class InjectorShell {
+@@ -251,6 +251,15 @@ final class InjectorShell {
          new ProviderInstanceBindingImpl<Logger>(injector, key,
              SourceProvider.UNKNOWN_SOURCE, loggerFactory, Scoping.UNSCOPED,
              loggerFactory, ImmutableSet.<InjectionPoint>of()));
@@ -76,7 +76,7 @@ index 043fdcf..f727a5e 100644
    }
  
    private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
-@@ -271,6 +280,44 @@ final class InjectorShell {
+@@ -270,6 +279,44 @@ final class InjectorShell {
      }
    }
    
@@ -122,7 +122,7 @@ index 043fdcf..f727a5e 100644
      Key<Stage> key = Key.get(Stage.class);
      InstanceBindingImpl<Stage> stageBinding = new InstanceBindingImpl<Stage>(
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
-index 60e197d..f4fd4c5 100644
+index a560f38..e909927 100644
 --- a/extensions/persist/pom.xml
 +++ b/extensions/persist/pom.xml
 @@ -29,7 +29,7 @@
@@ -135,10 +135,10 @@ index 60e197d..f4fd4c5 100644
      </dependency>
      <dependency>
 diff --git a/guice.iml b/guice.iml
-index 53b2d05..2abdea0 100644
+index 4ac043c..118fde8 100644
 --- a/guice.iml
 +++ b/guice.iml
-@@ -87,6 +87,15 @@
+@@ -96,6 +96,15 @@
          <SOURCES />
        </library>
      </orderEntry>
@@ -159,10 +159,10 @@ new file mode 100644
 index 0000000..76ef305
 Binary files /dev/null and b/lib/build/slf4j-api-1.6.4.jar differ
 diff --git a/pom.xml b/pom.xml
-index 91e2a83..9bfe995 100644
+index 37305d0..5834d49 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -270,7 +270,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -206,7 +206,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
          <plugin>
            <artifactId>maven-surefire-plugin</artifactId>
@@ -170,4 +170,4 @@ index 91e2a83..9bfe995 100644
 +          <version>2.6</version>
            <configuration>
              <redirectTestOutputToFile>true</redirectTestOutputToFile>
-           </configuration>
+             <!--<argLine>-Dguice_include_stack_traces=OFF</argLine>-->

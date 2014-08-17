@@ -4,7 +4,7 @@ Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=718
 Last-Update: 2012-07-29
 
 diff --git a/core/src/com/google/inject/internal/AbstractBindingProcessor.java b/core/src/com/google/inject/internal/AbstractBindingProcessor.java
-index 72dae2b..bbb9930 100644
+index e1a0bba..fd1a9ce 100644
 --- a/core/src/com/google/inject/internal/AbstractBindingProcessor.java
 +++ b/core/src/com/google/inject/internal/AbstractBindingProcessor.java
 @@ -39,6 +39,20 @@ import java.util.Set;

@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2014-07-22
+Last-Update: 2014-08-17
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -71,7 +71,7 @@ index 1405580..c6eb646 100644
 +While we will consider pull-requests (Apache 2.0 licensed) it is better to send contributions directly to the upstream project. You can then open an issue here if you would like specific upstream contributions added to sisu-guice and made available in a release outside of the current google/guice schedule.
  
 diff --git a/README.md b/README.md
-index 2a54be0..b713400 100644
+index 2a54be0..5b6f001 100644
 --- a/README.md
 +++ b/README.md
 @@ -1,24 +1,10 @@
@@ -88,7 +88,7 @@ index 2a54be0..b713400 100644
 -/>
 -**Mailing Lists:** [User Mailing List](http://groups.google.com/group/google-guice), [Developer Mailing List](http://groups.google.com/group/google-guice-dev) <br/>
 -**License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-+The main difference between Sisu-Guice and Google-Guice is that Guava is now exposed as a direct Maven dependency. If you are assembling your application outside of Maven you therefore need to add Guava to the runtime JARs. The build uses Guava 11.0.2 but you can use Maven's `<dependencyManagement>` to select a different version of Guava. (The current source code is compatible up to and including Guava 15.0)
++The main difference between Sisu-Guice and Google-Guice is that Guava is now exposed as a direct Maven dependency. If you are assembling your application outside of Maven you therefore need to add Guava to the runtime JARs. The build uses Guava 16.0.1 but you can use Maven's `<dependencyManagement>` to select a different version of Guava.
  
 -Put simply, Guice alleviates the need for factories and the use of new in your Java code. Think of Guice's @Inject as the new new. You will still need to write factories in some cases, but your code will not depend directly on them. Your code will be easier to change, unit test and reuse in other contexts.
 +Because of this dependency difference you should avoid mixing the official Google-Guice library with internal extensions provided by Sisu-Guice and vice-versa. Third-party Guice extensions should be compatible with either library.
@@ -105,34 +105,8 @@ index 2a54be0..b713400 100644
 -
 -[![jolt award](http://crazybob.org/jolt.png)](http://joltawards.com)
 +Sisu-Guice retains the same public API as Google-Guice and is binary compatible from a client perspective.
-diff --git a/build.xml b/build.xml
-index 95bbf1b..1dfe79c 100644
---- a/build.xml
-+++ b/build.xml
-@@ -279,7 +279,7 @@
-       <arg value="-DNO_AOP" />
-     </munge>
-     <replace file="build/no_aop/common.xml" value="">
--      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>]]></replacetoken>
-+      <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/asm-5.0.3.jar"/>]]></replacetoken>
-     </replace>
-     <replace file="build/no_aop/common.xml" value="">
-       <replacetoken><![CDATA[<zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>]]></replacetoken>
-diff --git a/common.xml b/common.xml
-index f9ced33..2d3d9b3 100644
---- a/common.xml
-+++ b/common.xml
-@@ -149,7 +149,7 @@
-     <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
-       <fileset dir="${build.dir}/classes"/>
-       <zipfileset src="${common.basedir}/lib/build/cglib-3.1.jar"/>
--      <zipfileset src="${common.basedir}/lib/build/asm-5.0.1.jar"/>
-+      <zipfileset src="${common.basedir}/lib/build/asm-5.0.3.jar"/>
-       <rule pattern="net.sf.cglib.*" result="com.google.inject.internal.cglib.$@1"/>
-       <rule pattern="net.sf.cglib.**.*" result="com.google.inject.internal.cglib.@1.$@2"/>
-       <rule pattern="org.objectweb.asm.*" result="com.google.inject.internal.asm.$@1"/>
 diff --git a/core/pom.xml b/core/pom.xml
-index be4cf44..a9c570e 100644
+index bb9bf88..cb9ba73 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -4,14 +4,15 @@
@@ -154,47 +128,21 @@ index be4cf44..a9c570e 100644
  
    <dependencies>
      <dependency>
-@@ -45,22 +46,18 @@
-      | CGLIB is embedded by default by the JarJar build profile
-     -->
-     <dependency>
--      <groupId>cglib</groupId>
--      <artifactId>cglib</artifactId>
--      <version>3.1</version>
--      <exclusions>
--        <exclusion>
--          <groupId>asm</groupId>
--          <artifactId>asm</artifactId>
--        </exclusion>
--      </exclusions>
-+      <groupId>org.ow2.asm</groupId>
-+      <artifactId>asm</artifactId>
-+      <version>5.0.3</version>
+@@ -39,11 +40,13 @@
+       <groupId>org.ow2.asm</groupId>
+       <artifactId>asm</artifactId>
        <optional>true</optional>
 +      <scope>provided</scope>
      </dependency>
      <dependency>
--      <groupId>org.ow2.asm</groupId>
--      <artifactId>asm</artifactId>
--      <version>5.0.1</version>
-+      <groupId>cglib</groupId>
-+      <artifactId>cglib</artifactId>
-+      <version>3.1</version>
+       <groupId>cglib</groupId>
+       <artifactId>cglib</artifactId>
        <optional>true</optional>
 +      <scope>provided</scope>
      </dependency>
-     <dependency>
-       <groupId>javax.inject</groupId>
-@@ -97,7 +94,7 @@
-         <artifactId>maven-remote-resources-plugin</artifactId>
-       </plugin>
-       <!--
--       | Enable Java5 conformance checks
-+       | Enable Java6 conformance checks
-       -->
-       <plugin>
-         <groupId>org.codehaus.mojo</groupId>
-@@ -151,18 +148,6 @@
+     <!--
+      | Test dependencies
+@@ -141,18 +144,6 @@
            </excludes>
          </configuration>
        </plugin>
@@ -213,49 +161,6 @@ index be4cf44..a9c570e 100644
      </plugins>
    </build>
  
-@@ -249,7 +234,7 @@
-           <plugin>
-             <groupId>org.sonatype.plugins</groupId>
-             <artifactId>jarjar-maven-plugin</artifactId>
--            <version>1.8</version>
-+            <version>1.9</version>
-             <executions>
-               <execution>
-                 <id>jarjar</id>
-@@ -290,22 +275,25 @@
-           </plugin>
-           <plugin>
-             <!--
--             | Package the original non-JarJar'd classes so extensions can compile against them
-+             | Attach the original non-JarJar'd classes so extensions can compile against them
-             -->
--            <artifactId>maven-jar-plugin</artifactId>
-+            <groupId>org.codehaus.mojo</groupId>
-+            <artifactId>build-helper-maven-plugin</artifactId>
-+            <version>1.8</version>
-             <executions>
-               <execution>
-                 <id>classes</id>
-                 <phase>package</phase>
-                 <goals>
--                  <goal>jar</goal>
-+                  <goal>attach-artifact</goal>
-                 </goals>
-                 <configuration>
--                  <classesDirectory>${project.build.directory}/original-classes</classesDirectory>
--                  <classifier>classes</classifier>
--                  <archive>
--                    <manifestFile combine.self="override" />
--                  </archive>
-+                  <artifacts>
-+                    <artifact>
-+                      <file>${project.build.directory}/original-${project.build.finalName}.jar</file>
-+                      <classifier>classes</classifier>
-+                    </artifact>
-+                  </artifacts>
-                 </configuration>
-               </execution>
-             </executions>
 diff --git a/extensions/assistedinject/pom.xml b/extensions/assistedinject/pom.xml
 index 601f24e..38f360e 100644
 --- a/extensions/assistedinject/pom.xml
@@ -357,7 +262,7 @@ index 0000000..8d1c8b6
 @@ -0,0 +1 @@
 + 
 diff --git a/extensions/mini/pom.xml b/extensions/mini/pom.xml
-index 03f5c01..213a9ee 100644
+index fdaa91d..5c03903 100644
 --- a/extensions/mini/pom.xml
 +++ b/extensions/mini/pom.xml
 @@ -4,13 +4,13 @@
@@ -367,8 +272,7 @@ index 03f5c01..213a9ee 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-mini</artifactId>
@@ -418,30 +322,8 @@ index e909927..8efce20 100644
  
    <dependencies>
      <dependency>
-diff --git a/extensions/persist/test/com/google/inject/persist/jpa/JpaPersistServiceTest.java b/extensions/persist/test/com/google/inject/persist/jpa/JpaPersistServiceTest.java
-index e099a5e..954f691 100644
---- a/extensions/persist/test/com/google/inject/persist/jpa/JpaPersistServiceTest.java
-+++ b/extensions/persist/test/com/google/inject/persist/jpa/JpaPersistServiceTest.java
-@@ -16,6 +16,8 @@
- 
- package com.google.inject.persist.jpa;
- 
-+import com.google.inject.util.Providers;
-+
- import junit.framework.TestCase;
- import static org.hamcrest.Matchers.is;
- import static org.junit.Assert.assertThat;
-@@ -34,7 +36,7 @@ public class JpaPersistServiceTest extends TestCase {
-   private static final String PERSISTENCE_UNIT_NAME = "test_persistence_unit_name";
-   private static final Properties PERSISTENCE_PROPERTIES = new Properties();
- 
--  private final JpaPersistService sut = new JpaPersistService(PERSISTENCE_UNIT_NAME, PERSISTENCE_PROPERTIES);
-+  private final JpaPersistService sut = new JpaPersistService(PERSISTENCE_UNIT_NAME, Providers.of(PERSISTENCE_PROPERTIES));
-   private final PersistenceProvider provider = mock(PersistenceProvider.class);
-   private final EntityManagerFactory factory = mock(EntityManagerFactory.class);
-   private final EntityManager entityManager = mock(EntityManager.class);
 diff --git a/extensions/pom.xml b/extensions/pom.xml
-index 9391b9d..97a0f70 100644
+index 084967c..83d04a2 100644
 --- a/extensions/pom.xml
 +++ b/extensions/pom.xml
 @@ -4,17 +4,16 @@
@@ -486,44 +368,7 @@ index 9391b9d..97a0f70 100644
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
-@@ -70,21 +70,15 @@
-      | in an execution that doesn't include package.
-     -->
-     <dependency>
--      <groupId>cglib</groupId>
--      <artifactId>cglib</artifactId>
--      <version>3.1</version>
-+      <groupId>org.ow2.asm</groupId>
-+      <artifactId>asm</artifactId>
-+      <version>5.0.3</version>
-       <scope>test</scope>
--      <exclusions>
--        <exclusion>
--          <groupId>asm</groupId>
--          <artifactId>asm</artifactId>
--        </exclusion>
--      </exclusions>
-     </dependency>
-     <dependency>
--      <groupId>org.ow2.asm</groupId>
--      <artifactId>asm</artifactId>
--      <version>5.0.1</version>
-+      <groupId>cglib</groupId>
-+      <artifactId>cglib</artifactId>
-+      <version>3.1</version>
-       <scope>test</scope>
-     </dependency>
-   </dependencies>
-@@ -98,7 +92,7 @@
-         <artifactId>maven-remote-resources-plugin</artifactId>
-       </plugin>
-       <!--
--       | Enable Java5 conformance checks
-+       | Enable Java6 conformance checks
-       -->
-       <plugin>
-         <groupId>org.codehaus.mojo</groupId>
-@@ -112,22 +106,10 @@
+@@ -103,22 +103,10 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
            <instructions>
@@ -548,7 +393,7 @@ index 9391b9d..97a0f70 100644
    </build>
  </project>
 diff --git a/extensions/service/pom.xml b/extensions/service/pom.xml
-index 8dd4001..9eede3e 100644
+index 2d96e0d..917c14a 100644
 --- a/extensions/service/pom.xml
 +++ b/extensions/service/pom.xml
 @@ -4,13 +4,13 @@
@@ -558,8 +403,7 @@ index 8dd4001..9eede3e 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
--    <version>3.1.0-SNAPSHOT</version>
-+    <version>3.2.0-SNAPSHOT</version>
+     <version>4.0-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-service</artifactId>
@@ -678,20 +522,8 @@ index 63a8b78..bb24528 100644
  
    <build>
      <plugins>
-diff --git a/lib/build/asm-5.0.1.jar b/lib/build/asm-5.0.1.jar
-deleted file mode 100644
-index 9f9be04..0000000
-Binary files a/lib/build/asm-5.0.1.jar and /dev/null differ
-diff --git a/lib/build/asm-5.0.3.jar b/lib/build/asm-5.0.3.jar
-new file mode 100644
-index 0000000..573535b
-Binary files /dev/null and b/lib/build/asm-5.0.3.jar differ
-diff --git a/lib/build/slf4j-api-1.6.4.jar b/lib/build/slf4j-api-1.6.4.jar
-new file mode 100644
-index 0000000..76ef305
-Binary files /dev/null and b/lib/build/slf4j-api-1.6.4.jar differ
 diff --git a/pom.xml b/pom.xml
-index 0eacfcd..246fc4b 100644
+index 9203050..eb83c4a 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -18,21 +18,21 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -735,24 +567,30 @@ index 0eacfcd..246fc4b 100644
    </scm>
  
    <issueManagement>
-@@ -107,7 +107,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -84,14 +84,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+     </license>
+   </licenses>
+ 
+-  <distributionManagement>
+-    <!-- override the parent's directory to point to the canonical place, and use https. -->
+-    <snapshotRepository>
+-      <id>google-snapshots</id>
+-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+-    </snapshotRepository>
+-  </distributionManagement>
+-
+   <modules>
+     <module>core</module>
+     <module>extensions</module>
+@@ -115,7 +107,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
       | Use "-Dguice.with.no_aop=false" to skip the no-AOP variant
      -->
      <guice.with.no_aop>true</guice.with.no_aop>
 -    <gpg.skip>true</gpg.skip>
    </properties>
  
-   <dependencies>
-@@ -165,7 +164,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
-           </executions>
-         </plugin>
-         <!--
--         | Make sure we only use Java5 methods
-+         | Make sure we only use Java6 methods
-         -->
-         <plugin>
-           <artifactId>maven-compiler-plugin</artifactId>
-@@ -244,7 +243,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+   <dependencyManagement>
+@@ -292,7 +283,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>https://github.com/google/guice</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
@@ -761,7 +599,7 @@ index 0eacfcd..246fc4b 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-@@ -312,70 +311,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -353,45 +344,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
            <version>2.1.2</version>
@@ -812,29 +650,4 @@ index 0eacfcd..246fc4b 100644
 -    </plugins>
    </build>
  
--  <profiles>
--    <profile>
--      <!--
--       | Deployment profile for the Sonatype Grid
--      -->
--      <id>sonatype-grid</id>
--      <properties>
--        <forgeReleaseId>forge-releases</forgeReleaseId>
--        <forgeReleaseUrl>http://repository.sonatype.org:8081/service/local/staging/deploy/maven2</forgeReleaseUrl>
--        <forgeSnapshotId>forge-snapshots</forgeSnapshotId>
--        <forgeSnapshotUrl>http://repository.sonatype.org/content/repositories/snapshots</forgeSnapshotUrl>
--      </properties>
--      <distributionManagement>
--        <repository>
--          <id>${forgeReleaseId}</id>
--          <url>${forgeReleaseUrl}</url>
--        </repository>
--        <snapshotRepository>
--          <id>${forgeSnapshotId}</id>
--          <url>${forgeSnapshotUrl}</url>
--        </snapshotRepository>
--      </distributionManagement>
--    </profile>
--  </profiles>
--
- </project>
+   <profiles>
