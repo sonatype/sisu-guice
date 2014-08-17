@@ -297,6 +297,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                 Ignore-Package,Bnd-LastModified
               </_removeheaders>
             </instructions>
+            <!--
+             | Exclude from version calculations, as it doesn't use semantic versioning
+            -->
+            <excludeDependencies>guava</excludeDependencies>
           </configuration>
           <executions>
             <execution>

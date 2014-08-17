@@ -599,6 +599,17 @@ index 9203050..eb83c4a 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
+@@ -306,6 +297,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
+                 Ignore-Package,Bnd-LastModified
+               </_removeheaders>
+             </instructions>
++            <!--
++             | Exclude from version calculations, as it doesn't use semantic versioning
++            -->
++            <excludeDependencies>guava</excludeDependencies>
+           </configuration>
+           <executions>
+             <execution>
 @@ -353,45 +344,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
