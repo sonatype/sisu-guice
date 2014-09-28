@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2014-08-17
+Last-Update: 2014-09-28
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -79,7 +79,7 @@ index 2a54be0..5b6f001 100644
 -====
 +Patched build of https://github.com/google/guice/ - see PATCHES for the exact differences.
  
--**Now, out in [4.0 Beta4](https://github.com/google/guice/wiki/Guice40)!**
+-**Now, out in [4.0 Beta5](https://github.com/google/guice/wiki/Guice40)!**
 +Compatibility with Google-Guice
 +-------------------------------
  
@@ -567,12 +567,16 @@ index 9203050..eb83c4a 100644
    </scm>
  
    <issueManagement>
-@@ -84,14 +84,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -84,18 +84,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
      </license>
    </licenses>
  
 -  <distributionManagement>
 -    <!-- override the parent's directory to point to the canonical place, and use https. -->
+-    <repository>
+-      <id>google-releases</id>
+-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+-    </repository>
 -    <snapshotRepository>
 -      <id>google-snapshots</id>
 -      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -582,7 +586,7 @@ index 9203050..eb83c4a 100644
    <modules>
      <module>core</module>
      <module>extensions</module>
-@@ -115,7 +107,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -119,7 +107,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
       | Use "-Dguice.with.no_aop=false" to skip the no-AOP variant
      -->
      <guice.with.no_aop>true</guice.with.no_aop>
@@ -590,7 +594,7 @@ index 9203050..eb83c4a 100644
    </properties>
  
    <dependencyManagement>
-@@ -292,7 +283,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -296,7 +283,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>https://github.com/google/guice</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
@@ -599,7 +603,7 @@ index 9203050..eb83c4a 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-@@ -306,6 +297,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -310,6 +297,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                  Ignore-Package,Bnd-LastModified
                </_removeheaders>
              </instructions>
@@ -610,7 +614,7 @@ index 9203050..eb83c4a 100644
            </configuration>
            <executions>
              <execution>
-@@ -353,45 +344,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -357,45 +344,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
            <version>2.1.2</version>
