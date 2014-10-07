@@ -19,7 +19,9 @@ package com.google.inject.persist.jpa;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 import com.google.inject.persist.PersistModule;
 import com.google.inject.persist.PersistService;
 import com.google.inject.persist.UnitOfWork;
@@ -35,9 +37,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
-import javax.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -55,21 +56,11 @@ public final class JpaPersistModule extends PersistModule {
     this.jpaUnit = jpaUnit;
   }
 
-  private Properties properties;
-  private Class<? extends Provider<? extends Properties>> propertiesProvider;
+  private Map<?,?> properties;
   private MethodInterceptor transactionInterceptor;
 
   @Override protected void configurePersistence() {
     bindConstant().annotatedWith(Jpa.class).to(jpaUnit);
-
-    if (null != properties) {
-      bind(Properties.class).annotatedWith(Jpa.class).toInstance(properties);
-    } else if (null != propertiesProvider) {
-      bind(Properties.class).annotatedWith(Jpa.class).toProvider(propertiesProvider);
-    } else {
-      bind(Properties.class).annotatedWith(Jpa.class)
-          .toProvider(Providers.<Properties>of(null));
-    }
 
     bind(JpaPersistService.class).in(Singleton.class);
 
@@ -92,19 +83,18 @@ public final class JpaPersistModule extends PersistModule {
     return transactionInterceptor;
   }
 
+  @Provides @Jpa Map<?, ?> provideProperties() {
+    return properties;
+  }
+
   /**
    * Configures the JPA persistence provider with a set of properties.
    * 
    * @param properties A set of name value pairs that configure a JPA persistence
    * provider as per the specification.
    */
-  public JpaPersistModule properties(Properties properties) {
+  public JpaPersistModule properties(Map<?,?> properties) {
     this.properties = properties;
-    return this;
-  }
-
-  public JpaPersistModule properties(Class<? extends Provider<? extends Properties>> provider) {
-    this.propertiesProvider = provider;
     return this;
   }
 
