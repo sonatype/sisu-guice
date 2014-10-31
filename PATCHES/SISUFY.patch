@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2014-09-28
+Last-Update: 2014-10-31
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -586,7 +586,7 @@ index 9203050..eb83c4a 100644
    <modules>
      <module>core</module>
      <module>extensions</module>
-@@ -119,7 +107,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -120,7 +108,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
       | Use "-Dguice.with.no_aop=false" to skip the no-AOP variant
      -->
      <guice.with.no_aop>true</guice.with.no_aop>
@@ -594,7 +594,7 @@ index 9203050..eb83c4a 100644
    </properties>
  
    <dependencyManagement>
-@@ -296,7 +283,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -328,7 +315,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>https://github.com/google/guice</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
@@ -603,7 +603,7 @@ index 9203050..eb83c4a 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-@@ -310,6 +297,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -342,6 +329,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                  Ignore-Package,Bnd-LastModified
                </_removeheaders>
              </instructions>
@@ -614,7 +614,7 @@ index 9203050..eb83c4a 100644
            </configuration>
            <executions>
              <execution>
-@@ -357,45 +344,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -389,45 +376,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
            <version>2.1.2</version>

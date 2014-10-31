@@ -1,7 +1,7 @@
 Description: Replace class-level global SINGLETON lock with a finer-grained lock
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=183
-Last-Update: 2014-10-29
+Last-Update: 2014-10-31
 
 diff --git a/core/src/com/google/inject/internal/Scoping.java b/core/src/com/google/inject/internal/Scoping.java
 index 10afcba..334aaef 100644
@@ -13,9 +13,9 @@ index 10afcba..334aaef 100644
  
 -    try {
 -      SingletonScope.singletonCreationPerRootInjectorLock.set(injector.state.singletonCreationLock());
-     Provider<T> scoped
-         = scope.scope(key, new ProviderToInternalFactoryAdapter<T>(injector, creator));
-     return new InternalFactoryToProviderAdapter<T>(scoped, source);
+       Provider<T> scoped
+           = scope.scope(key, new ProviderToInternalFactoryAdapter<T>(injector, creator));
+       return new InternalFactoryToProviderAdapter<T>(scoped, source);
 -    } finally {
 -      SingletonScope.singletonCreationPerRootInjectorLock.set(null);
 -    }

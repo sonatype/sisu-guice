@@ -1,7 +1,7 @@
 Description: Wrap System.getProperty call in case security is enabled
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=350
-Last-Update: 2013-11-13
+Last-Update: 2014-10-31
 
 diff --git a/core/src/com/google/inject/internal/BytecodeGen.java b/core/src/com/google/inject/internal/BytecodeGen.java
 index ad7764b..f0ebc0a 100644
@@ -36,7 +36,7 @@ diff --git a/core/src/com/google/inject/internal/InternalFlags.java b/core/src/c
 index 2c4ed75..31d412d 100644
 --- a/core/src/com/google/inject/internal/InternalFlags.java
 +++ b/core/src/com/google/inject/internal/InternalFlags.java
-@@ -7,6 +7,18 @@ import java.util.logging.Logger;
+@@ -23,6 +23,18 @@ import java.util.logging.Logger;
   */
  public class InternalFlags {
    private final static Logger logger = Logger.getLogger(InternalFlags.class.getName());
@@ -55,7 +55,7 @@ index 2c4ed75..31d412d 100644
    /**
     * The options for Guice stack trace collection.
     */
-@@ -21,6 +33,10 @@ public class InternalFlags {
+@@ -37,6 +49,10 @@ public class InternalFlags {
  
  
    public static IncludeStackTraceOption getIncludeStackTraceOption() {

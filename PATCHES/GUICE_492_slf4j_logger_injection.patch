@@ -1,7 +1,7 @@
 Description: Provide built-in injection of SLF4J loggers
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=492
-Last-Update: 2012-07-29
+Last-Update: 2014-10-31
 
 diff --git a/common.xml b/common.xml
 index a23eb90..2d3d9b3 100644
@@ -34,8 +34,8 @@ index 33e6dcc..edfa724 100644
 +    <dependency>
        <groupId>javax.inject</groupId>
        <artifactId>javax.inject</artifactId>
-       <version>1</version>
-@@ -101,6 +107,12 @@
+     </dependency>
+@@ -91,6 +97,12 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <!--
@@ -48,9 +48,9 @@ index 33e6dcc..edfa724 100644
             | Temporarily excluded tests
            -->
            <excludes>
-@@ -122,6 +134,7 @@
-           <instructions>
+@@ -113,6 +125,7 @@
              <Bundle-Name>${project.artifactId}$(if;$(classes;NAMED;*.MethodAspect);; (no_aop))</Bundle-Name>
+             <Import-Package>!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.inject.*,*</Import-Package>
              <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
 +            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
            </instructions>
@@ -134,26 +134,6 @@ index a560f38..e909927 100644
        <scope>test</scope>
      </dependency>
      <dependency>
-diff --git a/guice.iml b/guice.iml
-index 4ac043c..118fde8 100644
---- a/guice.iml
-+++ b/guice.iml
-@@ -96,6 +96,15 @@
-         <SOURCES />
-       </library>
-     </orderEntry>
-+    <orderEntry type="module-library" exported="">
-+      <library>
-+        <CLASSES>
-+          <root url="jar://$MODULE_DIR$/lib/build/slf4j-api-1.6.4.jar!/" />
-+        </CLASSES>
-+        <JAVADOC />
-+        <SOURCES />
-+      </library>
-+    </orderEntry>
-   </component>
- </module>
- 
 diff --git a/lib/build/slf4j-api-1.6.4.jar b/lib/build/slf4j-api-1.6.4.jar
 new file mode 100644
 index 0000000..76ef305
@@ -162,7 +142,7 @@ diff --git a/pom.xml b/pom.xml
 index 37305d0..5834d49 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -206,7 +206,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -282,7 +282,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
          <plugin>
            <artifactId>maven-surefire-plugin</artifactId>
