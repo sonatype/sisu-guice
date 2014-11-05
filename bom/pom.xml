@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.inject</groupId>
+    <groupId>org.sonatype.sisu.inject</groupId>
     <artifactId>guice-parent</artifactId>
     <version>4.0-SNAPSHOT</version>
   </parent>
@@ -13,79 +13,79 @@
 
   <artifactId>guice-bom</artifactId>
 
-  <name>Google Guice - Bill of Materials</name>
+  <name>Sisu Guice - Bill of Materials</name>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
         <version>${project.version}</version>
         <classifier>no_aop</classifier>
       </dependency>
       <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-assistedinject</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-grapher</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-jmx</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-jndi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-multibindings</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-persist</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-servlet</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-spring</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-struts2</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-testlib</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-throwingproviders</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -93,12 +93,12 @@
  |  not yet promoted...
 - -
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-mini</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-service</artifactId>
         <version>${project.version}</version>
       </dependency>
