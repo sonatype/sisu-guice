@@ -1,7 +1,7 @@
 Description: Provide built-in injection of SLF4J loggers
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=492
-Last-Update: 2014-10-31
+Last-Update: 2014-11-07
 
 diff --git a/common.xml b/common.xml
 index a23eb90..2d3d9b3 100644
@@ -142,7 +142,7 @@ diff --git a/pom.xml b/pom.xml
 index 37305d0..5834d49 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -282,7 +282,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -283,7 +283,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
          <plugin>
            <artifactId>maven-surefire-plugin</artifactId>
