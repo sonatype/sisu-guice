@@ -15,7 +15,6 @@
  */
 package com.google.inject.servlet;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -30,8 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
@@ -44,9 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
-public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
-  private static final Logger logger = Logger.getLogger(FilterDefinition.class.getName());
-
+class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
   private final String pattern;
   private final Key<? extends Filter> filterKey;
   private final UriPatternMatcher patternMatcher;
@@ -159,11 +154,7 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
 
     final String path = ServletUtils.getContextRelativePath(request);
     if (shouldFilter(path)) {
-      Filter reference = filter.get();
-      if (logger.isLoggable(Level.FINEST)) {
-        logger.finest("Filtering " + path + " with " + reference);
-      }
-      return reference;
+      return filter.get();
     } else {
       return null;
     }
@@ -172,11 +163,5 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
   //VisibleForTesting
   Filter getFilter() {
     return filter.get();
-  }
-
-  public String toPaddedString(int padding) {
-    Filter reference = filter.get();
-    return Strings.padEnd(pattern, padding, ' ') + ' '
-        + (reference != null ? reference : filterKey);
   }
 }

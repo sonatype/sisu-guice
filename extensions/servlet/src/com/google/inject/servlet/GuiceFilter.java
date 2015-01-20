@@ -89,7 +89,7 @@ public class GuiceFilter implements Filter {
     this(null);
   }
 
-  @Inject protected GuiceFilter(FilterPipeline filterPipeline) {
+  @Inject GuiceFilter(FilterPipeline filterPipeline) {
     injectedPipeline = filterPipeline;
   }
 
@@ -99,9 +99,9 @@ public class GuiceFilter implements Filter {
 
     // This can happen if you create many injectors and they all have their own
     // servlet module. This is legal, caveat a small warning.
-    //if (GuiceFilter.pipeline instanceof ManagedFilterPipeline) {
-    //  LOGGER.config(MULTIPLE_INJECTORS_WARNING);
-    //}
+    if (GuiceFilter.pipeline instanceof ManagedFilterPipeline) {
+      LOGGER.warning(MULTIPLE_INJECTORS_WARNING);
+    }
 
     // We overwrite the default pipeline
     GuiceFilter.pipeline = pipeline;

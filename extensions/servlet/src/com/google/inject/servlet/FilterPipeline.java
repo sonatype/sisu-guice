@@ -39,7 +39,7 @@ import javax.servlet.ServletResponse;
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
 @ImplementedBy(DefaultFilterPipeline.class)
-public interface FilterPipeline {
+interface FilterPipeline {
   void initPipeline(ServletContext context) throws ServletException;
   void destroyPipeline();
 
