@@ -917,3 +917,137 @@ index 80d6aea..c76199d 100644
      switch (type) {
        case SERVLET:
          return new ServletStyleUriPatternMatcher(pattern);
+commit c2a5f1b0d3dc946bf4c9c240bce600ccf65230fa
+Author: Stuart McCulloch <mcculls@gmail.com>
+Date:   Tue Jan 20 18:51:01 2015 +0000
+
+    Enhance logging in filter/servlet definitions
+
+diff --git a/extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java b/extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java
+index 76ece31..6819665 100644
+--- a/extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java
++++ b/extensions/servlet/src/com/google/inject/servlet/FilterDefinition.java
+@@ -15,6 +15,7 @@
+  */
+ package com.google.inject.servlet;
+ 
++import com.google.common.base.Strings;
+ import com.google.common.collect.Iterators;
+ import com.google.inject.Injector;
+ import com.google.inject.Key;
+@@ -29,6 +30,8 @@ import java.util.HashMap;
+ import java.util.Map;
+ import java.util.Set;
+ import java.util.concurrent.atomic.AtomicReference;
++import java.util.logging.Level;
++import java.util.logging.Logger;
+ 
+ import javax.servlet.Filter;
+ import javax.servlet.FilterConfig;
+@@ -42,6 +45,8 @@ import javax.servlet.http.HttpServletRequest;
+  * @author dhanji@gmail.com (Dhanji R. Prasanna)
+  */
+ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
++  private static final Logger logger = Logger.getLogger(FilterDefinition.class.getName());
++
+   private final String pattern;
+   private final Key<? extends Filter> filterKey;
+   private final UriPatternMatcher patternMatcher;
+@@ -154,7 +159,11 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
+ 
+     final String path = ServletUtils.getContextRelativePath(request);
+     if (shouldFilter(path)) {
+-      return filter.get();
++      Filter reference = filter.get();
++      if (logger.isLoggable(Level.FINEST)) {
++        logger.finest("Filtering " + path + " with " + reference);
++      }
++      return reference;
+     } else {
+       return null;
+     }
+@@ -164,4 +173,10 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
+   Filter getFilter() {
+     return filter.get();
+   }
++
++  public String toPaddedString(int padding) {
++    Filter reference = filter.get();
++    return Strings.padEnd(pattern, padding, ' ') + ' '
++        + (reference != null ? reference : filterKey);
++  }
+ }
+diff --git a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
+index 0737b38..1a98bf4 100644
+--- a/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
++++ b/extensions/servlet/src/com/google/inject/servlet/GuiceFilter.java
+@@ -99,9 +99,9 @@ public class GuiceFilter implements Filter {
+ 
+     // This can happen if you create many injectors and they all have their own
+     // servlet module. This is legal, caveat a small warning.
+-    if (GuiceFilter.pipeline instanceof ManagedFilterPipeline) {
+-      LOGGER.warning(MULTIPLE_INJECTORS_WARNING);
+-    }
++    //if (GuiceFilter.pipeline instanceof ManagedFilterPipeline) {
++    //  LOGGER.warning(MULTIPLE_INJECTORS_WARNING);
++    //}
+ 
+     // We overwrite the default pipeline
+     GuiceFilter.pipeline = pipeline;
+diff --git a/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java b/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
+index 285ff31..9e49ce5 100644
+--- a/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
++++ b/extensions/servlet/src/com/google/inject/servlet/ServletDefinition.java
+@@ -17,6 +17,7 @@ package com.google.inject.servlet;
+ 
+ import static com.google.inject.servlet.ManagedServletPipeline.REQUEST_DISPATCHER_REQUEST;
+ 
++import com.google.common.base.Strings;
+ import com.google.common.collect.Iterators;
+ import com.google.inject.Injector;
+ import com.google.inject.Key;
+@@ -34,6 +35,8 @@ import java.util.HashMap;
+ import java.util.Map;
+ import java.util.Set;
+ import java.util.concurrent.atomic.AtomicReference;
++import java.util.logging.Level;
++import java.util.logging.Logger;
+ 
+ import javax.servlet.ServletConfig;
+ import javax.servlet.ServletContext;
+@@ -51,6 +54,8 @@ import javax.servlet.http.HttpServletResponse;
+  * @author dhanji@gmail.com (Dhanji R. Prasanna)
+  */
+ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinition> {
++  private static final Logger logger = Logger.getLogger(ServletDefinition.class.getName());
++
+   private final String pattern;
+   private final Key<? extends HttpServlet> servletKey;
+   private final UriPatternMatcher patternMatcher;
+@@ -283,7 +288,14 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
+         = (previous != null) ? previous.getOriginalRequest() : request;
+     GuiceFilter.localContext.set(new GuiceFilter.Context(originalRequest, request, response));
+     try {
+-      httpServlet.get().service(request, response);
++      HttpServlet reference = httpServlet.get();
++      if (logger.isLoggable(Level.FINEST)) {
++        String path = ServletUtils.getContextRelativePath(request);
++        logger.finest("Serving " + path + " with " + reference);
++      }
++      if (reference != null) {
++        reference.service(request, response);
++      }
+     } finally {
+       GuiceFilter.localContext.set(previous);
+     }
+@@ -296,4 +308,10 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
+   String getPattern() {
+     return pattern;
+   }
++
++  public String toPaddedString(int padding) {
++    HttpServlet reference = httpServlet.get();
++    return Strings.padEnd(pattern, padding, ' ') + ' '
++        + (reference != null ? reference : servletKey);
++  }
+ }
