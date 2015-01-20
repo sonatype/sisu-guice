@@ -792,3 +792,48 @@ index 56232ba..49836b2 100644
          <artifactId>guice-service</artifactId>
          <version>${project.version}</version>
        </dependency>
+diff --git a/jdk8-tests/pom.xml b/jdk8-tests/pom.xml
+index 763587e..646aff1 100644
+--- a/jdk8-tests/pom.xml
++++ b/jdk8-tests/pom.xml
+@@ -17,8 +17,8 @@ See the Apache License Version 2.0 for the specific language governing permissio
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <parent>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>guice-parent</artifactId>
+-    <groupId>com.google.inject</groupId>
+     <version>4.0-SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+@@ -29,8 +29,8 @@ See the Apache License Version 2.0 for the specific language governing permissio
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject</groupId>
+-      <artifactId>guice</artifactId>
++      <groupId>org.sonatype.sisu</groupId>
++      <artifactId>sisu-guice</artifactId>
+       <version>${project.version}</version>
+       <scope>test</scope>
+     </dependency>
+diff --git a/pom.xml b/pom.xml
+index 7d1d46a..5b85709 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -413,6 +413,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         <module>jdk8-tests</module>
+       </modules>
+       <build>
++        <pluginManagement>
+         <plugins>
+           <!-- Disable doclint under JDK 8 -->
+           <plugin>
+@@ -439,6 +440,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+             </configuration>
+           </plugin>
+         </plugins>
++        </pluginManagement>
+       </build>
+     </profile>
+   </profiles>

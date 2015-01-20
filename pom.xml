@@ -413,6 +413,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
         <module>jdk8-tests</module>
       </modules>
       <build>
+        <pluginManagement>
         <plugins>
           <!-- Disable doclint under JDK 8 -->
           <plugin>
@@ -439,6 +440,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
             </configuration>
           </plugin>
         </plugins>
+        </pluginManagement>
       </build>
     </profile>
   </profiles>
