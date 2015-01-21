@@ -25,7 +25,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
 
   <artifactId>jdk8-tests</artifactId>
 
-  <name>Google Guice - JDK8 Tests</name>
+  <name>Sisu Guice - JDK8 Tests</name>
 
   <dependencies>
     <dependency>

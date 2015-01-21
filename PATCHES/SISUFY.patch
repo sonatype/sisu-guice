@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2015-01-20
+Last-Update: 2015-01-21
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -649,10 +649,10 @@ index 63a8b78..bb24528 100644
    <build>
      <plugins>
 diff --git a/jdk8-tests/pom.xml b/jdk8-tests/pom.xml
-index 763587e..646aff1 100644
+index 763587e..9e88e9a 100644
 --- a/jdk8-tests/pom.xml
 +++ b/jdk8-tests/pom.xml
-@@ -17,8 +17,8 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -17,20 +17,20 @@ See the Apache License Version 2.0 for the specific language governing permissio
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <parent>
@@ -662,7 +662,11 @@ index 763587e..646aff1 100644
      <version>4.0-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
-@@ -29,8 +29,8 @@ See the Apache License Version 2.0 for the specific language governing permissio
+ 
+   <artifactId>jdk8-tests</artifactId>
+ 
+-  <name>Google Guice - JDK8 Tests</name>
++  <name>Sisu Guice - JDK8 Tests</name>
  
    <dependencies>
      <dependency>
