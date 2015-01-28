@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2015-01-21
+Last-Update: 2015-01-28
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -821,15 +821,15 @@ index 6931067..b316a9c 100644
    </build>
  
    <profiles>
-@@ -442,6 +412,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
-         <module>jdk8-tests</module>
-       </modules>
+@@ -454,6 +424,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+         </plugins>
+       </reporting>
        <build>
 +        <pluginManagement>
          <plugins>
-           <!-- Disable doclint under JDK 8 -->
            <plugin>
-@@ -468,6 +439,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+             <groupId>org.apache.maven.plugins</groupId>
+@@ -463,6 +434,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
              </configuration>
            </plugin>
          </plugins>
