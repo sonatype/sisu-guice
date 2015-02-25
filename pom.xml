@@ -441,7 +441,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
   </profiles>
 
   <!-- TODO(cgruber): Update the google parent pom or migrate to sonatype's -->
-  <!-- TODO(cgruber): Comment out dagger-adapter from extensions/pom.xml if v2 is not released. -->
+  <!-- TODO(cgruber): Comment out dagger-adapter from extensions/pom.xml if v2 is not released. 
   <repositories>
     <repository>
       <id>sonatype-nexus-snapshots</id>
@@ -450,5 +450,5 @@ See the Apache License Version 2.0 for the specific language governing permissio
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
-  </repositories>
+  </repositories> -->
 </project>
