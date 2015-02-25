@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2015-01-28
+Last-Update: 2015-02-25
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -837,3 +837,72 @@ index 6931067..b316a9c 100644
        </build>
      </profile>
    </profiles>
+diff --git a/extensions/dagger-adapter/pom.xml b/extensions/dagger-adapter/pom.xml
+index 10af044..8566a98 100644
+--- a/extensions/dagger-adapter/pom.xml
++++ b/extensions/dagger-adapter/pom.xml
+@@ -2,16 +2,20 @@
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
++
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>4.0-SNAPSHOT</version>
+   </parent>
++
+   <artifactId>dagger-interop</artifactId>
+-  <name>Google Guice - Extensions - Dagger Interop</name>
++
++  <name>Sisu Guice - Extensions - Dagger Interop</name>
++
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-multibindings</artifactId>
+       <version>${project.version}</version>
+     </dependency>
+@@ -21,4 +25,5 @@
+       <version>2.0-SNAPSHOT</version>
+     </dependency>
+   </dependencies>
++
+ </project>
+diff --git a/extensions/pom.xml b/extensions/pom.xml
+index 91a5ac9..3f02d41 100644
+--- a/extensions/pom.xml
++++ b/extensions/pom.xml
+@@ -17,8 +17,8 @@
+ 
+   <modules>
+     <module>assistedinject</module>
+-    <!-- TODO(cgruber): Comment out dagger-adapter module if guice releases before dagger 2.x -->
+-    <module>dagger-adapter</module>
++    <!-- TODO(cgruber): Comment out dagger-adapter module if guice releases before dagger 2.x 
++    <module>dagger-adapter</module> -->
+     <module>grapher</module>
+     <module>jmx</module>
+     <module>jndi</module>
+diff --git a/pom.xml b/pom.xml
+index 6224b9a..d009662 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -441,7 +441,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+   </profiles>
+ 
+   <!-- TODO(cgruber): Update the google parent pom or migrate to sonatype's -->
+-  <!-- TODO(cgruber): Comment out dagger-adapter from extensions/pom.xml if v2 is not released. -->
++  <!-- TODO(cgruber): Comment out dagger-adapter from extensions/pom.xml if v2 is not released. 
+   <repositories>
+     <repository>
+       <id>sonatype-nexus-snapshots</id>
+@@ -450,5 +450,5 @@ See the Apache License Version 2.0 for the specific language governing permissio
+       <releases><enabled>false</enabled></releases>
+       <snapshots><enabled>true</enabled></snapshots>
+     </repository>
+-  </repositories>
++  </repositories> -->
+ </project>
