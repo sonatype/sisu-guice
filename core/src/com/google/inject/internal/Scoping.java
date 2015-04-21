@@ -239,9 +239,9 @@ public abstract class Scoping {
 
     Scope scope = scoping.getScopeInstance();
 
-      Provider<T> scoped
-          = scope.scope(key, new ProviderToInternalFactoryAdapter<T>(injector, creator));
-      return new InternalFactoryToProviderAdapter<T>(scoped, source);
+    Provider<T> scoped
+        = scope.scope(key, new ProviderToInternalFactoryAdapter<T>(injector, creator));
+    return new InternalFactoryToProviderAdapter<T>(scoped, source);
   }
 
   /**
