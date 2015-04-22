@@ -9,9 +9,9 @@
     <version>4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>dagger-interop</artifactId>
+  <artifactId>guice-dagger-adapter</artifactId>
 
-  <name>Sisu Guice - Extensions - Dagger Interop</name>
+  <name>Sisu Guice - Extensions - Dagger Adapter</name>
 
   <dependencies>
     <dependency>

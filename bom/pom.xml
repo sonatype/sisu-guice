@@ -41,6 +41,11 @@
       </dependency>
       <dependency>
         <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-dagger-adapter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
         <artifactId>guice-grapher</artifactId>
         <version>${project.version}</version>
       </dependency>

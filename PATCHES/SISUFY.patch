@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2015-04-21
+Last-Update: 2015-04-22
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -891,3 +891,35 @@ index 6224b9a..d009662 100644
 -  </repositories>
 +  </repositories> -->
  </project>
+diff --git a/bom/pom.xml b/bom/pom.xml
+index 49836b2..5e71bfe 100644
+--- a/bom/pom.xml
++++ b/bom/pom.xml
+@@ -41,6 +41,11 @@
+       </dependency>
+       <dependency>
+         <groupId>org.sonatype.sisu.inject</groupId>
++        <artifactId>guice-dagger-adapter</artifactId>
++        <version>${project.version}</version>
++      </dependency>
++      <dependency>
++        <groupId>org.sonatype.sisu.inject</groupId>
+         <artifactId>guice-grapher</artifactId>
+         <version>${project.version}</version>
+       </dependency>
+diff --git a/extensions/dagger-adapter/pom.xml b/extensions/dagger-adapter/pom.xml
+index 8bc09bd..fc4287d 100644
+--- a/extensions/dagger-adapter/pom.xml
++++ b/extensions/dagger-adapter/pom.xml
+@@ -9,9 +9,9 @@
+     <version>4.0-SNAPSHOT</version>
+   </parent>
+ 
+-  <artifactId>dagger-interop</artifactId>
++  <artifactId>guice-dagger-adapter</artifactId>
+ 
+-  <name>Sisu Guice - Extensions - Dagger Interop</name>
++  <name>Sisu Guice - Extensions - Dagger Adapter</name>
+ 
+   <dependencies>
+     <dependency>
