@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2015-04-22
+Last-Update: 2015-04-23
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -118,7 +118,7 @@ index 56232ba..49836b2 100644
      <artifactId>guice-parent</artifactId>
      <version>4.0-SNAPSHOT</version>
    </parent>
-@@ -13,79 +13,79 @@
+@@ -13,84 +13,84 @@
  
    <artifactId>guice-bom</artifactId>
  
@@ -154,6 +154,12 @@ index 56232ba..49836b2 100644
 -        <groupId>com.google.inject.extensions</groupId>
 +        <groupId>org.sonatype.sisu.inject</groupId>
          <artifactId>guice-assistedinject</artifactId>
+         <version>${project.version}</version>
+       </dependency>
+       <dependency>
+-        <groupId>com.google.inject.extensions</groupId>
++        <groupId>org.sonatype.sisu.inject</groupId>
+         <artifactId>guice-dagger-adapter</artifactId>
          <version>${project.version}</version>
        </dependency>
        <dependency>
@@ -216,7 +222,7 @@ index 56232ba..49836b2 100644
          <artifactId>guice-throwingproviders</artifactId>
          <version>${project.version}</version>
        </dependency>
-@@ -93,12 +93,12 @@
+@@ -98,12 +98,12 @@
   |  not yet promoted...
  - -
        <dependency>
@@ -472,7 +478,7 @@ index 084967c..83d04a2 100644
  
    <modules>
      <module>assistedinject</module>
-@@ -41,16 +40,17 @@
+@@ -43,16 +42,17 @@
       | All extensions depend on the core
      -->
      <dependency>
@@ -494,7 +500,7 @@ index 084967c..83d04a2 100644
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
-@@ -103,22 +103,10 @@
+@@ -105,22 +105,10 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
            <instructions>
@@ -853,10 +859,10 @@ index 10af044..8566a98 100644
      <version>4.0-SNAPSHOT</version>
    </parent>
 +
-   <artifactId>dagger-interop</artifactId>
--  <name>Google Guice - Extensions - Dagger Interop</name>
+   <artifactId>guice-dagger-adapter</artifactId>
+-  <name>Google Guice - Extensions - Dagger Adapter</name>
 +
-+  <name>Sisu Guice - Extensions - Dagger Interop</name>
++  <name>Sisu Guice - Extensions - Dagger Adapter</name>
 +
    <dependencies>
      <dependency>
@@ -866,7 +872,7 @@ index 10af044..8566a98 100644
        <version>${project.version}</version>
      </dependency>
 @@ -21,4 +25,5 @@
-       <version>2.0-SNAPSHOT</version>
+       <version>2.0</version>
      </dependency>
    </dependencies>
 +
@@ -875,7 +881,7 @@ diff --git a/pom.xml b/pom.xml
 index 6224b9a..d009662 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -441,7 +441,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -440,7 +440,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
    </profiles>
  
    <!-- TODO(cgruber): Update the google parent pom or migrate to sonatype's -->
@@ -884,42 +890,10 @@ index 6224b9a..d009662 100644
    <repositories>
      <repository>
        <id>sonatype-nexus-snapshots</id>
-@@ -450,5 +450,5 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -449,5 +449,5 @@ See the Apache License Version 2.0 for the specific language governing permissio
        <releases><enabled>false</enabled></releases>
        <snapshots><enabled>true</enabled></snapshots>
      </repository>
 -  </repositories>
 +  </repositories> -->
  </project>
-diff --git a/bom/pom.xml b/bom/pom.xml
-index 49836b2..5e71bfe 100644
---- a/bom/pom.xml
-+++ b/bom/pom.xml
-@@ -41,6 +41,11 @@
-       </dependency>
-       <dependency>
-         <groupId>org.sonatype.sisu.inject</groupId>
-+        <artifactId>guice-dagger-adapter</artifactId>
-+        <version>${project.version}</version>
-+      </dependency>
-+      <dependency>
-+        <groupId>org.sonatype.sisu.inject</groupId>
-         <artifactId>guice-grapher</artifactId>
-         <version>${project.version}</version>
-       </dependency>
-diff --git a/extensions/dagger-adapter/pom.xml b/extensions/dagger-adapter/pom.xml
-index 8bc09bd..fc4287d 100644
---- a/extensions/dagger-adapter/pom.xml
-+++ b/extensions/dagger-adapter/pom.xml
-@@ -9,9 +9,9 @@
-     <version>4.0-SNAPSHOT</version>
-   </parent>
- 
--  <artifactId>dagger-interop</artifactId>
-+  <artifactId>guice-dagger-adapter</artifactId>
- 
--  <name>Sisu Guice - Extensions - Dagger Interop</name>
-+  <name>Sisu Guice - Extensions - Dagger Adapter</name>
- 
-   <dependencies>
-     <dependency>
