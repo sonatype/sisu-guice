@@ -877,23 +877,3 @@ index 10af044..8566a98 100644
    </dependencies>
 +
  </project>
-diff --git a/pom.xml b/pom.xml
-index 6224b9a..d009662 100644
---- a/pom.xml
-+++ b/pom.xml
-@@ -440,7 +440,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
-   </profiles>
- 
-   <!-- TODO(cgruber): Update the google parent pom or migrate to sonatype's -->
--  <!-- TODO(cgruber): Comment out dagger-adapter from extensions/pom.xml if v2 is not released. -->
-+  <!-- TODO(cgruber): Comment out dagger-adapter from extensions/pom.xml if v2 is not released. 
-   <repositories>
-     <repository>
-       <id>sonatype-nexus-snapshots</id>
-@@ -449,5 +449,5 @@ See the Apache License Version 2.0 for the specific language governing permissio
-       <releases><enabled>false</enabled></releases>
-       <snapshots><enabled>true</enabled></snapshots>
-     </repository>
--  </repositories>
-+  </repositories> -->
- </project>
