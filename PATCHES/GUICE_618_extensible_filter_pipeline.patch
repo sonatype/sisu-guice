@@ -1,7 +1,7 @@
 Description: Let sub-classes of GuiceFilter customize the servlet filter pipeline
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=618
-Last-Update: 2015-01-20
+Last-Update: 2016-07-04
 
 diff --git a/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java b/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java
 new file mode 100644
@@ -389,9 +389,9 @@ index ff1e5b6..76ece31 100644
   */
 -class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
 +public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
-   private final String pattern;
    private final Key<? extends Filter> filterKey;
    private final UriPatternMatcher patternMatcher;
+   private final Map<String, String> initParams;
 @@ -90,7 +90,7 @@ class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition>
      return uri != null && patternMatcher.matches(uri);
    }
@@ -854,9 +854,9 @@ index 11328ed..285ff31 100644
   */
 -class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinition> {
 +public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinition> {
-   private final String pattern;
    private final Key<? extends HttpServlet> servletKey;
    private final UriPatternMatcher patternMatcher;
+   private final Map<String, String> initParams;
 @@ -100,7 +99,7 @@ class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinitio
      return uri != null && patternMatcher.matches(uri);
    }
@@ -950,9 +950,9 @@ index 76ece31..6819665 100644
  public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
 +  private static final Logger logger = Logger.getLogger(FilterDefinition.class.getName());
 +
-   private final String pattern;
    private final Key<? extends Filter> filterKey;
    private final UriPatternMatcher patternMatcher;
+   private final Map<String, String> initParams;
 @@ -154,7 +159,11 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
  
      final String path = ServletUtils.getContextRelativePath(request);
@@ -973,7 +973,7 @@ index 76ece31..6819665 100644
 +
 +  public String toPaddedString(int padding) {
 +    Filter reference = filter.get();
-+    return Strings.padEnd(pattern, padding, ' ') + ' '
++    return Strings.padEnd(patternMatcher.getOriginalPattern(), padding, ' ') + ' '
 +        + (reference != null ? reference : filterKey);
 +  }
  }
@@ -1021,9 +1021,9 @@ index 285ff31..9e49ce5 100644
  public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinition> {
 +  private static final Logger logger = Logger.getLogger(ServletDefinition.class.getName());
 +
-   private final String pattern;
    private final Key<? extends HttpServlet> servletKey;
    private final UriPatternMatcher patternMatcher;
+   private final Map<String, String> initParams;
 @@ -283,7 +288,14 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
          = (previous != null) ? previous.getOriginalRequest() : request;
      GuiceFilter.localContext.set(new GuiceFilter.Context(originalRequest, request, response));
@@ -1041,13 +1041,13 @@ index 285ff31..9e49ce5 100644
        GuiceFilter.localContext.set(previous);
      }
 @@ -296,4 +308,10 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
-   String getPattern() {
-     return pattern;
+   String getKey() {
+     return servletKey.toString();
    }
 +
 +  public String toPaddedString(int padding) {
 +    HttpServlet reference = httpServlet.get();
-+    return Strings.padEnd(pattern, padding, ' ') + ' '
++    return Strings.padEnd(patternMatcher.getOriginalPattern(), padding, ' ') + ' '
 +        + (reference != null ? reference : servletKey);
 +  }
  }

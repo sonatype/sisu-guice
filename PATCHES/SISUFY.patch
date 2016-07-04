@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2015-04-23
+Last-Update: 2016-07-04
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -79,14 +79,14 @@ index c71ee05..5b6f001 100644
 -====
 +Patched build of https://github.com/google/guice/ - see PATCHES for the exact differences.
  
--**Now, out in [4.0 Beta5](https://github.com/google/guice/wiki/Guice40)!**
+-**Latest release: [4.1](https://github.com/google/guice/wiki/Guice41)**
 +Compatibility with Google-Guice
 +-------------------------------
  
--**Documentation:** [User Guide](https://github.com/google/guice/wiki/Motivation), [3.0 javadocs](http://google.github.io/guice/api-docs/3.0/javadoc/packages.html), [Latest javadocs](http://google.github.io/guice/api-docs/latest/javadoc/index.html) <br/>
+-**Documentation:** [User Guide](https://github.com/google/guice/wiki/Motivation), [4.1 javadocs](http://google.github.io/guice/api-docs/4.1/javadoc/index.html), [Latest javadocs](http://google.github.io/guice/api-docs/latest/javadoc/index.html) <br/>
 -**Continuous Integration:** [![Build Status](https://api.travis-ci.org/google/guice.png?branch=master)](https://travis-ci.org/google/guice) <br
 -/>
--**Mailing Lists:** [User Mailing List](http://groups.google.com/group/google-guice), [Developer Mailing List](http://groups.google.com/group/google-guice-dev) <br/>
+-**Mailing Lists:** [User Mailing List](http://groups.google.com/group/google-guice) <br/>
 -**License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 +The main difference between Sisu-Guice and Google-Guice is that Guava is now exposed as a direct Maven dependency. If you are assembling your application outside of Maven you therefore need to add Guava to the runtime JARs. The build uses Guava 16.0.1 but you can use Maven's `<dependencyManagement>` to select a different version of Guava.
  
@@ -116,7 +116,7 @@ index 56232ba..49836b2 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
 @@ -13,84 +13,84 @@
  
@@ -248,7 +248,7 @@ index bb9bf88..cb9ba73 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
 -  <artifactId>guice</artifactId>
@@ -304,7 +304,7 @@ index 601f24e..38f360e 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-assistedinject</artifactId>
@@ -324,7 +324,7 @@ index 6f63452..920f7ba 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-grapher</artifactId>
@@ -356,7 +356,7 @@ index f3298e7..7de6431 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-jmx</artifactId>
@@ -377,7 +377,7 @@ index fb9bc3c..f78153a 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-jndi</artifactId>
@@ -404,7 +404,8 @@ index fdaa91d..5c03903 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+-    <version>4.0-SNAPSHOT</version>
++    <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-mini</artifactId>
@@ -424,7 +425,7 @@ index 8875e39..9eb7ee9 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-multibindings</artifactId>
@@ -444,7 +445,7 @@ index 50dbc11..860ab64 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-persist</artifactId>
@@ -465,7 +466,7 @@ index 084967c..83d04a2 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <packaging>pom</packaging>
@@ -535,7 +536,8 @@ index 2d96e0d..917c14a 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+-    <version>4.0-SNAPSHOT</version>
++    <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-service</artifactId>
@@ -555,7 +557,7 @@ index b4117ab..abd6e44 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-servlet</artifactId>
@@ -576,7 +578,7 @@ index e1bf819..391fd83 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-spring</artifactId>
@@ -597,7 +599,7 @@ index cf987cf..2a60ebd 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-struts2</artifactId>
@@ -623,7 +625,7 @@ index e12aee0..fc274ba 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-testlib</artifactId>
@@ -644,7 +646,7 @@ index 63a8b78..bb24528 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-throwingproviders</artifactId>
@@ -658,14 +660,14 @@ diff --git a/jdk8-tests/pom.xml b/jdk8-tests/pom.xml
 index 763587e..9e88e9a 100644
 --- a/jdk8-tests/pom.xml
 +++ b/jdk8-tests/pom.xml
-@@ -17,20 +17,20 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -17,25 +17,25 @@ See the Apache License Version 2.0 for the specific language governing permissio
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <parent>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
 -    <groupId>com.google.inject</groupId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
  
@@ -683,6 +685,12 @@ index 763587e..9e88e9a 100644
        <version>${project.version}</version>
        <scope>test</scope>
      </dependency>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-assistedinject</artifactId>
+       <version>${project.version}</version>
+       <scope>test</scope>
 diff --git a/pom.xml b/pom.xml
 index 6931067..b316a9c 100644
 --- a/pom.xml
@@ -704,7 +712,7 @@ index 6931067..b316a9c 100644
 -  <groupId>com.google.inject</groupId>
 +  <groupId>org.sonatype.sisu.inject</groupId>
    <artifactId>guice-parent</artifactId>
-   <version>4.0-SNAPSHOT</version>
+   <version>4.1.1-SNAPSHOT</version>
  
 -  <name>Google Guice</name>
 +  <name>Sisu Guice</name>
@@ -856,7 +864,7 @@ index 10af044..8566a98 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.0-SNAPSHOT</version>
+     <version>4.1.1-SNAPSHOT</version>
    </parent>
 +
    <artifactId>guice-dagger-adapter</artifactId>
