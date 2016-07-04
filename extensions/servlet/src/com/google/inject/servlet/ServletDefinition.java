@@ -56,7 +56,6 @@ import javax.servlet.http.HttpServletResponse;
 public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDefinition> {
   private static final Logger logger = Logger.getLogger(ServletDefinition.class.getName());
 
-  private final String pattern;
   private final Key<? extends HttpServlet> servletKey;
   private final UriPatternMatcher patternMatcher;
   private final Map<String, String> initParams;
@@ -66,9 +65,11 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
   //always set in init, our servlet is always presumed to be a singleton
   private final AtomicReference<HttpServlet> httpServlet = new AtomicReference<HttpServlet>();
 
-  public ServletDefinition(String pattern, Key<? extends HttpServlet> servletKey,
-      UriPatternMatcher patternMatcher, Map<String, String> initParams, HttpServlet servletInstance) {
-    this.pattern = pattern;
+  public ServletDefinition(
+      Key<? extends HttpServlet> servletKey,
+      UriPatternMatcher patternMatcher,
+      Map<String, String> initParams,
+      HttpServlet servletInstance) {
     this.servletKey = servletKey;
     this.patternMatcher = patternMatcher;
     this.initParams = Collections.unmodifiableMap(new HashMap<String, String>(initParams));
@@ -85,13 +86,11 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
       if(servletInstance != null) {
         return ((ServletModuleTargetVisitor<B, V>)visitor).visit(
             new InstanceServletBindingImpl(initParams,
-                pattern,
                 servletInstance,
                 patternMatcher));
       } else {
         return ((ServletModuleTargetVisitor<B, V>)visitor).visit(
             new LinkedServletBindingImpl(initParams,
-                pattern,
                 servletKey,
                 patternMatcher));
       }
@@ -305,13 +304,9 @@ public class ServletDefinition implements ProviderWithExtensionVisitor<ServletDe
     return servletKey.toString();
   }
 
-  String getPattern() {
-    return pattern;
-  }
-
   public String toPaddedString(int padding) {
     HttpServlet reference = httpServlet.get();
-    return Strings.padEnd(pattern, padding, ' ') + ' '
+    return Strings.padEnd(patternMatcher.getOriginalPattern(), padding, ' ') + ' '
         + (reference != null ? reference : servletKey);
   }
 }

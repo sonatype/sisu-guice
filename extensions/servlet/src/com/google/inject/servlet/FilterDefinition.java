@@ -47,7 +47,6 @@ import javax.servlet.http.HttpServletRequest;
 public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefinition> {
   private static final Logger logger = Logger.getLogger(FilterDefinition.class.getName());
 
-  private final String pattern;
   private final Key<? extends Filter> filterKey;
   private final UriPatternMatcher patternMatcher;
   private final Map<String, String> initParams;
@@ -57,9 +56,11 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
   // always set after init is called.
   private final AtomicReference<Filter> filter = new AtomicReference<Filter>();
 
-  public FilterDefinition(String pattern, Key<? extends Filter> filterKey,
-      UriPatternMatcher patternMatcher, Map<String, String> initParams, Filter filterInstance) {
-    this.pattern = pattern;
+  public FilterDefinition(
+      Key<? extends Filter> filterKey,
+      UriPatternMatcher patternMatcher,
+      Map<String, String> initParams,
+      Filter filterInstance) {
     this.filterKey = filterKey;
     this.patternMatcher = patternMatcher;
     this.initParams = Collections.unmodifiableMap(new HashMap<String, String>(initParams));
@@ -76,13 +77,11 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
       if(filterInstance != null) {
         return ((ServletModuleTargetVisitor<B, V>)visitor).visit(
             new InstanceFilterBindingImpl(initParams,
-                pattern,
                 filterInstance,
                 patternMatcher));
       } else {
         return ((ServletModuleTargetVisitor<B, V>)visitor).visit(
             new LinkedFilterBindingImpl(initParams,
-                pattern,
                 filterKey,
                 patternMatcher));
       }
@@ -176,7 +175,7 @@ public class FilterDefinition implements ProviderWithExtensionVisitor<FilterDefi
 
   public String toPaddedString(int padding) {
     Filter reference = filter.get();
-    return Strings.padEnd(pattern, padding, ' ') + ' '
+    return Strings.padEnd(patternMatcher.getOriginalPattern(), padding, ' ') + ' '
         + (reference != null ? reference : filterKey);
   }
 }
