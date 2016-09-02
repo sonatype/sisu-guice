@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2016-07-04
+Last-Update: 2016-09-02
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -118,7 +118,7 @@ index 56232ba..49836b2 100644
      <artifactId>guice-parent</artifactId>
      <version>4.1.1-SNAPSHOT</version>
    </parent>
-@@ -13,84 +13,84 @@
+@@ -13,79 +13,79 @@
  
    <artifactId>guice-bom</artifactId>
  
@@ -183,12 +183,6 @@ index 56232ba..49836b2 100644
        <dependency>
 -        <groupId>com.google.inject.extensions</groupId>
 +        <groupId>org.sonatype.sisu.inject</groupId>
-         <artifactId>guice-multibindings</artifactId>
-         <version>${project.version}</version>
-       </dependency>
-       <dependency>
--        <groupId>com.google.inject.extensions</groupId>
-+        <groupId>org.sonatype.sisu.inject</groupId>
          <artifactId>guice-persist</artifactId>
          <version>${project.version}</version>
        </dependency>
@@ -222,7 +216,7 @@ index 56232ba..49836b2 100644
          <artifactId>guice-throwingproviders</artifactId>
          <version>${project.version}</version>
        </dependency>
-@@ -98,12 +98,12 @@
+@@ -93,12 +93,12 @@
   |  not yet promoted...
  - -
        <dependency>
@@ -260,7 +254,7 @@ index bb9bf88..cb9ba73 100644
  
    <dependencies>
      <dependency>
-@@ -39,11 +40,13 @@
+@@ -33,11 +34,13 @@
        <groupId>org.ow2.asm</groupId>
        <artifactId>asm</artifactId>
        <optional>true</optional>
@@ -274,7 +268,7 @@ index bb9bf88..cb9ba73 100644
      </dependency>
      <!--
       | Test dependencies
-@@ -141,18 +144,6 @@
+@@ -128,18 +131,6 @@
            </excludes>
          </configuration>
        </plugin>
@@ -317,7 +311,7 @@ diff --git a/extensions/grapher/pom.xml b/extensions/grapher/pom.xml
 index 6f63452..920f7ba 100644
 --- a/extensions/grapher/pom.xml
 +++ b/extensions/grapher/pom.xml
-@@ -4,23 +4,23 @@
+@@ -4,18 +4,18 @@
    <modelVersion>4.0.0</modelVersion>
  
    <parent>
@@ -337,12 +331,6 @@ index 6f63452..920f7ba 100644
 -      <groupId>com.google.inject.extensions</groupId>
 +      <groupId>org.sonatype.sisu.inject</groupId>
        <artifactId>guice-assistedinject</artifactId>
-       <version>${project.version}</version>
-     </dependency>
-     <dependency>
--      <groupId>com.google.inject.extensions</groupId>
-+      <groupId>org.sonatype.sisu.inject</groupId>
-       <artifactId>guice-multibindings</artifactId>
        <version>${project.version}</version>
      </dependency>
 diff --git a/extensions/jmx/pom.xml b/extensions/jmx/pom.xml
@@ -414,26 +402,6 @@ index fdaa91d..5c03903 100644
 +  <name>Sisu Guice - Extensions - Mini</name>
  
  </project>
-diff --git a/extensions/multibindings/pom.xml b/extensions/multibindings/pom.xml
-index 8875e39..9eb7ee9 100644
---- a/extensions/multibindings/pom.xml
-+++ b/extensions/multibindings/pom.xml
-@@ -4,13 +4,13 @@
-   <modelVersion>4.0.0</modelVersion>
- 
-   <parent>
--    <groupId>com.google.inject.extensions</groupId>
-+    <groupId>org.sonatype.sisu.inject</groupId>
-     <artifactId>extensions-parent</artifactId>
-     <version>4.1.1-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>guice-multibindings</artifactId>
- 
--  <name>Google Guice - Extensions - MultiBindings</name>
-+  <name>Sisu Guice - Extensions - MultiBindings</name>
- 
- </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
 index 50dbc11..860ab64 100644
 --- a/extensions/persist/pom.xml
@@ -479,7 +447,7 @@ index 084967c..83d04a2 100644
  
    <modules>
      <module>assistedinject</module>
-@@ -43,16 +42,17 @@
+@@ -41,16 +40,17 @@
       | All extensions depend on the core
      -->
      <dependency>
@@ -501,7 +469,7 @@ index 084967c..83d04a2 100644
        <version>${project.version}</version>
        <classifier>tests</classifier>
        <scope>test</scope>
-@@ -105,22 +105,10 @@
+@@ -103,22 +103,10 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <configuration>
            <instructions>
@@ -635,6 +603,15 @@ index e12aee0..fc274ba 100644
  
    <build>
      <plugins>
+@@ -28,7 +28,7 @@
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>com.google.inject.extensions</groupId>
++      <groupId>org.sonatype.sisu.inject</groupId>
+       <artifactId>guice-throwingproviders</artifactId>
+       <version>${project.version}</version>
+     </dependency>
 diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
 index 63a8b78..bb24528 100644
 --- a/extensions/throwingproviders/pom.xml
@@ -763,7 +740,7 @@ index 6931067..b316a9c 100644
    </properties>
  
    <dependencyManagement>
-@@ -329,7 +316,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -344,7 +331,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>https://github.com/google/guice</Bundle-DocURL>
                <Bundle-Name>${project.artifactId}</Bundle-Name>
@@ -772,7 +749,7 @@ index 6931067..b316a9c 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-@@ -343,6 +330,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -358,6 +345,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                  Ignore-Package,Bnd-LastModified
                </_removeheaders>
              </instructions>
@@ -783,7 +760,7 @@ index 6931067..b316a9c 100644
            </configuration>
            <executions>
              <execution>
-@@ -390,45 +381,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -405,45 +396,24 @@ See the Apache License Version 2.0 for the specific language governing permissio
          <plugin>
            <artifactId>maven-source-plugin</artifactId>
            <version>2.1.2</version>
@@ -835,7 +812,7 @@ index 6931067..b316a9c 100644
    </build>
  
    <profiles>
-@@ -454,6 +424,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -469,6 +439,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugins>
        </reporting>
        <build>
@@ -843,7 +820,7 @@ index 6931067..b316a9c 100644
          <plugins>
            <plugin>
              <groupId>org.apache.maven.plugins</groupId>
-@@ -463,6 +434,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -478,6 +449,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
              </configuration>
            </plugin>
          </plugins>
@@ -852,36 +829,21 @@ index 6931067..b316a9c 100644
      </profile>
    </profiles>
 diff --git a/extensions/dagger-adapter/pom.xml b/extensions/dagger-adapter/pom.xml
-index 10af044..8566a98 100644
+index d64d36c..0ad5261 100644
 --- a/extensions/dagger-adapter/pom.xml
 +++ b/extensions/dagger-adapter/pom.xml
-@@ -2,16 +2,20 @@
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+@@ -3,12 +3,12 @@
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
-+
    <parent>
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
      <version>4.1.1-SNAPSHOT</version>
    </parent>
-+
    <artifactId>guice-dagger-adapter</artifactId>
 -  <name>Google Guice - Extensions - Dagger Adapter</name>
-+
 +  <name>Sisu Guice - Extensions - Dagger Adapter</name>
-+
    <dependencies>
      <dependency>
--      <groupId>com.google.inject.extensions</groupId>
-+      <groupId>org.sonatype.sisu.inject</groupId>
-       <artifactId>guice-multibindings</artifactId>
-       <version>${project.version}</version>
-     </dependency>
-@@ -21,4 +25,5 @@
-       <version>2.0</version>
-     </dependency>
-   </dependencies>
-+
- </project>
+       <groupId>com.google.dagger</groupId>
