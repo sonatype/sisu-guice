@@ -1,14 +1,14 @@
 Description: Let sub-classes of GuiceFilter customize the servlet filter pipeline
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=618
-Last-Update: 2016-07-04
+Last-Update: 2016-09-09
 
 diff --git a/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java b/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java
 new file mode 100644
-index 0000000..ab8f746
+index 0000000..196e428
 --- /dev/null
 +++ b/extensions/servlet/src/com/google/inject/servlet/AbstractFilterPipeline.java
-@@ -0,0 +1,150 @@
+@@ -0,0 +1,153 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -77,8 +77,8 @@ index 0000000..ab8f746
 +   */
 +  protected abstract FilterDefinition[] filterDefinitions();
 +
-+  public synchronized void initPipeline(ServletContext servletContext)
-+      throws ServletException {
++  @Override
++  public synchronized void initPipeline(ServletContext servletContext) throws ServletException {
 +
 +    //double-checked lock, prevents duplicate initialization
 +    if (initialized)
@@ -98,8 +98,10 @@ index 0000000..ab8f746
 +    initialized = true;
 +  }
 +
-+  public void dispatch(ServletRequest request, ServletResponse response,
-+      FilterChain proceedingFilterChain) throws IOException, ServletException {
++  @Override
++  public void dispatch(
++      ServletRequest request, ServletResponse response, FilterChain proceedingFilterChain)
++      throws IOException, ServletException {
 +
 +    //lazy init of filter pipeline (OK by the servlet specification). This is needed
 +    //in order for us not to force users to create a GuiceServletContextListener subclass.
@@ -148,6 +150,7 @@ index 0000000..ab8f746
 +    };
 +  }
 +
++  @Override
 +  public void destroyPipeline() {
 +    //destroy servlets first
 +    servletPipeline.destroy();
@@ -161,10 +164,10 @@ index 0000000..ab8f746
 +}
 diff --git a/extensions/servlet/src/com/google/inject/servlet/AbstractServletPipeline.java b/extensions/servlet/src/com/google/inject/servlet/AbstractServletPipeline.java
 new file mode 100644
-index 0000000..811820a
+index 0000000..5dd3640
 --- /dev/null
 +++ b/extensions/servlet/src/com/google/inject/servlet/AbstractServletPipeline.java
-@@ -0,0 +1,187 @@
+@@ -0,0 +1,193 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -258,18 +261,20 @@ index 0000000..811820a
 +    for (final ServletDefinition servletDefinition : servletDefinitions()) {
 +      if (servletDefinition.shouldServe(path)) {
 +        return new RequestDispatcher() {
++          @Override
 +          public void forward(ServletRequest servletRequest, ServletResponse servletResponse)
 +              throws ServletException, IOException {
-+            Preconditions.checkState(!servletResponse.isCommitted(),
++            Preconditions.checkState(
++                !servletResponse.isCommitted(),
 +                "Response has been committed--you can only call forward before"
-+                + " committing the response (hint: don't flush buffers)");
++                    + " committing the response (hint: don't flush buffers)");
 +
 +            // clear buffer before forwarding
 +            servletResponse.resetBuffer();
 +
 +            ServletRequest requestToProcess;
 +            if (servletRequest instanceof HttpServletRequest) {
-+               requestToProcess = wrapRequest((HttpServletRequest)servletRequest, newRequestUri);
++              requestToProcess = wrapRequest((HttpServletRequest) servletRequest, newRequestUri);
 +            } else {
 +              // This should never happen, but instead of throwing an exception
 +              // we will allow a happy case pass thru for maximum tolerance to
@@ -281,14 +286,18 @@ index 0000000..811820a
 +            doServiceImpl(servletDefinition, requestToProcess, servletResponse);
 +          }
 +
++          @Override
 +          public void include(ServletRequest servletRequest, ServletResponse servletResponse)
 +              throws ServletException, IOException {
 +            // route to the target servlet
 +            doServiceImpl(servletDefinition, servletRequest, servletResponse);
 +          }
 +
-+          private void doServiceImpl(ServletDefinition servletDefinition, ServletRequest servletRequest,
-+              ServletResponse servletResponse) throws ServletException, IOException {
++          private void doServiceImpl(
++              ServletDefinition servletDefinition,
++              ServletRequest servletRequest,
++              ServletResponse servletResponse)
++              throws ServletException, IOException {
 +            servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
 +
 +            try {
@@ -475,7 +484,7 @@ index ba7a5af..0737b38 100644
    }
  
 diff --git a/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java b/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java
-index 538e10a..76bc269 100644
+index 2317aca..76bc269 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/ManagedFilterPipeline.java
 @@ -16,7 +16,6 @@
@@ -551,13 +560,13 @@ index 538e10a..76bc269 100644
    /**
     * Introspects the injector and collects all instances of bound {@code List<FilterDefinition>}
     * into a master list.
-@@ -84,86 +74,4 @@ class ManagedFilterPipeline implements FilterPipeline{
+@@ -84,89 +74,4 @@ class ManagedFilterPipeline implements FilterPipeline{
      // Copy to a fixed-size array for speed of iteration.
      return filterDefinitions.toArray(new FilterDefinition[filterDefinitions.size()]);
    }
 -
--  public synchronized void initPipeline(ServletContext servletContext)
--      throws ServletException {
+-  @Override
+-  public synchronized void initPipeline(ServletContext servletContext) throws ServletException {
 -
 -    //double-checked lock, prevents duplicate initialization
 -    if (initialized)
@@ -577,8 +586,10 @@ index 538e10a..76bc269 100644
 -    initialized = true;
 -  }
 -
--  public void dispatch(ServletRequest request, ServletResponse response,
--      FilterChain proceedingFilterChain) throws IOException, ServletException {
+-  @Override
+-  public void dispatch(
+-      ServletRequest request, ServletResponse response, FilterChain proceedingFilterChain)
+-      throws IOException, ServletException {
 -
 -    //lazy init of filter pipeline (OK by the servlet specification). This is needed
 -    //in order for us not to force users to create a GuiceServletContextListener subclass.
@@ -627,6 +638,7 @@ index 538e10a..76bc269 100644
 -    };
 -  }
 -
+-  @Override
 -  public void destroyPipeline() {
 -    //destroy servlets first
 -    servletPipeline.destroy();
@@ -639,7 +651,7 @@ index 538e10a..76bc269 100644
 -  }
  }
 diff --git a/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java b/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java
-index 455551a..ab58a8e 100644
+index ae164c6..ab58a8e 100644
 --- a/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java
 +++ b/extensions/servlet/src/com/google/inject/servlet/ManagedServletPipeline.java
 @@ -15,27 +15,14 @@
@@ -697,7 +709,7 @@ index 455551a..ab58a8e 100644
    /**
     * Introspects the injector and collects all instances of bound {@code List<ServletDefinition>}
     * into a master list.
-@@ -74,140 +67,4 @@ class ManagedServletPipeline {
+@@ -74,146 +67,4 @@ class ManagedServletPipeline {
      // Copy to a fixed size array for speed.
      return servletDefinitions.toArray(new ServletDefinition[servletDefinitions.size()]);
    }
@@ -744,18 +756,20 @@ index 455551a..ab58a8e 100644
 -    for (final ServletDefinition servletDefinition : servletDefinitions) {
 -      if (servletDefinition.shouldServe(path)) {
 -        return new RequestDispatcher() {
+-          @Override
 -          public void forward(ServletRequest servletRequest, ServletResponse servletResponse)
 -              throws ServletException, IOException {
--            Preconditions.checkState(!servletResponse.isCommitted(),
+-            Preconditions.checkState(
+-                !servletResponse.isCommitted(),
 -                "Response has been committed--you can only call forward before"
--                + " committing the response (hint: don't flush buffers)");
+-                    + " committing the response (hint: don't flush buffers)");
 -
 -            // clear buffer before forwarding
 -            servletResponse.resetBuffer();
 -
 -            ServletRequest requestToProcess;
 -            if (servletRequest instanceof HttpServletRequest) {
--               requestToProcess = wrapRequest((HttpServletRequest)servletRequest, newRequestUri);
+-              requestToProcess = wrapRequest((HttpServletRequest) servletRequest, newRequestUri);
 -            } else {
 -              // This should never happen, but instead of throwing an exception
 -              // we will allow a happy case pass thru for maximum tolerance to
@@ -767,14 +781,18 @@ index 455551a..ab58a8e 100644
 -            doServiceImpl(servletDefinition, requestToProcess, servletResponse);
 -          }
 -
+-          @Override
 -          public void include(ServletRequest servletRequest, ServletResponse servletResponse)
 -              throws ServletException, IOException {
 -            // route to the target servlet
 -            doServiceImpl(servletDefinition, servletRequest, servletResponse);
 -          }
 -
--          private void doServiceImpl(ServletDefinition servletDefinition, ServletRequest servletRequest,
--              ServletResponse servletResponse) throws ServletException, IOException {
+-          private void doServiceImpl(
+-              ServletDefinition servletDefinition,
+-              ServletRequest servletRequest,
+-              ServletResponse servletResponse)
+-              throws ServletException, IOException {
 -            servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
 -
 -            try {
