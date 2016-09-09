@@ -94,6 +94,7 @@ public enum UriPatternType {
       }
     }
 
+    @Override
     public boolean matches(String uri) {
       if (null == uri) {
         return false;
@@ -110,6 +111,7 @@ public enum UriPatternType {
       return literal.equals(uri);
     }
 
+    @Override
     public String extractPath(String path) {
       if (patternKind == Kind.PREFIX) {
         return null;
@@ -128,6 +130,7 @@ public enum UriPatternType {
       return path;
     }
     
+    @Override
     public UriPatternType getPatternType() {
       return UriPatternType.SERVLET;
     }
@@ -156,10 +159,12 @@ public enum UriPatternType {
       }
     }
 
+    @Override
     public boolean matches(String uri) {
       return null != uri && this.pattern.matcher(getUri(uri)).matches();
     }
 
+    @Override
     public String extractPath(String path) {
       Matcher matcher = pattern.matcher(path);
       if (matcher.matches() && matcher.groupCount() >= 1) {
@@ -176,6 +181,7 @@ public enum UriPatternType {
       return null;
     }
     
+    @Override
     public UriPatternType getPatternType() {
       return UriPatternType.REGEX;
     }

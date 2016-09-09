@@ -66,8 +66,8 @@ public abstract class AbstractFilterPipeline implements FilterPipeline {
    */
   protected abstract FilterDefinition[] filterDefinitions();
 
-  public synchronized void initPipeline(ServletContext servletContext)
-      throws ServletException {
+  @Override
+  public synchronized void initPipeline(ServletContext servletContext) throws ServletException {
 
     //double-checked lock, prevents duplicate initialization
     if (initialized)
@@ -87,8 +87,10 @@ public abstract class AbstractFilterPipeline implements FilterPipeline {
     initialized = true;
   }
 
-  public void dispatch(ServletRequest request, ServletResponse response,
-      FilterChain proceedingFilterChain) throws IOException, ServletException {
+  @Override
+  public void dispatch(
+      ServletRequest request, ServletResponse response, FilterChain proceedingFilterChain)
+      throws IOException, ServletException {
 
     //lazy init of filter pipeline (OK by the servlet specification). This is needed
     //in order for us not to force users to create a GuiceServletContextListener subclass.
@@ -137,6 +139,7 @@ public abstract class AbstractFilterPipeline implements FilterPipeline {
     };
   }
 
+  @Override
   public void destroyPipeline() {
     //destroy servlets first
     servletPipeline.destroy();
