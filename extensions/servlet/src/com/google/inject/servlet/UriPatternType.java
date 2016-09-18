@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2008 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,11 +21,12 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * An enumeration of the available URI-pattern matching styles
- * 
+ *
  * @since 3.0
  */
 public enum UriPatternType {
-  SERVLET, REGEX;
+  SERVLET,
+  REGEX;
 
   /**
    * Returns the appropriate {@link UriPatternMatcher} for {@code pattern}.
@@ -64,7 +65,11 @@ public enum UriPatternType {
     private final String originalPattern;
     private final Kind patternKind;
 
-    private static enum Kind { PREFIX, SUFFIX, LITERAL, }
+    private static enum Kind {
+      PREFIX,
+      SUFFIX,
+      LITERAL,
+    }
 
     public ServletStyleUriPatternMatcher(String pattern) {
       this.originalPattern = pattern;
@@ -129,7 +134,7 @@ public enum UriPatternType {
       //else treat as literal
       return path;
     }
-    
+
     @Override
     public UriPatternType getPatternType() {
       return UriPatternType.SERVLET;
@@ -180,7 +185,7 @@ public enum UriPatternType {
       }
       return null;
     }
-    
+
     @Override
     public UriPatternType getPatternType() {
       return UriPatternType.REGEX;

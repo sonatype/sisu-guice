@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2008 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +22,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-
 import java.util.List;
-
 import javax.servlet.ServletContext;
 
 /**
@@ -41,7 +39,9 @@ class ManagedFilterPipeline extends AbstractFilterPipeline {
       TypeLiteral.get(FilterDefinition.class);
 
   @Inject
-  public ManagedFilterPipeline(Injector injector, ManagedServletPipeline servletPipeline,
+  public ManagedFilterPipeline(
+      Injector injector,
+      ManagedServletPipeline servletPipeline,
       Provider<ServletContext> servletContext) {
     super(injector, servletPipeline, servletContext);
 
@@ -61,16 +61,16 @@ class ManagedFilterPipeline extends AbstractFilterPipeline {
   /**
    * Introspects the injector and collects all instances of bound {@code List<FilterDefinition>}
    * into a master list.
-   * 
-   * We have a guarantee that {@link com.google.inject.Injector#getBindings()} returns a map
-   * that preserves insertion order in entry-set iterators.
+   *
+   * <p>We have a guarantee that {@link com.google.inject.Injector#getBindings()} returns a map that
+   * preserves insertion order in entry-set iterators.
    */
   private FilterDefinition[] collectFilterDefinitions(Injector injector) {
     List<FilterDefinition> filterDefinitions = Lists.newArrayList();
     for (Binding<FilterDefinition> entry : injector.findBindingsByType(FILTER_DEFS)) {
       filterDefinitions.add(entry.getProvider().get());
     }
-    
+
     // Copy to a fixed-size array for speed of iteration.
     return filterDefinitions.toArray(new FilterDefinition[filterDefinitions.size()]);
   }

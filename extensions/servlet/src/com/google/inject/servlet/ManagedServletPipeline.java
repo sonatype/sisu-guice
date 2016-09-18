@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2008 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-
 import java.util.List;
 
 /**
@@ -55,13 +54,13 @@ class ManagedServletPipeline extends AbstractServletPipeline {
    * Introspects the injector and collects all instances of bound {@code List<ServletDefinition>}
    * into a master list.
    *
-   * We have a guarantee that {@link com.google.inject.Injector#getBindings()} returns a map
-   * that preserves insertion order in entry-set iterators.
+   * <p>We have a guarantee that {@link com.google.inject.Injector#getBindings()} returns a map that
+   * preserves insertion order in entry-set iterators.
    */
   private ServletDefinition[] collectServletDefinitions(Injector injector) {
     List<ServletDefinition> servletDefinitions = Lists.newArrayList();
     for (Binding<ServletDefinition> entry : injector.findBindingsByType(SERVLET_DEFS)) {
-        servletDefinitions.add(entry.getProvider().get());
+      servletDefinitions.add(entry.getProvider().get());
     }
 
     // Copy to a fixed size array for speed.
