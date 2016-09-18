@@ -1,7 +1,7 @@
 Description: Provide built-in injection of SLF4J loggers
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: http://code.google.com/p/google-guice/issues/detail?id=492
-Last-Update: 2014-11-07
+Last-Update: 2016-09-18
 
 diff --git a/common.xml b/common.xml
 index a23eb90..2d3d9b3 100644
@@ -60,10 +60,10 @@ diff --git a/core/src/com/google/inject/internal/InjectorShell.java b/core/src/c
 index 6100879..56b13b3 100644
 --- a/core/src/com/google/inject/internal/InjectorShell.java
 +++ b/core/src/com/google/inject/internal/InjectorShell.java
-@@ -251,6 +251,15 @@ final class InjectorShell {
-         new ProviderInstanceBindingImpl<Logger>(injector, key,
-             SourceProvider.UNKNOWN_SOURCE, loggerFactory, Scoping.UNSCOPED,
-             loggerFactory, ImmutableSet.<InjectionPoint>of()));
+@@ -272,6 +272,15 @@ final class InjectorShell {
+             Scoping.UNSCOPED,
+             loggerFactory,
+             ImmutableSet.<InjectionPoint>of()));
 +
 +    try {
 +      Key<org.slf4j.Logger> slf4jKey = Key.get(org.slf4j.Logger.class);
@@ -76,10 +76,10 @@ index 6100879..56b13b3 100644
    }
  
    private static class LoggerFactory implements InternalFactory<Logger>, Provider<Logger> {
-@@ -270,6 +279,44 @@ final class InjectorShell {
+@@ -295,6 +295,44 @@ final class InjectorShell {
      }
    }
-   
+ 
 +  private static class SLF4JLoggerFactory implements InternalFactory<org.slf4j.Logger>, Provider<org.slf4j.Logger> {
 +    private final Injector injector;
 +
@@ -120,7 +120,7 @@ index 6100879..56b13b3 100644
 +
    private static void bindStage(InjectorImpl injector, Stage stage) {
      Key<Stage> key = Key.get(Stage.class);
-     InstanceBindingImpl<Stage> stageBinding = new InstanceBindingImpl<Stage>(
+     InstanceBindingImpl<Stage> stageBinding =
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
 index a560f38..e909927 100644
 --- a/extensions/persist/pom.xml
@@ -142,7 +142,7 @@ diff --git a/pom.xml b/pom.xml
 index 37305d0..5834d49 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -283,7 +283,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+@@ -298,7 +298,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
          </plugin>
          <plugin>
            <artifactId>maven-surefire-plugin</artifactId>
