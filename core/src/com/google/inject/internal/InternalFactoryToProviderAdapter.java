@@ -33,12 +33,16 @@ final class InternalFactoryToProviderAdapter<T> implements InternalFactory<T> {
   }
 
   @Override
-  public T get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked)
-      throws ErrorsException {
+  public T get(InternalContext context, Dependency<?> dependency, boolean linked)
+      throws InternalProvisionException {
     try {
-      return errors.checkForNull(provider.get(), source, dependency);
+      T t = provider.get();
+      if (t == null && !dependency.isNullable()) {
+        InternalProvisionException.onNullInjectedIntoNonNullableDependency(source, dependency);
+      }
+      return t;
     } catch (RuntimeException userException) {
-      throw errors.withSource(source).errorInProvider(userException).toException();
+      throw InternalProvisionException.errorInProvider(userException).addSource(source);
     }
   }
 

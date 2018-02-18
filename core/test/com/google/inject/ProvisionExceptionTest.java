@@ -189,17 +189,33 @@ public class ProvisionExceptionTest extends TestCase {
     }
   }
 
+  // The only way to trigger an exception with _multiple_ user controlled throwables is by
+  // triggering errors during injector creation.
   public void testMultipleCauses() {
     try {
-      Guice.createInjector().getInstance(G.class);
+      Guice.createInjector(
+          Stage.PRODUCTION,
+          new AbstractModule() {
+            @Provides
+            @Singleton
+            String injectFirst() {
+              throw new IllegalArgumentException(new UnsupportedOperationException("Unsupported"));
+            }
+
+            @Provides
+            @Singleton
+            Object injectSecond() {
+              throw new NullPointerException("can't inject second either");
+            }
+          });
       fail();
-    } catch (ProvisionException e) {
+    } catch (CreationException e) {
       assertContains(
           e.getMessage(),
-          "1) Error injecting method, java.lang.IllegalArgumentException",
+          "1) Error in custom provider, java.lang.IllegalArgumentException",
           "Caused by: java.lang.IllegalArgumentException: java.lang.UnsupportedOperationException",
           "Caused by: java.lang.UnsupportedOperationException: Unsupported",
-          "2) Error injecting method, java.lang.NullPointerException: can't inject second either",
+          "2) Error in custom provider, java.lang.NullPointerException: can't inject second either",
           "Caused by: java.lang.NullPointerException: can't inject second either",
           "2 errors");
     }
@@ -318,28 +334,20 @@ public class ProvisionExceptionTest extends TestCase {
 
   public void testDuplicateCausesCollapsed() {
     final RuntimeException sharedException = new RuntimeException("fail");
-    Injector injector =
-        Guice.createInjector(
-            new AbstractModule() {
-
-              @Provides
-              Integer i() {
-                throw sharedException;
-              }
-
-              @Provides
-              Double d() {
-                throw sharedException;
-              }
-            });
-
     try {
-      injector.getInstance(DoubleFailure.class);
+      Guice.createInjector(
+          new AbstractModule() {
+            @Override
+            protected void configure() {
+              addError(sharedException);
+              addError(sharedException);
+            }
+          });
       fail();
-    } catch (ProvisionException pe) {
-      assertEquals(sharedException, pe.getCause());
-      assertEquals(2, pe.getErrorMessages().size());
-      for (Message message : pe.getErrorMessages()) {
+    } catch (CreationException ce) {
+      assertEquals(sharedException, ce.getCause());
+      assertEquals(2, ce.getErrorMessages().size());
+      for (Message message : ce.getErrorMessages()) {
         assertEquals(sharedException, message.getCause());
       }
     }
@@ -348,42 +356,26 @@ public class ProvisionExceptionTest extends TestCase {
   public void testMultipleDuplicates() {
     final RuntimeException exception1 = new RuntimeException("fail");
     final RuntimeException exception2 = new RuntimeException("abort");
-    Injector injector =
-        Guice.createInjector(
-            new AbstractModule() {
-
-              @Provides
-              Integer i() {
-                throw exception1;
-              }
-
-              @Provides
-              Double d() {
-                throw exception1;
-              }
-
-              @Provides
-              String s() {
-                throw exception2;
-              }
-
-              @Provides
-              Number n() {
-                throw exception2;
-              }
-            });
-
     try {
-      injector.getInstance(QuadrupleFailure.class);
+      Guice.createInjector(
+          new AbstractModule() {
+            @Override
+            protected void configure() {
+              addError(exception1);
+              addError(exception1);
+              addError(exception2);
+              addError(exception2);
+            }
+          });
       fail();
-    } catch (ProvisionException pe) {
-      assertNull(pe.getCause());
-      assertEquals(4, pe.getErrorMessages().size());
+    } catch (CreationException ce) {
+      assertNull(ce.getCause());
+      assertEquals(4, ce.getErrorMessages().size());
 
       String e1 = Throwables.getStackTraceAsString(exception1);
       String e2 = Throwables.getStackTraceAsString(exception2);
       assertContains(
-          pe.getMessage(),
+          ce.getMessage(),
           "\n1) ",
           e1,
           "\n2) ",
@@ -393,85 +385,6 @@ public class ProvisionExceptionTest extends TestCase {
           "\n4) ",
           "(same stack trace as error #3)");
     }
-  }
-
-  static class DoubleFailure {
-    @Inject
-    DoubleFailure(Integer i, Double d) {}
-  }
-
-  static class QuadrupleFailure {
-    @Inject
-    QuadrupleFailure(Integer i, Double d, String s, Number n) {}
-  }
-
-  public void testDuplicatesDifferentInstances() {
-    Injector injector =
-        Guice.createInjector(
-            new AbstractModule() {
-
-              @Provides
-              Integer i() {
-                throw new RuntimeException();
-              }
-            });
-
-    try {
-      injector.getInstance(DoubleSameFailure.class);
-      fail();
-    } catch (ProvisionException pe) {
-      assertNotNull(pe.toString(), pe.getCause());
-      assertEquals(2, pe.getErrorMessages().size());
-      for (Message message : pe.getErrorMessages()) {
-        assertNotNull(message.toString(), message.getCause());
-      }
-    }
-  }
-
-  public void testMultipleDuplicatesDifferentInstaces() {
-    Injector injector =
-        Guice.createInjector(
-            new AbstractModule() {
-
-              @Provides
-              Integer i() {
-                throw new RuntimeException("fail");
-              }
-
-              @Provides
-              String s() {
-                throw new RuntimeException("abort");
-              }
-            });
-
-    try {
-      injector.getInstance(QuadrupleSameFailure.class);
-      fail();
-    } catch (ProvisionException pe) {
-      assertNull(pe.getCause());
-      assertEquals(4, pe.getErrorMessages().size());
-
-      assertContains(
-          pe.getMessage(),
-          "\n1) ",
-          "Caused by: java.lang.RuntimeException: fail",
-          "\n2) ",
-          "Caused by: java.lang.RuntimeException (same stack trace as error #1)",
-          "\n3) ",
-          "Caused by: java.lang.RuntimeException: abort",
-          "\n4) ",
-          "Caused by: java.lang.RuntimeException (same stack trace as error #3)");
-    }
-  }
-
-  static class DoubleSameFailure {
-    @Inject
-    DoubleSameFailure(Integer i1, Integer i2) {}
-  }
-
-  static class QuadrupleSameFailure {
-    @Inject
-    QuadrupleSameFailure(Integer i1, Integer i2, String s1, String s2) {}
   }
 
   @SuppressWarnings("ClassCanBeStatic")
@@ -559,18 +472,6 @@ public class ProvisionExceptionTest extends TestCase {
     @Override
     public F get() {
       return new F();
-    }
-  }
-
-  static class G {
-    @Inject
-    void injectFirst() {
-      throw new IllegalArgumentException(new UnsupportedOperationException("Unsupported"));
-    }
-
-    @Inject
-    void injectSecond() {
-      throw new NullPointerException("can't inject second either");
     }
   }
 }

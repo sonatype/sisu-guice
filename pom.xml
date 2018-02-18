@@ -68,7 +68,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
   </scm>
 
   <issueManagement>
-    <system>Google Code</system>
+    <system>Github</system>
     <url>https://github.com/google/guice/issues/</url>
   </issueManagement>
 
@@ -132,22 +132,22 @@ See the Apache License Version 2.0 for the specific language governing permissio
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>19.0</version>
+        <version>23.6-android</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava-testlib</artifactId>
-        <version>19.0</version>
+        <version>23.6-android</version>
       </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
-        <version>5.0.3</version>
+        <version>6.0</version>
       </dependency>
       <dependency>
         <groupId>cglib</groupId>
         <artifactId>cglib</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.6</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -158,7 +158,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
       <dependency>
         <groupId>com.google.truth</groupId>
         <artifactId>truth</artifactId>
-        <version>0.28</version>
+        <version>0.36</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -266,7 +266,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>animal-sniffer-maven-plugin</artifactId>
-          <version>1.10</version>
+          <version>1.16</version>
           <configuration>
             <signature>
               <groupId>org.codehaus.mojo.signature</groupId>
@@ -324,7 +324,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.1.0</version>
+          <version>3.5.0</version>
           <configuration>
             <instructions>
               <module>com.google.inject</module>
@@ -384,7 +384,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
         </plugin>
         <plugin>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.7</version>
+          <version>3.0.0</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -434,7 +434,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <additionalOptions>
+                <additionalOption>-Xdoclint:none</additionalOption>
+              </additionalOptions>
             </configuration>
           </plugin>
         </plugins>
@@ -446,7 +448,9 @@ See the Apache License Version 2.0 for the specific language governing permissio
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <additionalOptions>
+                <additionalOption>-Xdoclint:none</additionalOption>
+              </additionalOptions>
             </configuration>
           </plugin>
         </plugins>

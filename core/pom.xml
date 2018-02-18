@@ -79,6 +79,11 @@
       <version>3.0.5</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -142,6 +147,11 @@
             <exclude>LICENSE</exclude>
             <exclude>NOTICE</exclude>
           </excludes>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>com.google.guice</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
         </configuration>
       </plugin>
     </plugins>
