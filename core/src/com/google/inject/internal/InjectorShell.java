@@ -322,7 +322,7 @@ final class InjectorShell {
       return loggerFactory;
     }
 
-    public org.slf4j.Logger get(Errors errors, InternalContext context, Dependency<?> dependency, boolean linked) {
+    public org.slf4j.Logger get(InternalContext context, Dependency<?> dependency, boolean linked) {
       InjectionPoint injectionPoint = dependency.getInjectionPoint();
       if (injectionPoint != null) {
         return loggerFactory().getLogger(injectionPoint.getMember().getDeclaringClass().getName());
