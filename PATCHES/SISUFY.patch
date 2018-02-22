@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2018-02-19
+Last-Update: 2018-02-22
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -679,9 +679,9 @@ index 6931067..b316a9c 100644
 -    <groupId>com.google</groupId>
 -    <artifactId>google</artifactId>
 -    <version>5</version>
-+    <groupId>org.sonatype.forge</groupId>
-+    <artifactId>forge-parent</artifactId>
-+    <version>38</version>
++    <groupId>org.sonatype.buildsupport</groupId>
++    <artifactId>public-parent</artifactId>
++    <version>12</version>
    </parent>
  
    <packaging>pom</packaging>
