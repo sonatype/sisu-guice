@@ -1,0 +1,66 @@
+Description: Remove some lingering references to Java 6 (Guice 4.2+ requires Java 7)
+Author: Stuart McCulloch <mcculls@gmail.com>
+Bug-Google: https://github.com/google/guice/issues/1171
+Last-Update: 2018-04-03
+
+diff --git a/common.xml b/common.xml
+index 0f661926..6e4b084c 100644
+--- a/common.xml
++++ b/common.xml
+@@ -35,7 +35,7 @@
+     <property name="Bundle-SymbolicName" value="${module}"/>
+     <property name="Bundle-Version" value="${replace;${version};^[^0-9];0.0.0.$0}"/>
+ 
+-    <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 6 and above"/>
++    <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 7 and above"/>
+     <property name="Bundle-DocURL" value="https://github.com/google/guice"/>
+     <property name="Bundle-Copyright" value="Copyright (C) 2006 Google Inc."/>
+     <property name="Bundle-License" value="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+diff --git a/core/pom.xml b/core/pom.xml
+index 2a81de58..03dd0fbc 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -86,7 +86,7 @@
+         <artifactId>maven-remote-resources-plugin</artifactId>
+       </plugin>
+       <!--
+-       | Enable Java6 conformance checks
++       | Enable Java7 conformance checks
+       -->
+       <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+diff --git a/extensions/pom.xml b/extensions/pom.xml
+index ff8350e7..d1da67c8 100644
+--- a/extensions/pom.xml
++++ b/extensions/pom.xml
+@@ -90,7 +90,7 @@
+         <artifactId>maven-remote-resources-plugin</artifactId>
+       </plugin>
+       <!--
+-       | Enable Java6 conformance checks
++       | Enable Java7 conformance checks
+       -->
+       <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+diff --git a/pom.xml b/pom.xml
+index ebb0d028..60b3c958 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -32,7 +32,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+   <name>Google Guice</name>
+ 
+   <description>
+-    Guice is a lightweight dependency injection framework for Java 6 and above
++    Guice is a lightweight dependency injection framework for Java 7 and above
+   </description>
+ 
+   <url>https://github.com/google/guice</url>
+@@ -345,7 +345,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+               <Bundle-DocURL>https://github.com/google/guice</Bundle-DocURL>
+               <Bundle-Name>${project.artifactId}</Bundle-Name>
+               <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
+-              <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
++              <Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+               <Import-Package>!com.google.inject.*,*</Import-Package>
+               <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
+               <_versionpolicy>$(version;==;$(@))</_versionpolicy>
