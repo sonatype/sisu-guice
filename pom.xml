@@ -372,6 +372,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
               <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
               <!--  Exclude to mirror ant build -->
           <addMavenDescriptor>false</addMavenDescriptor>
+              <manifest>
+                <addDefaultImplementationEntries>false</addDefaultImplementationEntries>
+                <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+              </manifest>
             </archive>
           </configuration>
           <executions>
