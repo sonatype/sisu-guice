@@ -1,0 +1,41 @@
+Description: Fix two minor OSGi metadata issues caused by upgrade to bundleplugin 3.5.0
+Author: Stuart McCulloch <mcculls@gmail.com>
+Bug-Google: https://github.com/google/guice/issues/1173
+Last-Update: 2018-04-03
+
+diff --git a/core/pom.xml b/core/pom.xml
+index 2a81de58..dbdc7c91 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -118,6 +118,9 @@
+             <Bundle-Name>${project.artifactId}$(if;$(classes;NAMED;*.MethodAspect);; (no_aop))</Bundle-Name>
+             <Import-Package>!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.inject.*,*</Import-Package>
+             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
++
++            <!-- keep these headers separate between the main build and the 'no_aop' munged build -->
++            <Merge-Headers>!Bundle-Name,!Import-Package</Merge-Headers>
+           </instructions>
+         </configuration>
+       </plugin>
+diff --git a/pom.xml b/pom.xml
+index ebb0d028..36323e08 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -348,14 +348,15 @@ See the Apache License Version 2.0 for the specific language governing permissio
+               <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+               <Import-Package>!com.google.inject.*,*</Import-Package>
+               <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
+-              <_versionpolicy>$(version;==;$(@))</_versionpolicy>
++              <_consumer-policy>$(version;==;$(@))</_consumer-policy>
+               <_nouses>true</_nouses>
+               <_removeheaders>
+                 Embed-Dependency,Embed-Transitive,
+                 Built-By,Tool,Created-By,Build-Jdk,
+                 Originally-Created-By,Archiver-Version,
+                 Include-Resource,Private-Package,
+-                Ignore-Package,Bnd-LastModified
++                Ignore-Package,Bnd-LastModified,
++                Merge-Headers
+               </_removeheaders>
+             </instructions>
+           </configuration>
