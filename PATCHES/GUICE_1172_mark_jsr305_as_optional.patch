@@ -1,0 +1,17 @@
+Description: Mark JSR305 dependency as optional for throwingproviders
+Author: Stuart McCulloch <mcculls@gmail.com>
+Bug-Google: https://github.com/google/guice/issues/1172
+Last-Update: 2018-04-03
+
+diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
+index 2ef89f38..762d5b7c 100644
+--- a/extensions/throwingproviders/pom.xml
++++ b/extensions/throwingproviders/pom.xml
+@@ -44,6 +44,7 @@
+     <dependency>
+       <groupId>com.google.code.findbugs</groupId>
+       <artifactId>jsr305</artifactId>
++      <optional>true</optional>
+     </dependency>
+   </dependencies>
+ </project>
