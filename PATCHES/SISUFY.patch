@@ -632,6 +632,22 @@ index e12aee0..fc274ba 100644
        <artifactId>guice-throwingproviders</artifactId>
        <version>${project.version}</version>
      </dependency>
+@@ -45,9 +45,15 @@
+     <dependency>
+       <groupId>com.google.truth</groupId>
+       <artifactId>truth</artifactId>
++      <version>0.36</version>
+       <scope>compile</scope>
+     </dependency>
+     <dependency>
++      <groupId>com.google.guava</groupId>
++      <artifactId>guava</artifactId>
++      <version>20.0</version>
++    </dependency>
++    <dependency>
+       <groupId>com.google.code.findbugs</groupId>
+       <artifactId>jsr305</artifactId>
+     </dependency>
 diff --git a/extensions/throwingproviders/pom.xml b/extensions/throwingproviders/pom.xml
 index 63a8b78..bb24528 100644
 --- a/extensions/throwingproviders/pom.xml
@@ -760,6 +776,30 @@ index 6931067..b316a9c 100644
    </properties>
  
    <dependencyManagement>
+@@ -132,12 +132,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
+       <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+-        <version>23.6-android</version>
++        <version>18.0</version>
+       </dependency>
+       <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava-testlib</artifactId>
+-        <version>23.6-android</version>
++        <version>18.0</version>
+       </dependency>
+       <dependency>
+         <groupId>org.ow2.asm</groupId>
+@@ -158,7 +158,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
+       <dependency>
+         <groupId>com.google.truth</groupId>
+         <artifactId>truth</artifactId>
+-        <version>0.36</version>
++        <version>0.30</version>
+         <scope>test</scope>
+       </dependency>
+       <dependency>
 @@ -344,7 +331,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <Bundle-Copyright>Copyright (C) 2006 Google Inc.</Bundle-Copyright>
                <Bundle-DocURL>https://github.com/google/guice</Bundle-DocURL>
@@ -769,17 +809,6 @@ index 6931067..b316a9c 100644
                <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
-@@ -358,6 +345,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
-                 Ignore-Package,Bnd-LastModified
-               </_removeheaders>
-             </instructions>
-+            <!--
-+             | Exclude from version calculations, as it doesn't use semantic versioning
-+            -->
-+            <excludeDependencies>guava</excludeDependencies>
-           </configuration>
-           <executions>
-             <execution>
 @@ -372,6 +372,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                <!--  Exclude to mirror ant build -->

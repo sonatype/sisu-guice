@@ -132,12 +132,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>23.6-android</version>
+        <version>18.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava-testlib</artifactId>
-        <version>23.6-android</version>
+        <version>18.0</version>
       </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
@@ -158,7 +158,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
       <dependency>
         <groupId>com.google.truth</groupId>
         <artifactId>truth</artifactId>
-        <version>0.36</version>
+        <version>0.30</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -347,10 +347,6 @@ See the Apache License Version 2.0 for the specific language governing permissio
                 Merge-Headers
               </_removeheaders>
             </instructions>
-            <!--
-             | Exclude from version calculations, as it doesn't use semantic versioning
-            -->
-            <excludeDependencies>guava</excludeDependencies>
           </configuration>
           <executions>
             <execution>
