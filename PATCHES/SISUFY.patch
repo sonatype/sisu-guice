@@ -402,6 +402,26 @@ index fdaa91d..5c03903 100644
 +  <name>Sisu Guice - Extensions - Mini</name>
  
  </project>
+diff --git a/extensions/multibindings/pom.xml b/extensions/multibindings/pom.xml
+index 8875e39..9eb7ee9 100644
+--- a/extensions/multibindings/pom.xml
++++ b/extensions/multibindings/pom.xml
+@@ -4,13 +4,13 @@
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>com.google.inject.extensions</groupId>
++    <groupId>org.sonatype.sisu.inject</groupId>
+     <artifactId>extensions-parent</artifactId>
+     <version>4.1.1-SNAPSHOT</version>
+   </parent>
+ 
+   <artifactId>guice-multibindings</artifactId>
+ 
+-  <name>Google Guice - Extensions - MultiBindings</name>
++  <name>Sisu Guice - Extensions - MultiBindings</name>
+ 
+ </project>
 diff --git a/extensions/persist/pom.xml b/extensions/persist/pom.xml
 index 50dbc11..860ab64 100644
 --- a/extensions/persist/pom.xml

@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.inject.extensions</groupId>
+    <groupId>org.sonatype.sisu.inject</groupId>
     <artifactId>extensions-parent</artifactId>
     <version>4.1.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>guice-multibindings</artifactId>
 
-  <name>Google Guice - Extensions - MultiBindings</name>
+  <name>Sisu Guice - Extensions - MultiBindings</name>
 
   <build>
     <plugins>
