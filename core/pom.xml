@@ -133,11 +133,10 @@
             <Bundle-Name>${project.artifactId}$(if;$(classes;NAMED;*.MethodAspect);; (no_aop))</Bundle-Name>
             <Import-Package>!net.sf.cglib.*,!org.objectweb.asm.*,!com.google.inject.*,*</Import-Package>
             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
+            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
 
             <!-- keep these headers separate between the main build and the 'no_aop' munged build -->
             <Merge-Headers>!Bundle-Name,!Import-Package</Merge-Headers>
-
-            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
