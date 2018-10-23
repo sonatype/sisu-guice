@@ -27,7 +27,7 @@ See the Apache License Version 2.0 for the specific language governing permissio
 
   <groupId>org.sonatype.sisu.inject</groupId>
   <artifactId>guice-parent</artifactId>
-  <version>4.2.1-SNAPSHOT</version>
+  <version>4.2.2-SNAPSHOT</version>
 
   <name>Sisu Guice</name>
 
@@ -142,12 +142,12 @@ See the Apache License Version 2.0 for the specific language governing permissio
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
-        <version>6.2</version>
+        <version>6.2.1</version>
       </dependency>
       <dependency>
         <groupId>cglib</groupId>
         <artifactId>cglib</artifactId>
-        <version>3.2.6</version>
+        <version>3.2.8</version>
         <exclusions>
           <exclusion>
             <groupId>org.apache.ant</groupId>
