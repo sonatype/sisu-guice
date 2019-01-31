@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2018-10-23
+Last-Update: 2019-01-31
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -74,25 +74,23 @@ diff --git a/README.md b/README.md
 index c71ee05..5b6f001 100644
 --- a/README.md
 +++ b/README.md
-@@ -1,24 +1,10 @@
+@@ -1,24 +1,6 @@
 -Guice
 -====
 +Patched build of https://github.com/google/guice/ - see PATCHES for the exact differences.
  
--**Latest release: [4.2.1](https://github.com/google/guice/wiki/Guice421)**
+-**Latest release: [4.2.2](https://github.com/google/guice/wiki/Guice422)**
 +Compatibility with Google-Guice
 +-------------------------------
  
--**Documentation:** [User Guide](https://github.com/google/guice/wiki/Motivation), [4.2.1 javadocs](http://google.github.io/guice/api-docs/4.2.1/javadoc/index.html), [Latest javadocs](http://google.github.io/guice/api-docs/latest/javadoc/index.html) <br/>
+-**Documentation:** [User Guide](https://github.com/google/guice/wiki/Motivation), [4.2.2 javadocs](http://google.github.io/guice/api-docs/4.2.2/javadoc/index.html), [Latest javadocs](http://google.github.io/guice/api-docs/latest/javadoc/index.html) <br/>
 -**Continuous Integration:** [![Build Status](https://api.travis-ci.org/google/guice.png?branch=master)](https://travis-ci.org/google/guice) <br
 -/>
 -**Mailing Lists:** [User Mailing List](http://groups.google.com/group/google-guice) <br/>
 -**License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-+The main difference between Sisu-Guice and Google-Guice is that Guava is now exposed as a direct Maven dependency. If you are assembling your application outside of Maven you therefore need to add Guava to the runtime JARs. The build uses Guava 18.0 but you can use Maven's `<dependencyManagement>` to select a different version of Guava.
- 
+-
 -Put simply, Guice alleviates the need for factories and the use of new in your Java code. Think of Guice's @Inject as the new new. You will still need to write factories in some cases, but your code will not depend directly on them. Your code will be easier to change, unit test and reuse in other contexts.
-+Because of this dependency difference you should avoid mixing the official Google-Guice library with internal extensions provided by Sisu-Guice and vice-versa. Third-party Guice extensions should be compatible with either library.
- 
+-
 -Guice embraces Java's type safe nature, especially when it comes to features introduced in Java 5 such as generics and annotations. You might think of Guice as filling in missing features for core Java. Ideally, the language itself would provide most of the same features, but until such a language comes along, we have Guice.
 -
 -Guice helps you design better APIs, and the Guice API itself sets a good example. Guice is not a kitchen sink. We justify each feature with at least three use cases. When in doubt, we leave it out. We build general functionality which enables you to extend Guice rather than adding every feature to the core framework.
@@ -116,7 +114,7 @@ index 56232ba..49836b2 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
 @@ -13,79 +13,79 @@
  
@@ -242,7 +240,7 @@ index bb9bf88..cb9ba73 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
 -  <artifactId>guice</artifactId>
@@ -298,7 +296,7 @@ index 601f24e..38f360e 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-assistedinject</artifactId>
@@ -318,7 +316,7 @@ index 6f63452..920f7ba 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-grapher</artifactId>
@@ -344,7 +342,7 @@ index f3298e7..7de6431 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-jmx</artifactId>
@@ -365,7 +363,7 @@ index fb9bc3c..f78153a 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-jndi</artifactId>
@@ -393,7 +391,7 @@ index fdaa91d..5c03903 100644
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
 -    <version>4.0-SNAPSHOT</version>
-+    <version>4.2.2-SNAPSHOT</version>
++    <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-mini</artifactId>
@@ -413,7 +411,7 @@ index 8875e39..9eb7ee9 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-multibindings</artifactId>
@@ -433,7 +431,7 @@ index 50dbc11..860ab64 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-persist</artifactId>
@@ -454,7 +452,7 @@ index 084967c..83d04a2 100644
 -    <groupId>com.google.inject</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <packaging>pom</packaging>
@@ -525,7 +523,7 @@ index 2d96e0d..917c14a 100644
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
 -    <version>4.0-SNAPSHOT</version>
-+    <version>4.2.2-SNAPSHOT</version>
++    <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-service</artifactId>
@@ -545,7 +543,7 @@ index b4117ab..abd6e44 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-servlet</artifactId>
@@ -566,7 +564,7 @@ index e1bf819..391fd83 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-spring</artifactId>
@@ -587,7 +585,7 @@ index cf987cf..2a60ebd 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-struts2</artifactId>
@@ -613,7 +611,7 @@ index e12aee0..fc274ba 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-testlib</artifactId>
@@ -659,7 +657,7 @@ index 63a8b78..bb24528 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
  
    <artifactId>guice-throwingproviders</artifactId>
@@ -680,7 +678,7 @@ index 763587e..9e88e9a 100644
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>guice-parent</artifactId>
 -    <groupId>com.google.inject</groupId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
  
@@ -725,7 +723,7 @@ index 6931067..b316a9c 100644
 -  <groupId>com.google.inject</groupId>
 +  <groupId>org.sonatype.sisu.inject</groupId>
    <artifactId>guice-parent</artifactId>
-   <version>4.2.2-SNAPSHOT</version>
+   <version>4.2.3-SNAPSHOT</version>
  
 -  <name>Google Guice</name>
 +  <name>Sisu Guice</name>
@@ -806,7 +804,7 @@ index 6931067..b316a9c 100644
                <Bundle-Name>${project.artifactId}</Bundle-Name>
 -              <Bundle-SymbolicName>$(module)</Bundle-SymbolicName>
 +              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
-               <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+               <Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
                <Import-Package>!com.google.inject.*,*</Import-Package>
                <_exportcontents>!*.internal.*,$(module).*;version=${guice.api.version}</_exportcontents>
 @@ -372,6 +372,10 @@ See the Apache License Version 2.0 for the specific language governing permissio
@@ -899,7 +897,7 @@ index d64d36c..0ad5261 100644
 -    <groupId>com.google.inject.extensions</groupId>
 +    <groupId>org.sonatype.sisu.inject</groupId>
      <artifactId>extensions-parent</artifactId>
-     <version>4.2.2-SNAPSHOT</version>
+     <version>4.2.3-SNAPSHOT</version>
    </parent>
    <artifactId>guice-dagger-adapter</artifactId>
 -  <name>Google Guice - Extensions - Dagger Adapter</name>
