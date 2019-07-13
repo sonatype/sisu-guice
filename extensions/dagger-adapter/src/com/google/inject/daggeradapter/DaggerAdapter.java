@@ -15,51 +15,67 @@
  */
 package com.google.inject.daggeradapter;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.collect.Iterables.getFirst;
+import static com.google.inject.daggeradapter.SupportedAnnotations.isAnnotationSupported;
+
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimaps;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.internal.ProviderMethodsModule;
 import com.google.inject.spi.ModuleAnnotatedMethodScanner;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * A utility to adapt classes annotated with {@link @dagger.Module} such that their
- * {@link @dagger.Provides} methods can be properly invoked by Guice to perform their provision
- * operations.
+ * Adapts classes annotated with {@link @dagger.Module} such that their {@link @dagger.Provides}
+ * methods can be properly invoked by Guice to perform their provision operations.
  *
  * <p>Simple example:
  *
  * <pre>{@code
- * Guice.createInjector(...other modules..., DaggerAdapter.from(new SomeDaggerAdapter()));
+ * Guice.createInjector(
+ *   DaggerAdapter.from(SomeDaggerModule.class, new AnotherModuleWithConstructor());
  * }</pre>
+ *
+ * <p>For modules with no instance binding methods, prefer using a class literal. If there are
+ * instance binding methods, an instance of the module must be passed.
+ *
+ * <p>Any class literals specified by {@code dagger.Module(includes = ...)} transitively will be
+ * included. Modules are de-duplicated, though multiple module instances of the same type is an
+ * error. Specifying a module instance and a class literal is also an error.
  *
  * <p>Some notes on usage and compatibility.
  *
  * <ul>
- * <li>Dagger provider methods have a "SET_VALUES" provision mode not supported by Guice.
- * <li>MapBindings are not yet implemented (pending).
- * <li>Be careful about stateful modules. In contrast to Dagger (where components are expected to be
- *     recreated on-demand with new Module instances), Guice typically has a single injector with a
- *     long lifetime, so your module instance will be used throughout the lifetime of the entire
- *     app.
- * <li>Dagger 1.x uses {@link @Singleton} for all scopes, including shorter-lived scopes like
- *     per-request or per-activity. Using modules written with Dagger 1.x usage in mind may result
- *     in mis-scoped objects.
- * <li>Dagger 2.x supports custom scope annotations, but for use in Guice, a custom scope
- *     implementation must be registered in order to support the custom lifetime of that annotation.
+ *   <li>Dagger provider methods have a "SET_VALUES" provision mode not supported by Guice.
+ *   <li>MapBindings are not yet implemented (pending).
+ *   <li>Be careful about stateful modules. In contrast to Dagger (where components are expected to
+ *       be recreated on-demand with new Module instances), Guice typically has a single injector
+ *       with a long lifetime, so your module instance will be used throughout the lifetime of the
+ *       entire app.
+ *   <li>Dagger 1.x uses {@link @Singleton} for all scopes, including shorter-lived scopes like
+ *       per-request or per-activity. Using modules written with Dagger 1.x usage in mind may result
+ *       in mis-scoped objects.
+ *   <li>Dagger 2.x supports custom scope annotations, but for use in Guice, a custom scope
+ *       implementation must be registered in order to support the custom lifetime of that
+ *       annotation.
  * </ul>
  *
  * @author cgruber@google.com (Christian Gruber)
  */
 public final class DaggerAdapter {
-  /**
-   * Returns a guice module from a dagger module.
-   *
-   * <p>Note: At present, it does not honor {@code @Module(includes=...)} directives.
-   */
+  /** Creates a new {@link DaggerAdapter} from {@code daggerModuleObjects}. */
   public static Module from(Object... daggerModuleObjects) {
-    // TODO(cgruber): Gather injects=, dedupe, factor out instances, instantiate the rest, and go.
-    return new DaggerCompatibilityModule(daggerModuleObjects);
+    return new DaggerCompatibilityModule(ImmutableList.copyOf(daggerModuleObjects));
   }
 
   /**
@@ -68,24 +84,142 @@ public final class DaggerAdapter {
    * ModuleAnnotatedMethodScanner}.
    */
   private static final class DaggerCompatibilityModule implements Module {
-    private final Object[] daggerModuleObjects;
+    private final ImmutableList<Object> declaredModules;
 
-    private DaggerCompatibilityModule(Object... daggerModuleObjects) {
-      this.daggerModuleObjects = daggerModuleObjects;
+    private DaggerCompatibilityModule(ImmutableList<Object> declaredModules) {
+      this.declaredModules = declaredModules;
     }
 
     @Override
     public void configure(Binder binder) {
-      for (Object module : daggerModuleObjects) {
+      binder = binder.skipSources(getClass());
+      for (Object module : deduplicateModules(binder, transitiveModules())) {
+        checkIsDaggerModule(module, binder);
+        validateNoSubcomponents(binder, module);
+        checkUnsupportedDaggerAnnotations(module, binder);
+
         binder.install(ProviderMethodsModule.forModule(module, DaggerMethodScanner.INSTANCE));
       }
     }
 
+    private void checkIsDaggerModule(Object module, Binder binder) {
+      Class<?> moduleClass = module instanceof Class ? (Class<?>) module : module.getClass();
+      if (!moduleClass.isAnnotationPresent(dagger.Module.class)) {
+        binder
+            .skipSources(getClass())
+            .addError("%s must be annotated with @dagger.Module", moduleClass.getCanonicalName());
+      }
+    }
+
+    private static void checkUnsupportedDaggerAnnotations(Object module, Binder binder) {
+      for (Method method : allDeclaredMethods(moduleClass(module))) {
+        for (Annotation annotation : method.getAnnotations()) {
+          Class<? extends Annotation> annotationClass = annotation.annotationType();
+          if (annotationClass.getName().startsWith("dagger.")
+              && !isAnnotationSupported(annotationClass)) {
+            binder.addError(
+                "%s is annotated with @%s which is not supported by DaggerAdapter",
+                method, annotationClass.getCanonicalName());
+          }
+        }
+      }
+    }
+
+    private static ImmutableList<Method> allDeclaredMethods(Class<?> clazz) {
+      ImmutableList.Builder<Method> methods = ImmutableList.builder();
+      for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
+        methods.add(current.getDeclaredMethods());
+      }
+      return methods.build();
+    }
+
+    private void validateNoSubcomponents(Binder binder, Object module) {
+      Class<?> moduleClass = module instanceof Class ? (Class<?>) module : module.getClass();
+      dagger.Module moduleAnnotation = moduleClass.getAnnotation(dagger.Module.class);
+      if (moduleAnnotation.subcomponents().length > 0) {
+        binder.addError(
+            "Subcomponents cannot be configured for modules used with DaggerAdapter. %s specifies:"
+                + " %s",
+            moduleClass, Arrays.toString(moduleAnnotation.subcomponents()));
+      }
+    }
+
+    private ImmutableList<Object> transitiveModules() {
+      ModuleTraversingQueue queue = new ModuleTraversingQueue();
+      declaredModules.forEach(queue::add);
+
+      while (!queue.isEmpty()) {
+        dagger.Module module = queue.pop().getAnnotation(dagger.Module.class);
+        if (module != null) {
+          // invalid inputs are checked separately in checkIsDaggerModule()
+          Arrays.asList(module.includes()).forEach(queue::add);
+        }
+      }
+
+      return queue.transitiveModules();
+    }
+
+    private static ImmutableList<Object> deduplicateModules(
+        Binder binder, ImmutableList<Object> transitiveModules) {
+      ImmutableList.Builder<Object> deduplicatedModules = ImmutableList.builder();
+      // Group modules by their module class to detect duplicates
+      Multimaps.index(transitiveModules, DaggerAdapter::moduleClass)
+          .asMap()
+          .forEach(
+              (moduleClass, duplicates) -> {
+                // Select all module instances (i.e. ignore Class objects) and materialize into a
+                // set so that they're deduplicated. If multiple conflicting module instances exist,
+                // an error is reported since we don't know which one to use and they may have
+                // instance state which is relevant to binding methods.
+                ImmutableSet<Object> instances =
+                    duplicates.stream()
+                        .filter(module -> !(module instanceof Class))
+                        .collect(toImmutableSet());
+                if (instances.size() > 1) {
+                  binder.addError(
+                      "Duplicate module instances provided for %s: %s", moduleClass, instances);
+                }
+
+                // Prefer module instances to module Class objects. If no instance exists, take any
+                // of `duplicates`, which should be identical since class instances are singletons
+                deduplicatedModules.add(getFirst(instances, duplicates.iterator().next()));
+              });
+
+      return deduplicatedModules.build();
+    }
+
     @Override
     public String toString() {
-      return MoreObjects.toStringHelper(this)
-          .add("modules", Arrays.asList(daggerModuleObjects))
-          .toString();
+      return MoreObjects.toStringHelper(this).add("modules", declaredModules).toString();
+    }
+  }
+
+  private static Class<?> moduleClass(Object module) {
+    return module instanceof Class ? (Class<?>) module : module.getClass();
+  }
+
+  private static class ModuleTraversingQueue {
+    private final Deque<Class<?>> queue = new ArrayDeque<>();
+    private final Set<Object> visited = new HashSet<>();
+    private final ImmutableList.Builder<Object> transitiveModules = ImmutableList.builder();
+
+    void add(Object module) {
+      if (visited.add(module)) {
+        transitiveModules.add(module);
+        queue.add(moduleClass(module));
+      }
+    }
+
+    boolean isEmpty() {
+      return queue.isEmpty();
+    }
+
+    Class<?> pop() {
+      return queue.pop();
+    }
+
+    ImmutableList<Object> transitiveModules() {
+      return transitiveModules.build();
     }
   }
 

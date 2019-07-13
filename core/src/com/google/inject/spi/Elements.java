@@ -17,6 +17,7 @@
 package com.google.inject.spi;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.inject.internal.InternalFlags.getIncludeStackTraceOption;
 
 import com.google.common.collect.ImmutableList;
@@ -236,11 +237,13 @@ public final class Elements {
     @Override
     @SuppressWarnings("unchecked") // it is safe to use the type literal for the raw type
     public void requestInjection(Object instance) {
+      checkNotNull(instance, "instance");
       requestInjection((TypeLiteral<Object>) TypeLiteral.get(instance.getClass()), instance);
     }
 
     @Override
     public <T> void requestInjection(TypeLiteral<T> type, T instance) {
+      checkNotNull(instance, "instance");
       elements.add(
           new InjectionRequest<T>(
               getElementSource(), MoreTypes.canonicalizeForKey(type), instance));
@@ -320,14 +323,14 @@ public final class Elements {
           // ModuleAnnotatedMethodScanner lets users scan their own modules for @Provides-like
           // bindings.  If they install the module at a top-level, then moduleSource can be null.
           // Also, if they pass something other than 'this' to it, we'd have the wrong source.
-          Object delegate = ((ProviderMethodsModule) module).getDelegateModule();
+          Class<?> delegateClass = ((ProviderMethodsModule) module).getDelegateModuleClass();
           if (moduleSource == null
-              || !moduleSource.getModuleClassName().equals(delegate.getClass().getName())) {
-            moduleSource = getModuleSource(delegate);
+              || !moduleSource.getModuleClassName().equals(delegateClass.getName())) {
+            moduleSource = getModuleSource(delegateClass);
             unwrapModuleSource = true;
           }
         } else {
-          moduleSource = getModuleSource(module);
+          moduleSource = getModuleSource(module.getClass());
           unwrapModuleSource = true;
         }
         boolean skipScanning = false;
@@ -511,7 +514,7 @@ public final class Elements {
       return builder;
     }
 
-    private ModuleSource getModuleSource(Object module) {
+    private ModuleSource getModuleSource(Class<?> module) {
       StackTraceElement[] partialCallStack;
       if (getIncludeStackTraceOption() == IncludeStackTraceOption.COMPLETE) {
         partialCallStack = getPartialCallStack(new Throwable().getStackTrace());

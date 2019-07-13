@@ -28,6 +28,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.internal.util.Stopwatch;
 import com.google.inject.spi.Dependency;
 import com.google.inject.spi.Element;
+import com.google.inject.spi.InjectionPoint;
 import com.google.inject.spi.TypeConverterBinding;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -229,10 +230,11 @@ public final class InternalInjectorCreator {
 
     // handle a corner case where a child injector links to a binding in a parent injector, and
     // that binding is singleton. We won't catch this otherwise because we only iterate the child's
-    // bindings.
+    // bindings. This only applies if the linked binding is not itself scoped.
     if (binding instanceof LinkedBindingImpl) {
       Key<?> linkedBinding = ((LinkedBindingImpl<?>) binding).getLinkedKey();
-      return isEagerSingleton(injector, injector.getBinding(linkedBinding), stage);
+      return binding.getScoping().isNoScope()
+          && isEagerSingleton(injector, injector.getBinding(linkedBinding), stage);
     }
 
     return false;
@@ -310,6 +312,11 @@ public final class InternalInjectorCreator {
     @Override
     public List<Element> getElements() {
       return delegateInjector.getElements();
+    }
+
+    @Override
+    public Map<TypeLiteral<?>, List<InjectionPoint>> getAllMembersInjectorInjectionPoints() {
+      return delegateInjector.getAllMembersInjectorInjectionPoints();
     }
 
     @Override
