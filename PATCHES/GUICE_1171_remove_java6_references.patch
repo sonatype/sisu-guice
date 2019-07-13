@@ -1,21 +1,8 @@
 Description: Remove some lingering references to Java 6 (Guice 4.2+ requires Java 7)
 Author: Stuart McCulloch <mcculls@gmail.com>
 Bug-Google: https://github.com/google/guice/issues/1171
-Last-Update: 2018-04-03
+Last-Update: 2019-07-13
 
-diff --git a/common.xml b/common.xml
-index 0f661926..6e4b084c 100644
---- a/common.xml
-+++ b/common.xml
-@@ -35,7 +35,7 @@
-     <property name="Bundle-SymbolicName" value="${module}"/>
-     <property name="Bundle-Version" value="${replace;${version};^[^0-9];0.0.0.$0}"/>
- 
--    <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 6 and above"/>
-+    <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 7 and above"/>
-     <property name="Bundle-DocURL" value="https://github.com/google/guice"/>
-     <property name="Bundle-Copyright" value="Copyright (C) 2006 Google Inc."/>
-     <property name="Bundle-License" value="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
 diff --git a/core/pom.xml b/core/pom.xml
 index 2a81de58..03dd0fbc 100644
 --- a/core/pom.xml

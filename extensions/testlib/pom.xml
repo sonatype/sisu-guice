@@ -45,7 +45,6 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.41</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

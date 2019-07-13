@@ -1,6 +1,6 @@
 Description: Rename and relabel Google-Guice build to make it clear this is a vendor branch
 Author: Stuart McCulloch <mcculls@gmail.com>
-Last-Update: 2019-01-31
+Last-Update: 2019-07-13
 
 diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 index 1405580..c6eb646 100644
@@ -71,10 +71,10 @@ index 1405580..c6eb646 100644
 +While we will consider pull-requests (Apache 2.0 licensed) it is better to send contributions directly to the upstream project. You can then open an issue here if you would like specific upstream contributions added to sisu-guice and made available in a release outside of the current google/guice schedule.
  
 diff --git a/README.md b/README.md
-index c71ee05..5b6f001 100644
+index ecaca6d..2908849 100644
 --- a/README.md
 +++ b/README.md
-@@ -1,24 +1,6 @@
+@@ -1,23 +1,6 @@
 -Guice
 -====
 +Patched build of https://github.com/google/guice/ - see PATCHES for the exact differences.
@@ -84,8 +84,7 @@ index c71ee05..5b6f001 100644
 +-------------------------------
  
 -**Documentation:** [User Guide](https://github.com/google/guice/wiki/Motivation), [4.2.2 javadocs](http://google.github.io/guice/api-docs/4.2.2/javadoc/index.html), [Latest javadocs](http://google.github.io/guice/api-docs/latest/javadoc/index.html) <br/>
--**Continuous Integration:** [![Build Status](https://api.travis-ci.org/google/guice.png?branch=master)](https://travis-ci.org/google/guice) <br
--/>
+-**Continuous Integration:** [![Build Status](https://api.travis-ci.org/google/guice.png?branch=master)](https://travis-ci.org/google/guice) <br/>
 -**Mailing Lists:** [User Mailing List](http://groups.google.com/group/google-guice) <br/>
 -**License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 -
@@ -101,7 +100,7 @@ index c71ee05..5b6f001 100644
 -
 -We've been running Guice in mission critical applications since 2006, and now you can, too. We hope you enjoy it as much as we do.
 -
--[![jolt award](http://crazybob.org/jolt.png)](http://joltawards.com)
+-[![jolt award](https://user-images.githubusercontent.com/1885701/52603534-0d620380-2e1c-11e9-8cd5-95f0e141fcb0.png)](http://www.drdobbs.com/tools/winners-of-the-18th-jolt-product-excelle/207600666?pgno=6)
 +Sisu-Guice retains the same public API as Google-Guice and is binary compatible from a client perspective.
 diff --git a/bom/pom.xml b/bom/pom.xml
 index 56232ba..49836b2 100644
@@ -640,7 +639,7 @@ index e12aee0..fc274ba 100644
      <dependency>
 +      <groupId>com.google.guava</groupId>
 +      <artifactId>guava</artifactId>
-+      <version>25.1-jre</version>
++      <version>27.1-jre</version>
 +    </dependency>
 +    <dependency>
        <groupId>com.google.code.findbugs</groupId>
@@ -778,14 +777,14 @@ index 6931067..b316a9c 100644
        <dependency>
          <groupId>com.google.guava</groupId>
          <artifactId>guava</artifactId>
--        <version>25.1-android</version>
-+        <version>18.0</version>
+-        <version>27.1-jre</version>
++        <version>21.0</version>
        </dependency>
        <dependency>
          <groupId>com.google.guava</groupId>
          <artifactId>guava-testlib</artifactId>
--        <version>25.1-android</version>
-+        <version>18.0</version>
+-        <version>27.1-jre</version>
++        <version>21.0</version>
        </dependency>
        <dependency>
          <groupId>org.ow2.asm</groupId>
@@ -793,7 +792,7 @@ index 6931067..b316a9c 100644
        <dependency>
          <groupId>com.google.truth</groupId>
          <artifactId>truth</artifactId>
--        <version>0.41</version>
+-        <version>0.45</version>
 +        <version>0.30</version>
          <scope>test</scope>
        </dependency>
